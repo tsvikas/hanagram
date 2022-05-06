@@ -26,7 +26,7 @@ class BotServer(object):
         self.games = {}
 
 
-server = None
+server = BotServer("DEADBEEF")
 
 
 def add_player(server, chat_id, user_id, name, allow_repeated_players=False):
@@ -201,7 +201,7 @@ def handle_game_ending(bot, chat_game):
     send_game_views(bot, chat_game)
     chat_id = chat_game.chat_id
     game = chat_game.game
-    image = draw.draw_board_state(chat_game.game)
+    image = draw.draw_board_state(chat_game.game, player_viewing=None)
     try:
         bot.sendPhoto(chat_id, image)
     except Exception as ex:
