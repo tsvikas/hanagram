@@ -64,7 +64,7 @@ def add_player(
     player_to_user = server.games[chat_id].player_to_user
     user_to_message = server.games[chat_id].user_to_message
     if not allow_repeated_players and user_id in player_to_user.values():
-        # server.bot.sendMessage(chat_id, "You already joined the game")
+        server.bot.sendMessage(chat_id, "You already joined the game")
         return
 
     if len(player_to_user) >= 4:
