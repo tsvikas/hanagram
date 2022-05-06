@@ -95,6 +95,7 @@ def start_game(server: BotServer, chat_id: ChatId, user_id: UserId):
 
     if user_id != server.games[chat_id].admin:
         server.bot.sendMessage(chat_id, "You cannot start this game")
+        return
 
     player_to_user = server.games[chat_id].player_to_user
     if len(server.games[chat_id].player_to_user) < 2:
