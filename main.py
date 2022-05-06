@@ -37,11 +37,8 @@ def add_player(server, chat_id, user_id, name, allow_repeated_players=False):
     player_to_user = server.games[chat_id].player_to_user
     user_to_message = server.games[chat_id].user_to_message
     if not allow_repeated_players and user_id in player_to_user.values():
+        # server.bot.sendMessage(chat_id, "You already joined the game")
         return
-
-    # if user_id in server.user_to_chat_id.keys():
-    # server.bot.sendMessage(chat_id, "You already joined the game")
-    # return
 
     if len(player_to_user) >= 4:
         server.bot.sendMessage(chat_id, "There are already 4 players in the game.")
@@ -53,7 +50,6 @@ def add_player(server, chat_id, user_id, name, allow_repeated_players=False):
     server.bot.sendMessage(chat_id, name + " joined")
     player_to_user[name] = user_id
     user_to_message[user_id] = None
-    # server.user_to_chat_id[user_id] = chat_id
 
 
 def send_game_views(bot, chat_game):
