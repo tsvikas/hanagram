@@ -14,8 +14,8 @@ class ChatGame:
     def __init__(self, chat_id: int, admin: int):
         self.game = None
         self.admin = admin
-        self.player_to_user = {}
-        self.user_to_message = {}
+        self.player_to_user = {}  # type: dict[str, int]
+        self.user_to_message = {}  # type: dict[int, Optional[dict]]
         self.current_action = ""
         self.chat_id = chat_id
 
@@ -24,7 +24,7 @@ class BotServer:
     def __init__(self, token: str):
         self.bot = telepot.Bot(token)
         self.token = token
-        self.games = {}
+        self.games = {}  # type: dict[int, ChatGame]
 
 
 server = BotServer("DEADBEEF")
@@ -323,8 +323,8 @@ def handle_message(message_object: dict):
     if content_type != "text":
         return
 
-    text = message_object["text"].split("@")[0].strip()
-    data = message_object.get("callback_data", None)
+    text = message_object["text"].split("@")[0].strip()  # type: str
+    data = message_object.get("callback_data", None)  # type: str
     chat_id = int(chat_id)
     if data:
         print("DATA", data)
