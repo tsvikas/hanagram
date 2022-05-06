@@ -224,7 +224,7 @@ def complete_processed_action(bot, chat_id):
 
 def handle_keyboard_response(msg):
     try:
-        query_id, from_id, data = telepot.glance(msg, flavor="callback_query")
+        _query_id, _from_id, data = telepot.glance(msg, flavor="callback_query")
     except Exception:
         print("[ERROR]", msg)
         return
@@ -302,7 +302,7 @@ def handle_keyboard_response(msg):
 
 
 def handle_message(message_object):
-    content_type, chat_type, chat_id = telepot.glance(message_object)
+    content_type, _chat_type, chat_id = telepot.glance(message_object)
 
     user_id = int(message_object["from"]["id"])
 
