@@ -118,15 +118,16 @@ def edit_message(
     chat_game: ChatGame,
     bot: telepot.Bot,
     user_id: UserId,
-    message: str = "",
+    message: str,
     keyboard: Optional[InlineKeyboardMarkup] = None,
-    delete: bool = False,
 ):
     edited = telepot.message_identifier(chat_game.user_to_message[user_id])
-    if delete:
-        bot.deleteMessage(edited)
-    else:
-        bot.editMessageText(edited, message, reply_markup=keyboard)
+    bot.editMessageText(edited, message, reply_markup=keyboard)
+
+
+def delete_message(chat_game: ChatGame, bot: telepot.Bot, user_id: UserId):
+    edited = telepot.message_identifier(chat_game.user_to_message[user_id])
+    bot.deleteMessage(edited)
 
 
 def send_keyboard(bot: telepot.Bot, chat_id: ChatId, keyboard_type: KeyboardType):
@@ -299,7 +300,7 @@ def handle_keyboard_response(msg: Message) -> Optional[bool]:
         success = hanabi.perform_action(game, active_player, chat_game.current_action)
 
         if success:
-            edit_message(chat_game, server.bot, user_id, delete=True)
+            delete_message(chat_game, server.bot, user_id)
             chat_game.user_to_message[active_user_id] = None
             complete_processed_action(server.bot, chat_id)
         else:
