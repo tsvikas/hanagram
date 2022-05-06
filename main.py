@@ -1,6 +1,6 @@
 import sys
 import time
-from typing import Optional
+from typing import NewType, Optional
 
 import telepot
 from telepot.loop import MessageLoop
@@ -10,12 +10,23 @@ import draw
 import hanabi
 
 
+class UserId(int):
+    pass
+
+
+class ChatId(int):
+    pass
+
+
+Message = NewType("Message", dict)
+
+
 class ChatGame:
-    def __init__(self, chat_id: int, admin: int):
+    def __init__(self, chat_id: ChatId, admin: UserId):
         self.game = None
         self.admin = admin
-        self.player_to_user = {}  # type: dict[str, int]
-        self.user_to_message = {}  # type: dict[int, Optional[dict]]
+        self.player_to_user = {}  # type: dict[str, UserId]
+        self.user_to_message = {}  # type: dict[UserId, Optional[Message]]
         self.current_action = ""
         self.chat_id = chat_id
 
@@ -24,7 +35,7 @@ class BotServer:
     def __init__(self, token: str):
         self.bot = telepot.Bot(token)
         self.token = token
-        self.games = {}  # type: dict[int, ChatGame]
+        self.games = {}  # type: dict[ChatId, ChatGame]
 
 
 server = BotServer("DEADBEEF")
@@ -32,8 +43,8 @@ server = BotServer("DEADBEEF")
 
 def add_player(
     server: BotServer,
-    chat_id: int,
-    user_id: int,
+    chat_id: ChatId,
+    user_id: UserId,
     name: str,
     allow_repeated_players: bool = False,
 ):
@@ -68,7 +79,7 @@ def send_game_views(bot: telepot.Bot, chat_game: ChatGame):
             print(ex)
 
 
-def start_game(server: BotServer, chat_id: int, user_id: int):
+def start_game(server: BotServer, chat_id: ChatId, user_id: UserId):
     if chat_id not in server.games:
         server.bot.sendMessage(chat_id, "No game created for this chat")
         return
@@ -97,19 +108,19 @@ def start_game(server: BotServer, chat_id: int, user_id: int):
 def edit_message(
     chat_game: ChatGame,
     bot: telepot.Bot,
-    chat_id: int,
+    user_id: UserId,
     message: str = "",
     keyboard: Optional[InlineKeyboardMarkup] = None,
     delete: bool = False,
 ):
-    edited = telepot.message_identifier(chat_game.user_to_message[chat_id])
+    edited = telepot.message_identifier(chat_game.user_to_message[user_id])
     if delete:
         bot.deleteMessage(edited)
     else:
         bot.editMessageText(edited, message, reply_markup=keyboard)
 
 
-def send_keyboard(bot: telepot.Bot, chat_id: int, keyboard_type: str):
+def send_keyboard(bot: telepot.Bot, chat_id: ChatId, keyboard_type: str):
     chat_game = server.games[chat_id]
     player = hanabi.get_active_player_name(chat_game.game)
     user_id = chat_game.player_to_user[player]
@@ -199,7 +210,7 @@ def send_keyboard(bot: telepot.Bot, chat_id: int, keyboard_type: str):
         )
 
 
-def restart_turn(chat_id: int):
+def restart_turn(chat_id: ChatId):
     chat_game = server.games[chat_id]
     chat_game.current_action = ""
     send_keyboard(server.bot, chat_id, "action")
@@ -224,7 +235,7 @@ def handle_game_ending(bot: telepot.Bot, chat_game: ChatGame):
     chat_game.game = None
 
 
-def complete_processed_action(bot: telepot.Bot, chat_id: int):
+def complete_processed_action(bot: telepot.Bot, chat_id: ChatId):
     # check game ending
     chat_game = server.games[chat_id]
     if hanabi.check_state(chat_game.game) != 0:
@@ -236,22 +247,22 @@ def complete_processed_action(bot: telepot.Bot, chat_id: int):
     send_keyboard(server.bot, chat_id, "action")
 
 
-def handle_keyboard_response(msg: dict) -> Optional[bool]:
+def handle_keyboard_response(msg: Message) -> Optional[bool]:
     try:
         _query_id, _from_id, data = telepot.glance(msg, flavor="callback_query")
     except Exception:
         print("[ERROR]", msg)
         return
 
-    user_id = int(msg["from"]["id"])
-    chat_id = int(msg["message"]["chat"]["id"])
+    user_id = UserId(msg["from"]["id"])
+    chat_id = ChatId(msg["message"]["chat"]["id"])
 
     if data == "join":
         add_player(server, chat_id, user_id, msg["from"]["first_name"])
         return
 
     data, chat_id = data.split("|")
-    chat_id = int(chat_id)
+    chat_id = ChatId(chat_id)
 
     chat_game = server.games.get(chat_id, None)
     if not chat_game:
@@ -315,17 +326,17 @@ def handle_keyboard_response(msg: dict) -> Optional[bool]:
         return True
 
 
-def handle_message(message_object: dict):
+def handle_message(message_object: Message):
     content_type, _chat_type, chat_id = telepot.glance(message_object)
 
-    user_id = int(message_object["from"]["id"])
+    user_id = UserId(message_object["from"]["id"])
 
     if content_type != "text":
         return
 
     text = message_object["text"].split("@")[0].strip()  # type: str
     data = message_object.get("callback_data", None)  # type: str
-    chat_id = int(chat_id)
+    chat_id = ChatId(chat_id)
     if data:
         print("DATA", data)
 
@@ -353,12 +364,13 @@ def handle_message(message_object: dict):
     elif text.startswith("/test"):
         try:
             _, n = text.split(" ")
+            n = int(n)
         except ValueError:
             n = 4
         server.games[chat_id] = ChatGame(chat_id, admin=user_id)
         server.bot.sendMessage(chat_id, "A new game has been created.")
         test_players = ["gabriele", "giacomo", "fabrizio", "caio"]
-        for name in test_players[: int(n)]:
+        for name in test_players[:n]:
             add_player(server, chat_id, user_id, name, allow_repeated_players=True)
         start_game(server, chat_id, user_id)
     else:
