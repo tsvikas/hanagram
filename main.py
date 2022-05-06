@@ -59,7 +59,6 @@ def send_game_views(bot, chat_game):
             bot.sendPhoto(user_id, image)
         except Exception as ex:
             print(ex)
-            pass
 
 
 def start_game(server, chat_id, user_id):
@@ -86,7 +85,6 @@ def start_game(server, chat_id, user_id):
     chat_game = server.games[chat_id]
     send_game_views(server.bot, chat_game)
     server.bot.sendMessage(chat_id, "Game started!")
-    return
 
 
 def edit_message(chat_game, bot, chat_id, message="", keyboard=None, delete=False):
@@ -210,7 +208,6 @@ def handle_game_ending(bot, chat_game):
     bot.sendMessage(chat_id, "The game ended with score " + str(score))
     bot.sendMessage(chat_id, "Send /restart to play again")
     chat_game.game = None
-    return
 
 
 def complete_processed_action(bot, chat_id):
