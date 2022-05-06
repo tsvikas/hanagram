@@ -22,7 +22,7 @@ How to play a Telegram game:
 - Send `\start` to start playing!
 
 # Local game
-How to play a local game. Let's say players are Alice, Bob and Casey. 
+How to play a local game. Let's say players are Alice, Bob and Casey.
 - Run `python3 hanabi.py Alice Bob Casey`
 - On each turn, type one of those actions:
     - `play <index of card to play>`

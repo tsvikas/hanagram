@@ -110,7 +110,7 @@ def draw_board_state(game, player_viewing):
       for i, discarded in enumerate(sorted(game.discarded[color])):
         draw.text((xx, yy + 70/size), str(discarded), font=text_font_discarded, fill=(255,255,255))
         xx += 10/size
-        if i == 4: 
+        if i == 4:
           yy += 18 / size
           xx = x
       x += 70/size
@@ -120,10 +120,10 @@ def draw_board_state(game, player_viewing):
       x = left_margin
       y += 110 / size
       draw.text((x, y), player, font=text_font, fill=text_fill)
-      
+
       if player == game.players[game.active_player]:
         draw.ellipse((x-20/size, y+8/size, x-10/size, y+18/size), fill=(255, 255, 255))
-      
+
       y += 30/size
       for card in game.hands[player]:
         color = card.color
@@ -148,7 +148,7 @@ def draw_board_state(game, player_viewing):
               radius =  6/size
               draw.ellipse((start[0], start[1], start[0]+radius, start[1]+radius), fill=colors_rbg[not_color])
               xx += 15/size
-      
+
           xx = x + 5/size
           yy = y + 50/size
           if not card.is_value_known:
@@ -175,8 +175,8 @@ def draw_board_state(game, player_viewing):
               radius =  5/size
               draw.ellipse((start[0], start[1], start[0]+radius, start[1]+radius), fill=colors_rbg[not_color])
               xx += 25
-            
-          
+
+
           xx = x + 5/size
           yy += 15/size
           if not card.is_value_known:

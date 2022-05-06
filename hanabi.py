@@ -1,12 +1,12 @@
 from random import shuffle
 import sys
-from collections import namedtuple  
+from collections import namedtuple
 import draw
 
 colors = ['red', 'blue', 'green', 'white', 'yellow']
 
 def new_deck():
-    deck = [];        
+    deck = [];
     for color in colors:
         for i in range(1, 6):
             count = 2
@@ -21,8 +21,8 @@ def new_deck():
 
 class HandCard(object):
     def __init__(self, color, value):
-        self.color = color    
-        self.value = value 
+        self.color = color
+        self.value = value
         self.is_color_known = False
         self.is_value_known = False
         self.not_colors = []
@@ -38,10 +38,10 @@ def to_string(card, show_value, show_info):
     if show_value:
         result += card.color + ' ' + str(card.value)
 
-    if show_info: 
+    if show_info:
         if card.is_color_known: info.append(card.color)
         if card.is_value_known: info.append(str(card.value))
-        
+
         for color in card.not_colors:
             info.append('not ' + color)
         for value in card.not_values:
@@ -55,13 +55,13 @@ def to_string(card, show_value, show_info):
             result += info[i]
             result += ', '
         result += info[-1]
-        result += '}' 
-    
+        result += '}'
+
     return result
 
 
 def draw_card(hand, deck):
-    if len(deck) == 0: 
+    if len(deck) == 0:
         return
 
     card = deck.pop()
@@ -97,7 +97,7 @@ class Game(object):
         self.final_moves = 0
         self.active_player = 0
         self.last_action_description = 'Game just started' # TODO: better initial sentence
-        
+
         for color in colors:
             self.discarded[color] = []
             self.piles[color] = 0
@@ -135,7 +135,7 @@ def check_value_finished(game, value):
 
     elif value in [2,3,4]:
         return count == 10
-    
+
     elif value == 5:
         return count == 5
 
@@ -192,7 +192,7 @@ def update_hand_info(game):
                     update_not_values(card, value)
 
     for hand in game.hands.values():
-        for card in hand:    
+        for card in hand:
             if card.is_value_known and not card.is_color_known:
                 for color in colors:
                     if check_card_finished(game, color, card.value):
@@ -234,13 +234,13 @@ def play_card(game, player, index):
         success = True
         if card.value == 5:
             game.hints = min(game.hints+1, 8)
-    
+
     if success:
         game.piles[card.color] += 1
     else:
         game.errors += 1
         game.discarded[card.color].append(card.value)
-    
+
     if len(game.deck) == 0:
         game.final_moves += 1
 
@@ -252,7 +252,7 @@ def play_card(game, player, index):
 def check_state(game):
     if game.errors == 3:
         return -1
-    
+
     win = True
     for pile in game.piles:
         if pile != 5:
@@ -263,7 +263,7 @@ def check_state(game):
 
     if len(game.deck) == 0 and game.final_moves == len(game.players):
         return -1
-    
+
     return 0
 
 def get_active_player_name(game):
@@ -277,7 +277,7 @@ def give_color_hint(hand, color):
         else:
             if color not in card.not_colors:
                 card.not_colors.append(color)
-        
+
         if len(card.not_colors) == 4:
             card.not_colors = []
             card.is_color_known = True
@@ -301,7 +301,7 @@ def give_hint(game, player, hint):
     assert(game.hints > 0)
     hand = game.hands[player]
     if type(hint) is str:
-        give_color_hint(hand, hint)       
+        give_color_hint(hand, hint)
     elif type(hint) is int:
         give_value_hint(hand, hint)
     else:
@@ -343,7 +343,7 @@ def perform_action(game, player, action):
         description += 'played a '
         description += str(game.hands[player][index - 1])
         ok = play_card(game, player, index)
-    
+
     elif name == 'hint':
         other_player, hint = value.split(' ')
         if other_player == player:
@@ -364,7 +364,7 @@ def perform_action(game, player, action):
         game.active_player += 1
         if game.active_player == len(game.players):
             game.active_player = 0
-    
+
     game.last_action_description = description
     if ok:
         update_hand_info(game)
@@ -381,11 +381,11 @@ def print_board_state(game, seen_from=None):
         print()
         print_hand(game, player, player != seen_from, True)
         print()
-    
+
     for color in colors:
         print(color + ': ' + str(game.piles[color]) + '  ' + str(game.discarded[color]))
     print()
-    
+
     score = get_score(game)
     print('hints: ' + str(game.hints) + ', errors: ' + str(game.errors))
     print('score: ' + str(score) + ', deck: ' + str(len(game.deck)))
