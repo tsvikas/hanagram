@@ -92,7 +92,7 @@ def print_hand(game, player, show_value, show_info):
 
 class Game(object):
     def __init__(self, player_names):
-        assert len(player_names) >= 2 and len(player_names) <= 5
+        assert 2 <= len(player_names) <= 5
         self.players = player_names
         self.deck = new_deck()
         self.discarded = {}
@@ -150,8 +150,8 @@ def check_value_finished(game, value):
 
 def count_discarded(game, color, value):
     count = 0
-    for dicarded_value in game.discarded[color]:
-        if dicarded_value == value:
+    for discarded_value in game.discarded[color]:
+        if discarded_value == value:
             count += 1
     return count
 
@@ -339,7 +339,6 @@ def concatenate(result, l, f, c):
 
 
 def parse_int(s):
-    i = -1
     try:
         return int(s.strip()), True
     except ValueError:
@@ -373,7 +372,7 @@ def perform_action(game, player, action):
             return False
         if other_player not in game.hands.keys():
             return False
-        if not hint in COLORS:
+        if hint not in COLORS:
             index, ok = parse_int(hint)
             if not ok:
                 return False

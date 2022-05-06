@@ -56,7 +56,7 @@ def add_player(server, chat_id, user_id, name, allow_repeated_players=False):
     # server.user_to_chat_id[user_id] = chat_id
 
 
-def send_game_views(bot, chat_game, last_player=""):
+def send_game_views(bot, chat_game):
     for name, user_id in chat_game.player_to_user.items():
         image = draw.draw_board_state(chat_game.game, name)
         try:
@@ -217,7 +217,7 @@ def handle_game_ending(bot, chat_game):
     return
 
 
-def complete_processed_action(bot, chat_id, last_player):
+def complete_processed_action(bot, chat_id):
     # check game ending
     chat_game = server.games[chat_id]
     if hanabi.check_state(chat_game.game) != 0:
@@ -226,14 +226,13 @@ def complete_processed_action(bot, chat_id, last_player):
 
     send_game_views(bot, chat_game)
     chat_game.current_action = ""
-    next_player = hanabi.get_active_player_name(chat_game.game)
     send_keyboard(server.bot, chat_id, "action")
 
 
 def handle_keyboard_response(msg):
     try:
         query_id, from_id, data = telepot.glance(msg, flavor="callback_query")
-    except:
+    except Exception:
         print("[ERROR]", msg)
         return
 
@@ -271,7 +270,7 @@ def handle_keyboard_response(msg):
         if success:
             edit_message(chat_game, server.bot, user_id, delete=True)
             chat_game.user_to_message[active_user_id] = None
-            complete_processed_action(server.bot, chat_id, active_player)
+            complete_processed_action(server.bot, chat_id)
         else:
             restart_turn(chat_id)
 
