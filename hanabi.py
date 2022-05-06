@@ -332,13 +332,6 @@ def give_hint(game, player, hint):
     return True
 
 
-def concatenate(result, l, f, c):
-    for i in range(len(l) - 1):
-        f(result, l[i])
-        c(result)
-    f(result, l[-1])
-
-
 def parse_int(s):
     try:
         return int(s.strip()), True
