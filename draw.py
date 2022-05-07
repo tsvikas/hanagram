@@ -73,7 +73,8 @@ def draw_board_state(
     image = Image.new("RGB", (width, height), background)
     draw = ImageDraw.Draw(image)
     text_fill = (200, 200, 200)
-    # piles
+
+    # counters
     x = 20 * size
     draw.text(
         (x, 25 * size), "Hints: " + str(game.hints), font=text_font, fill=text_fill
@@ -97,6 +98,7 @@ def draw_board_state(
         fill=text_fill,
     )
 
+    # piles
     left_margin = 35 * size
     x = left_margin
     y = 65 * size
@@ -128,6 +130,7 @@ def draw_board_state(
         y += 110 * size
         draw.text((x, y), player, font=text_font, fill=text_fill)
 
+        # current player marker
         if player == game.players[game.active_player]:
             draw.ellipse(
                 (x - 20 * size, y + 8 * size, x - 10 * size, y + 18 * size),
@@ -136,6 +139,7 @@ def draw_board_state(
 
         y += 30 * size
         for card in game.hands[player]:
+            # big card with full info for other players, known info for current player
             color = card.color
             value = str(card.value)
             if player == player_viewing:
@@ -143,9 +147,9 @@ def draw_board_state(
                     color = "grey"
                 if not card.is_value_known:
                     value = ""
-
             render_card(draw, x, y, color, value)
 
+            # for current player, fill big card with negative info
             if player_viewing == player:
                 yy = y + 0 * size
                 xx = x + 5 * size
@@ -185,15 +189,18 @@ def draw_board_state(
                         )
                         xx += 15 * size
 
+            # for other players, add a small card below with their info
             yy = y + 70 * size
             xx = x + 5 * size
             if player_viewing != player:
+                # positive info
                 if not card.is_color_known:
                     color = "grey"
                 if not card.is_value_known:
                     value = ""
                 render_card_friend(draw, x, yy, color, str(value))
 
+                # negative info
                 if not card.is_color_known:
                     for not_color in card.not_colors:
                         start = (xx, yy + 2 * size)
