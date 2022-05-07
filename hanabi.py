@@ -279,7 +279,6 @@ def play_card(game: Game, player: Player, index: int) -> bool:
         game.final_moves += 1
 
     draw_card(hand, game.deck)
-
     return True
 
 
@@ -292,13 +291,7 @@ def check_state(game: Game) -> int:
     if game.errors == 3:
         return -1
 
-    win = True
-    for pile in game.piles:
-        if pile != 5:
-            win = False
-            break
-
-    if win:
+    if all(p == 5 for p in game.piles.values()):
         return 1
 
     if len(game.deck) == 0 and game.final_moves == len(game.players):
@@ -426,10 +419,7 @@ def perform_action(game: Game, player: Player, action: str) -> bool:
 
 
 def get_score(game: Game):
-    score = 0
-    for color, value in game.piles.items():
-        score += value
-    return score
+    return sum(game.piles.values())
 
 
 def print_board_state(game: Game, seen_from: Optional[Player] = None):
