@@ -19,13 +19,14 @@ class ChatId(int):
 
 
 Message = NewType("Message", dict)
+KeyboardType = NewType("KeyboardType", str)
 
 
 class ChatGame:
     def __init__(self, chat_id: ChatId, admin: UserId):
-        self.game = None
+        self.game = None  # type: Optional[hanabi.Game]
         self.admin = admin
-        self.player_to_user = {}  # type: dict[str, UserId]
+        self.player_to_user = {}  # type: dict[hanabi.Player, UserId]
         self.user_to_message = {}  # type: dict[UserId, Optional[Message]]
         self.current_action = ""
         self.chat_id = chat_id
@@ -45,7 +46,7 @@ def add_player(
     server: BotServer,
     chat_id: ChatId,
     user_id: UserId,
-    name: str,
+    name: hanabi.Player,
     allow_repeated_players: bool = False,
 ):
     if chat_id not in server.games:
@@ -120,7 +121,7 @@ def edit_message(
         bot.editMessageText(edited, message, reply_markup=keyboard)
 
 
-def send_keyboard(bot: telepot.Bot, chat_id: ChatId, keyboard_type: str):
+def send_keyboard(bot: telepot.Bot, chat_id: ChatId, keyboard_type: KeyboardType):
     chat_game = server.games[chat_id]
     player = hanabi.get_active_player_name(chat_game.game)
     user_id = chat_game.player_to_user[player]
@@ -213,7 +214,7 @@ def send_keyboard(bot: telepot.Bot, chat_id: ChatId, keyboard_type: str):
 def restart_turn(chat_id: ChatId):
     chat_game = server.games[chat_id]
     chat_game.current_action = ""
-    send_keyboard(server.bot, chat_id, "action")
+    send_keyboard(server.bot, chat_id, KeyboardType("action"))
 
 
 def handle_game_ending(bot: telepot.Bot, chat_game: ChatGame):
@@ -244,7 +245,7 @@ def complete_processed_action(bot: telepot.Bot, chat_id: ChatId):
 
     send_game_views(bot, chat_game)
     chat_game.current_action = ""
-    send_keyboard(server.bot, chat_id, "action")
+    send_keyboard(server.bot, chat_id, KeyboardType("action"))
 
 
 def handle_keyboard_response(msg: Message) -> Optional[bool]:
@@ -294,23 +295,23 @@ def handle_keyboard_response(msg: Message) -> Optional[bool]:
 
     if chat_game.current_action == "hint":
         chat_game.current_action += " " + data
-        send_keyboard(server.bot, chat_id, "info")
+        send_keyboard(server.bot, chat_id, KeyboardType("info"))
 
     if data == "back":
-        send_keyboard(server.bot, chat_id, "action")
+        send_keyboard(server.bot, chat_id, KeyboardType("action"))
 
     if data == "discard":
         if chat_game.current_action != "":
             return False
         chat_game.current_action = "discard"
-        send_keyboard(server.bot, chat_id, "discard")
+        send_keyboard(server.bot, chat_id, KeyboardType("discard"))
         return True
 
     if data == "play":
         if chat_game.current_action != "":
             return False
         chat_game.current_action = "play"
-        send_keyboard(server.bot, chat_id, "play")
+        send_keyboard(server.bot, chat_id, KeyboardType("play"))
         return True
 
     if data == "hint":
@@ -320,9 +321,9 @@ def handle_keyboard_response(msg: Message) -> Optional[bool]:
         if len(chat_game.player_to_user) == 2:
             i = 1 - game.active_player
             chat_game.current_action += " " + game.players[i]
-            send_keyboard(server.bot, chat_id, "info")
+            send_keyboard(server.bot, chat_id, KeyboardType("info"))
         else:
-            send_keyboard(server.bot, chat_id, "player")
+            send_keyboard(server.bot, chat_id, KeyboardType("player"))
         return True
 
 
@@ -369,7 +370,9 @@ def handle_message(message_object: Message):
             n = 4
         server.games[chat_id] = ChatGame(chat_id, admin=user_id)
         server.bot.sendMessage(chat_id, "A new game has been created.")
-        test_players = ["gabriele", "giacomo", "fabrizio", "caio"]
+        test_players = [
+            hanabi.Player(s) for s in ["gabriele", "giacomo", "fabrizio", "caio"]
+        ]
         for name in test_players[:n]:
             add_player(server, chat_id, user_id, name, allow_repeated_players=True)
         start_game(server, chat_id, user_id)

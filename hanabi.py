@@ -1,14 +1,32 @@
 import sys
-from collections import namedtuple
 from random import shuffle
+from typing import NamedTuple, Optional, Union
 
 import draw
 
-COLORS = ["red", "blue", "green", "white", "yellow"]
-VALUES = list(range(1, 1 + 5))
+
+class Player(str):
+    pass
 
 
-def new_deck():
+class Color(str):
+    pass
+
+
+class Value(int):
+    pass
+
+
+COLORS = [Color(s) for s in ["red", "blue", "green", "white", "yellow"]]
+VALUES = [Value(i) for i in range(1, 1 + 5)]
+
+
+class Card(NamedTuple):
+    color: Color
+    value: Value
+
+
+def new_deck() -> list[Card]:
     deck = []
     for color in COLORS:
         for i in VALUES:
@@ -18,14 +36,14 @@ def new_deck():
             if i == 5:
                 count = 1
             for _ in range(count):
-                deck.append(namedtuple("Card", "color value")(color, i))
+                deck.append(Card(color, i))
 
     shuffle(deck)
     return deck
 
 
-class HandCard(object):
-    def __init__(self, color, value):
+class HandCard:
+    def __init__(self, color: Color, value: Value):
         self.color = color
         self.value = value
         self.is_color_known = False
@@ -37,7 +55,7 @@ class HandCard(object):
         return self.color + " " + str(self.value)
 
 
-def to_string(card, show_value, show_info):
+def to_string(card: HandCard, show_value: bool, show_info: bool) -> str:
     info = []
     result = ""
     if show_value:
@@ -67,7 +85,7 @@ def to_string(card, show_value, show_info):
     return result
 
 
-def draw_card(hand, deck):
+def draw_card(hand: list[HandCard], deck: list[Card]):
     if len(deck) == 0:
         return
 
@@ -76,7 +94,7 @@ def draw_card(hand, deck):
     hand.append(hand_card)
 
 
-def new_hand(deck, num_cards):
+def new_hand(deck: list[Card], num_cards: int) -> list[HandCard]:
     assert num_cards in [4, 5]
     hand = []
     for _ in range(num_cards):
@@ -85,15 +103,15 @@ def new_hand(deck, num_cards):
 
 
 class Game:
-    def __init__(self, player_names):
+    def __init__(self, player_names: list[Player]):
         assert 2 <= len(player_names) <= 5
         self.players = player_names
         self.deck = new_deck()
-        self.discarded = {}
+        self.discarded = {}  # type: dict[Color, list[Value]]
         self.errors = 0
         self.hints = 8
-        self.hands = {}
-        self.piles = {}
+        self.hands = {}  # type: dict[Player, list[HandCard]]
+        self.piles = {}  # type: dict[Color, int]
         self.final_moves = 0
         self.active_player = 0
         # TODO: better initial sentence
@@ -115,7 +133,7 @@ def print_hand(game: Game, player: Player, show_value: bool, show_info: bool):
         print("[" + str(i + 1) + "]:", s)
 
 
-def check_color_finished(game, color):
+def check_color_finished(game: Game, color: Color) -> bool:
     hinted = 0
     for hand in game.hands.values():
         for card in hand:
@@ -126,7 +144,7 @@ def check_color_finished(game, color):
     return (hinted + pile_value + discarded) == 10
 
 
-def check_value_finished(game, value):
+def check_value_finished(game: Game, value: Value) -> bool:
     count = 0
     for hand in game.hands.values():
         for card in hand:
@@ -148,7 +166,7 @@ def check_value_finished(game, value):
         return count == 5
 
 
-def count_discarded(game, color, value):
+def count_discarded(game: Game, color: Color, value: Value) -> int:
     count = 0
     for discarded_value in game.discarded[color]:
         if discarded_value == value:
@@ -156,7 +174,7 @@ def count_discarded(game, color, value):
     return count
 
 
-def check_card_finished(game, color, value):
+def check_card_finished(game: Game, color: Color, value: Value) -> bool:
     discarded = count_discarded(game, color, value)
     played = 1 if game.piles[color] >= value else 0
     count = discarded + played
@@ -174,7 +192,7 @@ def check_card_finished(game, color, value):
     return True
 
 
-def update_not_colors(card, color):
+def update_not_colors(card: HandCard, color: Color):
     if card.color != color:
         if not card.is_color_known and color not in card.not_colors:
             card.not_colors.append(color)
@@ -183,7 +201,7 @@ def update_not_colors(card, color):
                 card.is_color_known = True
 
 
-def update_not_values(card, value):
+def update_not_values(card: HandCard, value: Value):
     if card.value != value:
         if not card.is_value_known and value not in card.not_values:
             card.not_values.append(value)
@@ -192,7 +210,7 @@ def update_not_values(card, value):
                 card.is_value_known = True
 
 
-def update_hand_info(game):
+def update_hand_info(game: Game):
     for color in COLORS:
         if check_color_finished(game, color):
             for hand in game.hands.values():
@@ -218,7 +236,7 @@ def update_hand_info(game):
                         update_not_values(card, value)
 
 
-def discard_card(game, player, index):
+def discard_card(game: Game, player: Player, index: int) -> bool:
     if index < 1 or index > len(game.hands[player]):
         return False
 
@@ -236,7 +254,7 @@ def discard_card(game, player, index):
     return True
 
 
-def play_card(game, player, index):
+def play_card(game: Game, player: Player, index: int) -> bool:
     if index < 1 or index > len(game.hands[player]):
         return False
 
@@ -264,7 +282,7 @@ def play_card(game, player, index):
     return True
 
 
-def check_state(game):
+def check_state(game: Game) -> int:
     if game.errors == 3:
         return -1
 
@@ -283,11 +301,11 @@ def check_state(game):
     return 0
 
 
-def get_active_player_name(game):
+def get_active_player_name(game: Game) -> Player:
     return game.players[game.active_player]
 
 
-def give_color_hint(hand, color):
+def give_color_hint(hand: list[HandCard], color: Color):
     for card in hand:
         if card.color == color:
             card.is_color_known = True
@@ -301,7 +319,7 @@ def give_color_hint(hand, color):
             card.is_color_known = True
 
 
-def give_value_hint(hand, value):
+def give_value_hint(hand: list[HandCard], value: Value):
     for card in hand:
         if card.value == value:
             card.is_value_known = True
@@ -315,12 +333,12 @@ def give_value_hint(hand, value):
             card.is_value_known = True
 
 
-def give_hint(game, player, hint):
+def give_hint(game: Game, player: Player, hint: Union[Color, Value]) -> bool:
     assert game.hints > 0
     hand = game.hands[player]
-    if type(hint) is str:
+    if type(hint) is Color:
         give_color_hint(hand, hint)
-    elif type(hint) is int:
+    elif type(hint) is Value:
         give_value_hint(hand, hint)
     else:
         return False
@@ -331,14 +349,14 @@ def give_hint(game, player, hint):
     return True
 
 
-def parse_int(s):
+def parse_int(s: str) -> tuple[int, bool]:
     try:
         return int(s.strip()), True
     except ValueError:
         return 0, False
 
 
-def perform_action(game, player, action):
+def perform_action(game: Game, player: Player, action: str) -> bool:
     name, value = action.strip().split(" ", 1)
     ok = False
     description = player[:] + " "
@@ -369,9 +387,9 @@ def perform_action(game, player, action):
             index, ok = parse_int(hint)
             if not ok:
                 return False
-            ok = give_hint(game, other_player, index)
+            ok = give_hint(game, other_player, Value(index))
         else:
-            ok = give_hint(game, other_player, hint)
+            ok = give_hint(game, other_player, Color(hint))
         description += 'hinted "' + str(hint) + '" to ' + other_player
 
     if not ok:
@@ -387,14 +405,14 @@ def perform_action(game, player, action):
     return ok
 
 
-def get_score(game):
+def get_score(game: Game):
     score = 0
     for color, value in game.piles.items():
         score += value
     return score
 
 
-def print_board_state(game, seen_from=None):
+def print_board_state(game: Game, seen_from: Optional[Player] = None):
     for player in game.players:
         print()
         print_hand(game, player, player != seen_from, True)
@@ -411,7 +429,7 @@ def print_board_state(game, seen_from=None):
 
 
 def main():
-    players = sys.argv[1:]
+    players = [Player(s) for s in sys.argv[1:]]
     print(players)
     game = Game(players)
 
