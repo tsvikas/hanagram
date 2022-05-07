@@ -1,3 +1,4 @@
+import enum
 import sys
 import time
 from typing import NewType, Optional
@@ -19,7 +20,14 @@ class ChatId(int):
 
 
 Message = NewType("Message", dict)
-KeyboardType = NewType("KeyboardType", str)
+
+
+class KeyboardType(enum.StrEnum):
+    ACTION = enum.auto()
+    PLAY = enum.auto()
+    DISCARD = enum.auto()
+    PLAYER = enum.auto()
+    INFO = enum.auto()
 
 
 class ChatGame:
@@ -125,7 +133,7 @@ def send_keyboard(bot: telepot.Bot, chat_id: ChatId, keyboard_type: KeyboardType
     chat_game = server.games[chat_id]
     player = hanabi.get_active_player_name(chat_game.game)
     user_id = chat_game.player_to_user[player]
-    if keyboard_type == "action":
+    if keyboard_type is KeyboardType.ACTION:
         keyboard = [
             [
                 InlineKeyboardButton(
@@ -149,7 +157,7 @@ def send_keyboard(bot: telepot.Bot, chat_id: ChatId, keyboard_type: KeyboardType
                 user_id, player + ", it's your turn", reply_markup=keyboard
             )
 
-    elif keyboard_type in ["play", "discard"]:
+    elif keyboard_type in [KeyboardType.PLAY, KeyboardType.DISCARD]:
         game = chat_game.game
         active_player = game.players[game.active_player]
         player_hand = chat_game.game.hands[active_player]
@@ -172,10 +180,10 @@ def send_keyboard(bot: telepot.Bot, chat_id: ChatId, keyboard_type: KeyboardType
         back = [InlineKeyboardButton(text="Back", callback_data="back|" + str(chat_id))]
         keyboard = InlineKeyboardMarkup(inline_keyboard=[options, back])
         edit_message(
-            chat_game, bot, user_id, "Choose card to " + keyboard_type, keyboard
+            chat_game, bot, user_id, "Choose card to " + str(keyboard_type), keyboard
         )
 
-    elif keyboard_type == "player":
+    elif keyboard_type == KeyboardType.PLAYER:
         players = chat_game.game.players
         options = []
         for p in players:
@@ -189,7 +197,7 @@ def send_keyboard(bot: telepot.Bot, chat_id: ChatId, keyboard_type: KeyboardType
             chat_game, bot, user_id, "Choose a player to hint", keyboard=keyboard
         )
 
-    elif keyboard_type == "info":
+    elif keyboard_type == KeyboardType.INFO:
         # TODO: ugly keyboard on desktop
         colors = []
         values = []
@@ -214,7 +222,7 @@ def send_keyboard(bot: telepot.Bot, chat_id: ChatId, keyboard_type: KeyboardType
 def restart_turn(chat_id: ChatId):
     chat_game = server.games[chat_id]
     chat_game.current_action = ""
-    send_keyboard(server.bot, chat_id, KeyboardType("action"))
+    send_keyboard(server.bot, chat_id, KeyboardType.ACTION)
 
 
 def handle_game_ending(bot: telepot.Bot, chat_game: ChatGame):
@@ -245,7 +253,7 @@ def complete_processed_action(bot: telepot.Bot, chat_id: ChatId):
 
     send_game_views(bot, chat_game)
     chat_game.current_action = ""
-    send_keyboard(server.bot, chat_id, KeyboardType("action"))
+    send_keyboard(server.bot, chat_id, KeyboardType.ACTION)
 
 
 def handle_keyboard_response(msg: Message) -> Optional[bool]:
@@ -295,23 +303,23 @@ def handle_keyboard_response(msg: Message) -> Optional[bool]:
 
     if chat_game.current_action == "hint":
         chat_game.current_action += " " + data
-        send_keyboard(server.bot, chat_id, KeyboardType("info"))
+        send_keyboard(server.bot, chat_id, KeyboardType.INFO)
 
     if data == "back":
-        send_keyboard(server.bot, chat_id, KeyboardType("action"))
+        send_keyboard(server.bot, chat_id, KeyboardType.ACTION)
 
     if data == "discard":
         if chat_game.current_action != "":
             return False
         chat_game.current_action = "discard"
-        send_keyboard(server.bot, chat_id, KeyboardType("discard"))
+        send_keyboard(server.bot, chat_id, KeyboardType.DISCARD)
         return True
 
     if data == "play":
         if chat_game.current_action != "":
             return False
         chat_game.current_action = "play"
-        send_keyboard(server.bot, chat_id, KeyboardType("play"))
+        send_keyboard(server.bot, chat_id, KeyboardType.PLAY)
         return True
 
     if data == "hint":
@@ -321,9 +329,9 @@ def handle_keyboard_response(msg: Message) -> Optional[bool]:
         if len(chat_game.player_to_user) == 2:
             i = 1 - game.active_player
             chat_game.current_action += " " + game.players[i]
-            send_keyboard(server.bot, chat_id, KeyboardType("info"))
+            send_keyboard(server.bot, chat_id, KeyboardType.INFO)
         else:
-            send_keyboard(server.bot, chat_id, KeyboardType("player"))
+            send_keyboard(server.bot, chat_id, KeyboardType.PLAYER)
         return True
 
 
