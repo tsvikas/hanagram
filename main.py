@@ -1,5 +1,6 @@
 import sys
 import time
+from typing import Optional
 
 import telepot
 from telepot.loop import MessageLoop
@@ -10,7 +11,7 @@ import hanabi
 
 
 class ChatGame:
-    def __init__(self, chat_id, admin):
+    def __init__(self, chat_id: int, admin: int):
         self.game = None
         self.admin = admin
         self.player_to_user = {}
@@ -20,7 +21,7 @@ class ChatGame:
 
 
 class BotServer:
-    def __init__(self, token):
+    def __init__(self, token: str):
         self.bot = telepot.Bot(token)
         self.token = token
         self.games = {}
@@ -29,7 +30,13 @@ class BotServer:
 server = BotServer("DEADBEEF")
 
 
-def add_player(server, chat_id, user_id, name, allow_repeated_players=False):
+def add_player(
+    server: BotServer,
+    chat_id: int,
+    user_id: int,
+    name: str,
+    allow_repeated_players: bool = False,
+):
     if chat_id not in server.games:
         server.bot.sendMessage(chat_id, "No game created for this chat")
         return
@@ -52,7 +59,7 @@ def add_player(server, chat_id, user_id, name, allow_repeated_players=False):
     user_to_message[user_id] = None
 
 
-def send_game_views(bot, chat_game):
+def send_game_views(bot: telepot.Bot, chat_game: ChatGame):
     for name, user_id in chat_game.player_to_user.items():
         image = draw.draw_board_state(chat_game.game, name)
         try:
@@ -61,7 +68,7 @@ def send_game_views(bot, chat_game):
             print(ex)
 
 
-def start_game(server, chat_id, user_id):
+def start_game(server: BotServer, chat_id: int, user_id: int):
     if chat_id not in server.games:
         server.bot.sendMessage(chat_id, "No game created for this chat")
         return
@@ -87,7 +94,14 @@ def start_game(server, chat_id, user_id):
     server.bot.sendMessage(chat_id, "Game started!")
 
 
-def edit_message(chat_game, bot, chat_id, message="", keyboard=None, delete=False):
+def edit_message(
+    chat_game: ChatGame,
+    bot: telepot.Bot,
+    chat_id: int,
+    message: str = "",
+    keyboard: Optional[InlineKeyboardMarkup] = None,
+    delete: bool = False,
+):
     edited = telepot.message_identifier(chat_game.user_to_message[chat_id])
     if delete:
         bot.deleteMessage(edited)
@@ -95,7 +109,7 @@ def edit_message(chat_game, bot, chat_id, message="", keyboard=None, delete=Fals
         bot.editMessageText(edited, message, reply_markup=keyboard)
 
 
-def send_keyboard(bot, chat_id, keyboard_type):
+def send_keyboard(bot: telepot.Bot, chat_id: int, keyboard_type: str):
     chat_game = server.games[chat_id]
     player = hanabi.get_active_player_name(chat_game.game)
     user_id = chat_game.player_to_user[player]
@@ -185,13 +199,13 @@ def send_keyboard(bot, chat_id, keyboard_type):
         )
 
 
-def restart_turn(chat_id):
+def restart_turn(chat_id: int):
     chat_game = server.games[chat_id]
     chat_game.current_action = ""
     send_keyboard(server.bot, chat_id, "action")
 
 
-def handle_game_ending(bot, chat_game):
+def handle_game_ending(bot: telepot.Bot, chat_game: ChatGame):
     send_game_views(bot, chat_game)
     chat_id = chat_game.chat_id
     game = chat_game.game
@@ -210,7 +224,7 @@ def handle_game_ending(bot, chat_game):
     chat_game.game = None
 
 
-def complete_processed_action(bot, chat_id):
+def complete_processed_action(bot: telepot.Bot, chat_id: int):
     # check game ending
     chat_game = server.games[chat_id]
     if hanabi.check_state(chat_game.game) != 0:
@@ -222,7 +236,7 @@ def complete_processed_action(bot, chat_id):
     send_keyboard(server.bot, chat_id, "action")
 
 
-def handle_keyboard_response(msg):
+def handle_keyboard_response(msg: dict) -> Optional[bool]:
     try:
         _query_id, _from_id, data = telepot.glance(msg, flavor="callback_query")
     except Exception:
@@ -301,7 +315,7 @@ def handle_keyboard_response(msg):
         return True
 
 
-def handle_message(message_object):
+def handle_message(message_object: dict):
     content_type, _chat_type, chat_id = telepot.glance(message_object)
 
     user_id = int(message_object["from"]["id"])
@@ -364,7 +378,7 @@ def handle_message(message_object):
         server.bot.sendMessage(chat_id, "Wait for your turn.")
 
 
-def main(token):
+def main(token: str):
     global server
     server = BotServer(token)
 
