@@ -20,7 +20,10 @@ class Value(int):
 
 
 COLORS = [Color(s) for s in ["red", "blue", "green", "white", "yellow"]]
-VALUES = [Value(i) for i in range(1, 1 + 5)]
+CARD_COUNT = {Value(1): 3, Value(2): 2, Value(3): 2, Value(4): 2, Value(5): 1}
+
+# calculate useful constants
+VALUES = [v for v in CARD_COUNT.keys()]
 
 
 class Card(NamedTuple):
@@ -31,15 +34,8 @@ class Card(NamedTuple):
 def new_deck() -> list[Card]:
     deck = []
     for color in COLORS:
-        for i in VALUES:
-            count = 2
-            if i == 1:
-                count = 3
-            if i == 5:
-                count = 1
-            for _ in range(count):
-                deck.append(Card(color, i))
-
+        for value in VALUES:
+            deck += [Card(color, value)] * CARD_COUNT[value]
     shuffle(deck)
     return deck
 
@@ -158,14 +154,7 @@ def check_value_finished(game: Game, value: Value) -> bool:
         if piles[color] >= value:
             count += 1
         count += discarded[color].count(value)
-    if value == 1:
-        return count == 15
-
-    elif value in [2, 3, 4]:
-        return count == 10
-
-    elif value == 5:
-        return count == 5
+    return count == 5 * CARD_COUNT[value]
 
 
 def count_discarded(game: Game, color: Color, value: Value) -> int:
@@ -179,19 +168,15 @@ def count_discarded(game: Game, color: Color, value: Value) -> int:
 def check_card_finished(game: Game, color: Color, value: Value) -> bool:
     discarded = count_discarded(game, color, value)
     played = 1 if game.piles[color] >= value else 0
-    count = discarded + played
+    in_hands = 0
     for hand in game.hands.values():
         for card in hand:
             if card.is_color_known and card.is_value_known:
                 if card.value == value and card.color == color:
-                    count += 1
-    if value == 1 and count < 3:
-        return False
-    if value in [2, 3, 4] and count < 2:
-        return False
-    if value == 5 and count < 1:
-        return False
-    return True
+                    in_hands += 1
+    total = discarded + played + in_hands
+    assert total <= CARD_COUNT[value]
+    return total == CARD_COUNT[value]
 
 
 def update_not_colors(card: HandCard, color: Color):
