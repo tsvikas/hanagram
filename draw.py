@@ -1,11 +1,18 @@
 import io
+from typing import Optional
 
 from PIL import Image, ImageDraw, ImageFont
 
 import hanabi
 
 
-def rounded_rectangle(image: ImageDraw, xy, corner_radius, fill=None, outline=None):
+def rounded_rectangle(
+    image: ImageDraw,
+    xy: tuple[tuple[float, float], tuple[float, float]],
+    corner_radius: float,
+    fill: Optional[tuple[int, int, int]] = None,
+    outline: Optional[tuple[int, int, int]] = None,
+):
     upper_left_point = xy[0]
     bottom_right_point = xy[1]
     image.rectangle(
@@ -72,8 +79,6 @@ def rounded_rectangle(image: ImageDraw, xy, corner_radius, fill=None, outline=No
     )
 
 
-# ImageDraw.rounded_rectangle = rounded_rectangle
-
 size = 1 / 3
 card_font = ImageFont.truetype("Avenir.ttc", int(50 / size))
 text_font = ImageFont.truetype("Avenir.ttc", int(20 / size))
@@ -90,7 +95,7 @@ colors_rbg = {
 }
 
 
-def render_card(image, x, y, color, value):
+def render_card(image: ImageDraw, x: float, y: float, color: str, value: str):
     width = 50 / size
     rounded_rectangle(
         image, ((x, y), (x + width, y + width * 1.3)), width / 7, fill=colors_rbg[color]
@@ -100,7 +105,7 @@ def render_card(image, x, y, color, value):
     image.text((x + width / 4, y), value, font=card_font, fill=text_fill)
 
 
-def render_card_friend(image, x, y, color, value):
+def render_card_friend(image: ImageDraw, x: float, y: float, color: str, value: str):
     width = 50 / size
     height = 30 / size
     rounded_rectangle(
@@ -111,7 +116,9 @@ def render_card_friend(image, x, y, color, value):
     image.text((x + width / 2.5, y + height / 8), value, font=text_font, fill=text_fill)
 
 
-def draw_board_state(game, player_viewing):
+def draw_board_state(
+    game: hanabi.Game, player_viewing: Optional[hanabi.Player]
+) -> io.BytesIO:
     width = int(400 / size)
     height = (width * 16) // 9
     if len(game.players) == 4:
@@ -295,19 +302,23 @@ def draw_board_state(game, player_viewing):
 
 
 if __name__ == "__main__":
-    game = hanabi.Game(["Giacomo", "Gabriele", "Fabrizio"])
-    hanabi.perform_action(game, "Giacomo", "hint Gabriele yellow")
-    # hanabi.give_hint(game, 'Giacomo', 'red')
-    # hanabi.give_hint(game, 'Giacomo', 'blue')
-    # hanabi.give_hint(game, 'Giacomo', 'white')
-    # hanabi.give_hint(game, 'Giacomo', 'yellow')
-    # hanabi.give_hint(game, 'Giacomo', 1)
-    # hanabi.give_hint(game, 'Giacomo', 2)
-    # hanabi.give_hint(game, 'Giacomo', 3)
-    game.discarded["red"] = [5, 2, 1, 1, 3, 3, 2]
-    # game.hands['Giacomo'][0].is_value_known = True
-    # game.hands['Giacomo'][0].not_values = [1, 2, 3]
-    # game.hands['Giacomo'][0].not_colors = ['red', 'blue', 'green']
-    image = draw_board_state(game, "Giacomo")
+    players = [hanabi.Player(s) for s in ["Giacomo", "Gabriele", "Fabrizio"]]
+    player1 = players[0]
+    game = hanabi.Game(players)
+    hanabi.perform_action(game, player1, "hint Gabriele yellow")
+    # hanabi.give_hint(game, player1, hanabi.Color('red'))
+    # hanabi.give_hint(game, player1, hanabi.Color('blue'))
+    # hanabi.give_hint(game, player1, hanabi.Color('white'))
+    # hanabi.give_hint(game, player1, hanabi.Color('yellow'))
+    # hanabi.give_hint(game, player1, hanabi.Value(1))
+    # hanabi.give_hint(game, player1, hanabi.Value(2))
+    # hanabi.give_hint(game, player1, hanabi.Value(3))
+    game.discarded[hanabi.Color("red")] = [
+        hanabi.Value(v) for v in [5, 2, 1, 1, 3, 3, 2]
+    ]
+    # game.hands[player1][0].is_value_known = True
+    # game.hands[player1][0].not_values = [hanabi.Value(v) for v in [1, 2, 3]]
+    # game.hands[player1][0].not_colors = [hanabi.Color(c) for c in ['red', 'blue', 'green']]
+    image = draw_board_state(game, player1)
     with open("image.png", "wb") as f:
         f.write(image.read())
