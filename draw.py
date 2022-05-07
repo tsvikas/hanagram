@@ -66,8 +66,8 @@ def draw_board_state(
 ) -> io.BytesIO:
     width = 400 * size
     height = (width * 16) // 9
-    if len(game.players) == 4:
-        height += 100
+    if len(game.players) > 3:
+        height += 100 * (len(game.players) - 3)
 
     background = (20, 20, 20)
     image = Image.new("RGB", (width, height), background)

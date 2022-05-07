@@ -10,6 +10,8 @@ from telepot.namedtuple import InlineKeyboardButton, InlineKeyboardMarkup
 import draw
 import hanabi
 
+MAX_PLAYERS = max(hanabi.HAND_SIZE.keys())
+
 
 class UserId(int):
     pass
@@ -67,8 +69,10 @@ def add_player(
         server.bot.sendMessage(chat_id, "You already joined the game")
         return
 
-    if len(player_to_user) >= 4:
-        server.bot.sendMessage(chat_id, "There are already 4 players in the game.")
+    if len(player_to_user) >= MAX_PLAYERS:
+        server.bot.sendMessage(
+            chat_id, f"There are already {MAX_PLAYERS} players in the game."
+        )
         return
 
     if name in player_to_user:
@@ -385,7 +389,7 @@ def handle_message(message_object: Message):
         server.games[chat_id] = ChatGame(chat_id, admin=user_id)
         server.bot.sendMessage(chat_id, "A new game has been created.")
         test_players = [
-            hanabi.Player(s) for s in ["gabriele", "giacomo", "fabrizio", "caio"]
+            hanabi.Player(s) for s in ["Alice", "Bob", "Carol", "Dan", "Erin", "Frank"]
         ]
         for name in test_players[:n]:
             add_player(server, chat_id, user_id, name, allow_repeated_players=True)

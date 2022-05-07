@@ -4,6 +4,8 @@ from typing import NamedTuple, Optional, Union
 
 import draw
 
+HAND_SIZE = {2: 5, 3: 5, 4: 4, 5: 4, 6: 3}
+
 
 class Player(str):
     pass
@@ -95,7 +97,7 @@ def draw_card(hand: list[HandCard], deck: list[Card]):
 
 
 def new_hand(deck: list[Card], num_cards: int) -> list[HandCard]:
-    assert num_cards in [4, 5]
+    assert num_cards in HAND_SIZE.values()
     hand = []
     for _ in range(num_cards):
         draw_card(hand, deck)
@@ -104,7 +106,7 @@ def new_hand(deck: list[Card], num_cards: int) -> list[HandCard]:
 
 class Game:
     def __init__(self, player_names: list[Player]):
-        assert 2 <= len(player_names) <= 5
+        assert len(player_names) in HAND_SIZE.keys()
         self.players = player_names
         self.deck = new_deck()
         self.discarded = {}  # type: dict[Color, list[Value]]
@@ -121,7 +123,7 @@ class Game:
             self.discarded[color] = []
             self.piles[color] = 0
 
-        num_cards = 5 if len(self.players) < 4 else 4
+        num_cards = HAND_SIZE[len(self.players)]
         for player in player_names:
             self.hands[player] = new_hand(self.deck, num_cards)
 
