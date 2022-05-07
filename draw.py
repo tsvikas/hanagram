@@ -10,7 +10,7 @@ def rounded_rectangle(
     image: ImageDraw,
     xy: tuple[tuple[float, float], tuple[float, float]],
     corner_radius: float,
-    fill: Optional[tuple[int, int, int]] = None,
+    fill: tuple[int, int, int],
 ):
     r = corner_radius
     up, left = xy[0]
