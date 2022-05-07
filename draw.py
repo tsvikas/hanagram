@@ -12,46 +12,16 @@ def rounded_rectangle(
     corner_radius: float,
     fill: Optional[tuple[int, int, int]] = None,
 ):
+    r = corner_radius
     up, left = xy[0]
     bottom, right = xy[1]
-    image.rectangle(
-        [(up, left + corner_radius), (bottom, right - corner_radius)],
-        fill=fill,
-        outline=None,
-    )
-    image.rectangle(
-        [(up + corner_radius, left), (bottom - corner_radius, right)],
-        fill=fill,
-        outline=None,
-    )
-    image.pieslice(
-        [(up, left), (up + corner_radius * 2, left + corner_radius * 2)],
-        180,
-        270,
-        fill=fill,
-        outline=None,
-    )
-    image.pieslice(
-        [(bottom - corner_radius * 2, right - corner_radius * 2), (bottom, right)],
-        0,
-        90,
-        fill=fill,
-        outline=None,
-    )
-    image.pieslice(
-        [(up, right - corner_radius * 2), (up + corner_radius * 2, right)],
-        90,
-        180,
-        fill=fill,
-        outline=None,
-    )
-    image.pieslice(
-        [(bottom - corner_radius * 2, left), (bottom, left + corner_radius * 2)],
-        270,
-        360,
-        fill=fill,
-        outline=None,
-    )
+    color = dict(fill=fill, outline=None)
+    image.rectangle([(up, left + r), (bottom, right - r)], **color)
+    image.rectangle([(up + r, left), (bottom - r, right)], **color)
+    image.pieslice([(up, left), (up + r * 2, left + r * 2)], 180, 270, **color)
+    image.pieslice([(bottom - r * 2, right - r * 2), (bottom, right)], 0, 90, **color)
+    image.pieslice([(up, right - r * 2), (up + r * 2, right)], 90, 180, **color)
+    image.pieslice([(bottom - r * 2, left), (bottom, left + r * 2)], 270, 360, **color)
 
 
 size = 1 / 3
