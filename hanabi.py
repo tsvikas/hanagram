@@ -5,12 +5,13 @@ from random import shuffle
 import draw
 
 COLORS = ["red", "blue", "green", "white", "yellow"]
+VALUES = list(range(1, 1 + 5))
 
 
 def new_deck():
     deck = []
     for color in COLORS:
-        for i in range(1, 6):
+        for i in VALUES:
             count = 2
             if i == 1:
                 count = 3
@@ -199,7 +200,7 @@ def update_hand_info(game):
                 for card in hand:
                     update_not_colors(card, color)
 
-    for value in [1, 2, 3, 4, 5]:
+    for value in VALUES:
         if check_value_finished(game, value):
             for hand in game.hands.values():
                 for card in hand:
@@ -213,7 +214,7 @@ def update_hand_info(game):
                         update_not_colors(card, color)
 
             elif card.is_color_known and not card.is_value_known:
-                for value in range(1, 6):
+                for value in VALUES:
                     if check_card_finished(game, card.color, value):
                         update_not_values(card, value)
 
