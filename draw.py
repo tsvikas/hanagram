@@ -24,11 +24,11 @@ def rounded_rectangle(
     image.pieslice([(bottom - r * 2, left), (bottom, left + r * 2)], 270, 360, **color)
 
 
-size = 1 / 3
-card_font = ImageFont.truetype("Avenir.ttc", int(50 / size))
-text_font = ImageFont.truetype("Avenir.ttc", int(20 / size))
-text_font_discarded = ImageFont.truetype("Avenir.ttc", int(15 / size))
-text_font_small = ImageFont.truetype("Avenir.ttc", int(10 / size))
+size = 3
+card_font = ImageFont.truetype("Avenir.ttc", 50 * size)
+text_font = ImageFont.truetype("Avenir.ttc", 20 * size)
+text_font_discarded = ImageFont.truetype("Avenir.ttc", 15 * size)
+text_font_small = ImageFont.truetype("Avenir.ttc", 10 * size)
 
 colors_rbg = {
     "red": (230, 20, 20),
@@ -41,7 +41,7 @@ colors_rbg = {
 
 
 def render_card(image: ImageDraw, x: float, y: float, color: str, value: str):
-    width = 50 / size
+    width = 50 * size
     rounded_rectangle(
         image, ((x, y), (x + width, y + width * 1.3)), width / 7, fill=colors_rbg[color]
     )
@@ -51,8 +51,8 @@ def render_card(image: ImageDraw, x: float, y: float, color: str, value: str):
 
 
 def render_card_friend(image: ImageDraw, x: float, y: float, color: str, value: str):
-    width = 50 / size
-    height = 30 / size
+    width = 50 * size
+    height = 30 * size
     rounded_rectangle(
         image, ((x, y), (x + width, y + height)), width / 10, fill=colors_rbg[color]
     )
@@ -64,7 +64,7 @@ def render_card_friend(image: ImageDraw, x: float, y: float, color: str, value: 
 def draw_board_state(
     game: hanabi.Game, player_viewing: Optional[hanabi.Player]
 ) -> io.BytesIO:
-    width = int(400 / size)
+    width = 400 * size
     height = (width * 16) // 9
     if len(game.players) == 4:
         height += 100
@@ -74,32 +74,32 @@ def draw_board_state(
     draw = ImageDraw.Draw(image)
     text_fill = (200, 200, 200)
     # piles
-    x = 20 / size
+    x = 20 * size
     draw.text(
-        (x, 25 / size), "Hints: " + str(game.hints), font=text_font, fill=text_fill
+        (x, 25 * size), "Hints: " + str(game.hints), font=text_font, fill=text_fill
     )
     draw.text(
-        (x + (100 - 10) / size, 25 / size),
+        (x + (100 - 10) * size, 25 * size),
         "Errors: " + str(game.errors),
         font=text_font,
         fill=text_fill,
     )
     draw.text(
-        (x + (200 - 10) / size, 25 / size),
+        (x + (200 - 10) * size, 25 * size),
         "Deck: " + str(len(game.deck)),
         font=text_font,
         fill=text_fill,
     )
     draw.text(
-        (x + (300 - 10) / size, 25 / size),
+        (x + (300 - 10) * size, 25 * size),
         "Score: " + str(hanabi.get_score(game)),
         font=text_font,
         fill=text_fill,
     )
 
-    left_margin = 35 / size
+    left_margin = 35 * size
     x = left_margin
-    y = 65 / size
+    y = 65 * size
     for color in hanabi.COLORS:
         value = game.piles[color]
         if value == 0:
@@ -111,30 +111,30 @@ def draw_board_state(
         yy = y
         for i, discarded in enumerate(sorted(game.discarded[color])):
             draw.text(
-                (xx, yy + 70 / size),
+                (xx, yy + 70 * size),
                 str(discarded),
                 font=text_font_discarded,
                 fill=(255, 255, 255),
             )
-            xx += 10 / size
+            xx += 10 * size
             if i == 4:
-                yy += 18 / size
+                yy += 18 * size
                 xx = x
-        x += 70 / size
+        x += 70 * size
 
     # hands
     for player in game.players:
         x = left_margin
-        y += 110 / size
+        y += 110 * size
         draw.text((x, y), player, font=text_font, fill=text_fill)
 
         if player == game.players[game.active_player]:
             draw.ellipse(
-                (x - 20 / size, y + 8 / size, x - 10 / size, y + 18 / size),
+                (x - 20 * size, y + 8 * size, x - 10 * size, y + 18 * size),
                 fill=(255, 255, 255),
             )
 
-        y += 30 / size
+        y += 30 * size
         for card in game.hands[player]:
             color = card.color
             value = str(card.value)
@@ -147,32 +147,32 @@ def draw_board_state(
             render_card(draw, x, y, color, value)
 
             if player_viewing == player:
-                yy = y + 0 / size
-                xx = x + 5 / size
+                yy = y + 0 * size
+                xx = x + 5 * size
 
                 if not card.is_color_known:
                     for not_color in card.not_colors:
-                        # draw.ellipse((xx, yy, xx + 10/size, yy + 5/size), fill=colors_rbg[not_color])
-                        start = (xx, yy + 2 / size)
-                        radius = 10 / size
+                        # draw.ellipse((xx, yy, xx + 10*size, yy + 5*size), fill=colors_rbg[not_color])
+                        start = (xx, yy + 2 * size)
+                        radius = 10 * size
                         draw.ellipse(
                             (start[0], start[1], start[0] + radius, start[1] + radius),
                             fill=background,
                         )
-                        start = (start[0] + 2 / size, start[1] + 2 / size)
-                        radius = 6 / size
+                        start = (start[0] + 2 * size, start[1] + 2 * size)
+                        radius = 6 * size
                         draw.ellipse(
                             (start[0], start[1], start[0] + radius, start[1] + radius),
                             fill=colors_rbg[not_color],
                         )
-                        xx += 15 / size
+                        xx += 15 * size
 
-                xx = x + 5 / size
-                yy = y + 50 / size
+                xx = x + 5 * size
+                yy = y + 50 * size
                 if not card.is_value_known:
                     for not_value in card.not_values:
-                        start = (xx - 1 / size, yy)
-                        radius = 12 / size
+                        start = (xx - 1 * size, yy)
+                        radius = 12 * size
                         draw.ellipse(
                             (start[0], start[1], start[0] + radius, start[1] + radius),
                             fill=background,
@@ -183,10 +183,10 @@ def draw_board_state(
                             font=text_font_small,
                             fill=text_fill,
                         )
-                        xx += 15 / size
+                        xx += 15 * size
 
-            yy = y + 70 / size
-            xx = x + 5 / size
+            yy = y + 70 * size
+            xx = x + 5 * size
             if player_viewing != player:
                 if not card.is_color_known:
                     color = "grey"
@@ -196,26 +196,26 @@ def draw_board_state(
 
                 if not card.is_color_known:
                     for not_color in card.not_colors:
-                        start = (xx, yy + 2 / size)
-                        radius = 7 / size
+                        start = (xx, yy + 2 * size)
+                        radius = 7 * size
                         draw.ellipse(
                             (start[0], start[1], start[0] + radius, start[1] + radius),
                             fill=background,
                         )
-                        start = (start[0] + 1 / size, start[1] + 1 / size)
-                        radius = 5 / size
+                        start = (start[0] + 1 * size, start[1] + 1 * size)
+                        radius = 5 * size
                         draw.ellipse(
                             (start[0], start[1], start[0] + radius, start[1] + radius),
                             fill=colors_rbg[not_color],
                         )
                         xx += 25
 
-                xx = x + 5 / size
-                yy += 15 / size
+                xx = x + 5 * size
+                yy += 15 * size
                 if not card.is_value_known:
                     for not_value in card.not_values:
-                        start = (xx - 3.5 / size, yy)
-                        radius = 12 / size
+                        start = (xx - 3.5 * size, yy)
+                        radius = 12 * size
                         draw.ellipse(
                             (start[0], start[1], start[0] + radius, start[1] + radius),
                             fill=background,
@@ -226,19 +226,19 @@ def draw_board_state(
                             font=text_font_small,
                             fill=text_fill,
                         )
-                        xx += 15 / size
+                        xx += 15 * size
 
-            x += 70 / size
+            x += 70 * size
 
         if player_viewing == player:
-            y -= 30 / size
+            y -= 30 * size
 
     x = left_margin
     y = height
     if len(game.players) < 4:
-        y -= 50 / size
+        y -= 50 * size
     else:
-        y -= 40 / size
+        y -= 40 * size
     draw.text((x, y), game.last_action_description, font=text_font, fill=text_fill)
     image_file = io.BytesIO()
     image.save(image_file, "PNG")
