@@ -52,6 +52,14 @@ class HandCard:
     def __str__(self):
         return self.color + " " + str(self.value)
 
+    def known_name(self) -> str:
+        data = [
+            self.color if self.is_color_known else "",
+            str(self.value) if self.is_value_known else "",
+        ]
+        name = " ".join(data).strip()
+        return name or " "
+
 
 def to_string(card: HandCard, show_value: bool, show_info: bool) -> str:
     info = []

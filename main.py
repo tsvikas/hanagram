@@ -169,14 +169,7 @@ def send_keyboard(bot: telepot.Bot, chat_id: ChatId, keyboard_type: KeyboardType
         player_hand = chat_game.game.hands[active_player]
         options = []
         for i, card in enumerate(player_hand):
-            info = ""
-            if card.is_color_known:
-                info += card.color + " "
-            if card.is_value_known:
-                info += str(card.value) + " "
-            info = info.strip()
-            if info == "":
-                info = " "
+            info = card.known_name()
             options.append(
                 InlineKeyboardButton(
                     text=info, callback_data=str(i + 1) + "|" + str(chat_id)
