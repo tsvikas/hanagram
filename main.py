@@ -140,20 +140,16 @@ def send_keyboard(bot: telepot.Bot, chat_id: ChatId, keyboard_type: KeyboardType
     player = hanabi.get_active_player_name(chat_game.game)
     user_id = chat_game.player_to_user[player]
     if keyboard_type is KeyboardType.ACTION:
-        keyboard = [
-            [
-                InlineKeyboardButton(
-                    text="Discard", callback_data=f"discard|{chat_id}"
-                ),
-                InlineKeyboardButton(text="Play", callback_data=f"play|{chat_id}"),
-            ]
+        action_row = [
+            InlineKeyboardButton(text="Discard", callback_data=f"discard|{chat_id}"),
+            InlineKeyboardButton(text="Play", callback_data=f"play|{chat_id}"),
         ]
         if chat_game.game.hints > 0:
-            keyboard[0].append(
+            action_row.append(
                 InlineKeyboardButton(text="Hint", callback_data=f"hint|{chat_id}")
             )
 
-        keyboard = InlineKeyboardMarkup(inline_keyboard=keyboard)
+        keyboard = InlineKeyboardMarkup(inline_keyboard=[action_row])
         if chat_game.user_to_message[user_id] is not None:
             edit_message(
                 chat_game, bot, user_id, f"{player}, choose an action", keyboard
@@ -167,46 +163,45 @@ def send_keyboard(bot: telepot.Bot, chat_id: ChatId, keyboard_type: KeyboardType
         game = chat_game.game
         active_player = game.players[game.active_player]
         player_hand = chat_game.game.hands[active_player]
-        options = []
-        for i, card in enumerate(player_hand):
-            info = card.known_name()
-            options.append(
-                InlineKeyboardButton(text=info, callback_data=f"{i + 1}|{chat_id}")
+        options_row = [
+            InlineKeyboardButton(
+                text=card.known_name(), callback_data=f"{i + 1}|{chat_id}"
             )
+            for i, card in enumerate(player_hand)
+        ]
 
-        back = [InlineKeyboardButton(text="Back", callback_data=f"back|{chat_id}")]
-        keyboard = InlineKeyboardMarkup(inline_keyboard=[options, back])
+        back_row = [InlineKeyboardButton(text="Back", callback_data=f"back|{chat_id}")]
+        keyboard = InlineKeyboardMarkup(inline_keyboard=[options_row, back_row])
         edit_message(
             chat_game, bot, user_id, f"Choose card to {keyboard_type.value}", keyboard
         )
 
     elif keyboard_type == KeyboardType.PLAYER:
         players = chat_game.game.players
-        options = []
-        for p in players:
-            if p != player:
-                options.append(
-                    InlineKeyboardButton(text=p, callback_data=f"{p}|{chat_id}")
-                )
-        back = [InlineKeyboardButton(text="Back", callback_data=f"back|{chat_id}")]
-        keyboard = InlineKeyboardMarkup(inline_keyboard=[options, back])
+        options_row = [
+            InlineKeyboardButton(text=p, callback_data=f"{p}|{chat_id}")
+            for p in players
+            if p != player
+        ]
+        back_row = [InlineKeyboardButton(text="Back", callback_data=f"back|{chat_id}")]
+        keyboard = InlineKeyboardMarkup(inline_keyboard=[options_row, back_row])
         edit_message(
             chat_game, bot, user_id, "Choose a player to hint", keyboard=keyboard
         )
 
     elif keyboard_type == KeyboardType.INFO:
-        # TODO: ugly keyboard on desktop
-        colors = []
-        values = []
-        for c in hanabi.COLORS:
-            colors.append(InlineKeyboardButton(text=c, callback_data=f"{c}|{chat_id}"))
-        for i in range(1, 6):
-            values.append(
-                InlineKeyboardButton(text=str(i), callback_data=f"{i}|{chat_id}")
-            )
-
-        back = [InlineKeyboardButton(text="Back", callback_data=f"back|{chat_id}")]
-        keyboard = InlineKeyboardMarkup(inline_keyboard=[colors, values, back])
+        colors_row = [
+            InlineKeyboardButton(text=str(c), callback_data=f"{c}|{chat_id}")
+            for c in hanabi.COLORS
+        ]
+        values_row = [
+            InlineKeyboardButton(text=str(v), callback_data=f"{v}|{chat_id}")
+            for v in hanabi.VALUES
+        ]
+        back_row = [InlineKeyboardButton(text="Back", callback_data=f"back|{chat_id}")]
+        keyboard = InlineKeyboardMarkup(
+            inline_keyboard=[colors_row, values_row, back_row]
+        )
         edit_message(
             chat_game, bot, user_id, "Choose information to hint", keyboard=keyboard
         )
