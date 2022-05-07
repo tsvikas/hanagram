@@ -12,65 +12,41 @@ def rounded_rectangle(
     corner_radius: float,
     fill: Optional[tuple[int, int, int]] = None,
 ):
-    upper_left_point = xy[0]
-    bottom_right_point = xy[1]
+    up, left = xy[0]
+    bottom, right = xy[1]
     image.rectangle(
-        [
-            (upper_left_point[0], upper_left_point[1] + corner_radius),
-            (bottom_right_point[0], bottom_right_point[1] - corner_radius),
-        ],
+        [(up, left + corner_radius), (bottom, right - corner_radius)],
         fill=fill,
         outline=None,
     )
     image.rectangle(
-        [
-            (upper_left_point[0] + corner_radius, upper_left_point[1]),
-            (bottom_right_point[0] - corner_radius, bottom_right_point[1]),
-        ],
+        [(up + corner_radius, left), (bottom - corner_radius, right)],
         fill=fill,
         outline=None,
     )
     image.pieslice(
-        [
-            upper_left_point,
-            (
-                upper_left_point[0] + corner_radius * 2,
-                upper_left_point[1] + corner_radius * 2,
-            ),
-        ],
+        [(up, left), (up + corner_radius * 2, left + corner_radius * 2)],
         180,
         270,
         fill=fill,
         outline=None,
     )
     image.pieslice(
-        [
-            (
-                bottom_right_point[0] - corner_radius * 2,
-                bottom_right_point[1] - corner_radius * 2,
-            ),
-            bottom_right_point,
-        ],
+        [(bottom - corner_radius * 2, right - corner_radius * 2), (bottom, right)],
         0,
         90,
         fill=fill,
         outline=None,
     )
     image.pieslice(
-        [
-            (upper_left_point[0], bottom_right_point[1] - corner_radius * 2),
-            (upper_left_point[0] + corner_radius * 2, bottom_right_point[1]),
-        ],
+        [(up, right - corner_radius * 2), (up + corner_radius * 2, right)],
         90,
         180,
         fill=fill,
         outline=None,
     )
     image.pieslice(
-        [
-            (bottom_right_point[0] - corner_radius * 2, upper_left_point[1]),
-            (bottom_right_point[0], upper_left_point[1] + corner_radius * 2),
-        ],
+        [(bottom - corner_radius * 2, left), (bottom, left + corner_radius * 2)],
         270,
         360,
         fill=fill,
