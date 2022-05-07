@@ -84,7 +84,7 @@ def new_hand(deck, num_cards):
     return hand
 
 
-class Game(object):
+class Game:
     def __init__(self, player_names):
         assert 2 <= len(player_names) <= 5
         self.players = player_names

@@ -19,7 +19,7 @@ class ChatGame:
         self.chat_id = chat_id
 
 
-class BotServer(object):
+class BotServer:
     def __init__(self, token):
         self.bot = telepot.Bot(token)
         self.token = token
