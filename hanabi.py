@@ -457,6 +457,7 @@ def main():
         result = check_state(game)
         if result > 0:
             print("*** You win! ***")
+            break
         elif result < 0:
             print("*** You lost! ***")
             break
