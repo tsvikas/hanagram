@@ -10,7 +10,9 @@ from telepot.namedtuple import InlineKeyboardButton, InlineKeyboardMarkup
 import draw
 import hanabi
 
+MIN_PLAYERS = 2
 MAX_PLAYERS = max(hanabi.HAND_SIZE.keys())
+DEFAULT_N_PLAYERS_IN_TEST = 4
 
 
 class UserId(int):
@@ -102,7 +104,7 @@ def start_game(server: BotServer, chat_id: ChatId, user_id: UserId):
         return
 
     player_to_user = server.games[chat_id].player_to_user
-    if len(server.games[chat_id].player_to_user) < 2:
+    if len(server.games[chat_id].player_to_user) < MIN_PLAYERS:
         server.bot.sendMessage(chat_id, "Too few players")
         return
 
@@ -363,7 +365,7 @@ def handle_message(message_object: Message):
             _, n = text.split(" ")
             n = int(n)
         except ValueError:
-            n = 4
+            n = DEFAULT_N_PLAYERS_IN_TEST
         server.games[chat_id] = ChatGame(chat_id, admin=user_id)
         server.bot.sendMessage(chat_id, "A new game has been created.")
         test_players = [

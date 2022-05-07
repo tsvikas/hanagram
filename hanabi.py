@@ -4,6 +4,8 @@ from typing import NamedTuple, Optional, Union
 
 import draw
 
+ALLOWED_ERRORS = 3
+INITIAL_HINTS = 8
 HAND_SIZE = {2: 5, 3: 5, 4: 4, 5: 4, 6: 3}
 
 
@@ -24,6 +26,8 @@ CARD_COUNT = {Value(1): 3, Value(2): 2, Value(3): 2, Value(4): 2, Value(5): 1}
 
 # calculate useful constants
 VALUES = [v for v in CARD_COUNT.keys()]
+MAX_VALUE = max(VALUES)
+COLOR_COUNT = sum(CARD_COUNT.values())
 
 
 class Card(NamedTuple):
@@ -115,7 +119,7 @@ class Game:
         self.deck = new_deck()
         self.discarded = {}  # type: dict[Color, list[Value]]
         self.errors = 0
-        self.hints = 8
+        self.hints = INITIAL_HINTS
         self.hands = {}  # type: dict[Player, list[HandCard]]
         self.piles = {}  # type: dict[Color, int]
         self.final_moves = 0
@@ -147,7 +151,7 @@ def check_color_finished(game: Game, color: Color) -> bool:
                 hinted += 1
     pile_value = game.piles[color]
     discarded = len(game.discarded[color])
-    return (hinted + pile_value + discarded) == 10
+    return (hinted + pile_value + discarded) == COLOR_COUNT
 
 
 def check_value_finished(game: Game, value: Value) -> bool:
@@ -162,7 +166,7 @@ def check_value_finished(game: Game, value: Value) -> bool:
         if piles[color] >= value:
             count += 1
         count += discarded[color].count(value)
-    return count == 5 * CARD_COUNT[value]
+    return count == len(COLORS) * CARD_COUNT[value]
 
 
 def count_discarded(game: Game, color: Color, value: Value) -> int:
@@ -205,7 +209,7 @@ def update_not_colors(card: HandCard, color: Color):
     if card.color != color:
         if not card.is_color_known and color not in card.not_colors:
             card.not_colors.append(color)
-            if len(card.not_colors) == 4:
+            if len(card.not_colors) == len(COLORS) - 1:
                 card.not_colors = []
                 card.is_color_known = True
 
@@ -214,7 +218,7 @@ def update_not_values(card: HandCard, value: Value):
     if card.value != value:
         if not card.is_value_known and value not in card.not_values:
             card.not_values.append(value)
-            if len(card.not_values) == 4:
+            if len(card.not_values) == len(VALUES) - 1:
                 card.not_values = []
                 card.is_value_known = True
 
@@ -254,7 +258,7 @@ def discard_card(game: Game, player: Player, index: int) -> bool:
     hand = game.hands[player]
     card = hand.pop(index - 1)
     game.discarded[card.color].append(card.value)
-    game.hints = min(game.hints + 1, 8)
+    game.hints = min(game.hints + 1, INITIAL_HINTS)
 
     if len(game.deck) == 0:
         game.final_moves += 1
@@ -274,8 +278,8 @@ def play_card(game: Game, player: Player, index: int) -> bool:
     pile = game.piles[card.color]
     if card.value == pile + 1:
         success = True
-        if card.value == 5:
-            game.hints = min(game.hints + 1, 8)
+        if card.value == MAX_VALUE:
+            game.hints = min(game.hints + 1, INITIAL_HINTS)
 
     if success:
         game.piles[card.color] += 1
@@ -296,10 +300,10 @@ def check_state(game: Game) -> int:
     1 if game has ended because of full score
     0 if game has not ended
     """
-    if game.errors == 3:
+    if game.errors == ALLOWED_ERRORS:
         return -1
 
-    if all(p == 5 for p in game.piles.values()):
+    if all(p == MAX_VALUE for p in game.piles.values()):
         return 1
 
     if len(game.deck) == 0 and game.final_moves == len(game.players):
@@ -309,7 +313,7 @@ def check_state(game: Game) -> int:
         count_discarded(game, color, Value(game.piles[color] + 1))
         == CARD_COUNT[Value(game.piles[color] + 1)]
         for color in COLORS
-        if Value(game.piles[color] + 1) in VALUES
+        if Value(game.piles[color]) < MAX_VALUE
     ):
         return -1
 
@@ -329,7 +333,7 @@ def give_color_hint(hand: list[HandCard], color: Color):
             if color not in card.not_colors:
                 card.not_colors.append(color)
 
-        if len(card.not_colors) == 4:
+        if len(card.not_colors) == len(COLORS) - 1:
             card.not_colors = []
             card.is_color_known = True
 
@@ -343,7 +347,7 @@ def give_value_hint(hand: list[HandCard], value: Value):
             if value not in card.not_values:
                 card.not_values.append(value)
 
-        if len(card.not_values) == 4:
+        if len(card.not_values) == len(VALUES) - 1:
             card.not_values = []
             card.is_value_known = True
 
