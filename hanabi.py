@@ -179,6 +179,20 @@ def check_card_finished(game: Game, color: Color, value: Value) -> bool:
     return total == CARD_COUNT[value]
 
 
+def is_critical_card(game: Game, color: Color, value: Value) -> bool:
+    if game.piles[color] >= value:
+        return False
+    for lower_value in range(game.piles[color] + 1, value):
+        if (
+            count_discarded(game, color, Value(lower_value))
+            == CARD_COUNT[Value(lower_value)]
+        ):
+            return False
+    if count_discarded(game, color, value) == CARD_COUNT[value] - 1:
+        return True
+    return False
+
+
 def update_not_colors(card: HandCard, color: Color):
     if card.color != color:
         if not card.is_color_known and color not in card.not_colors:
@@ -352,17 +366,31 @@ def perform_action(game: Game, player: Player, action: str) -> bool:
         index, ok = parse_int(value)
         if not ok:
             return False
+        hand_card = game.hands[player][index - 1]
         description += "discarded a "
-        description += str(game.hands[player][index - 1])
+        if is_critical_card(game, hand_card.color, hand_card.value):
+            description += "critical "
+        if hand_card.is_value_known or hand_card.is_color_known:
+            description += "hinted "
+        description += str(hand_card)
         ok = discard_card(game, player, index)
 
     elif name == "play":
         index, ok = parse_int(value)
         if not ok:
             return False
+        hand_card = game.hands[player][index - 1]
+        hinted = hand_card.is_value_known or hand_card.is_color_known
+        if not hinted:
+            description += "blind-"
         description += "played a "
-        description += str(game.hands[player][index - 1])
+        if is_critical_card(game, hand_card.color, hand_card.value):
+            description += "critical "
+        description += str(hand_card)
+        errors = game.errors
         ok = play_card(game, player, index)
+        if game.errors != errors:
+            description += ", and it failed"
 
     elif name == "hint":
         other_player, hint = value.split(" ")
