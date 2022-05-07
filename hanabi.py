@@ -89,7 +89,7 @@ def draw_card(hand: list[HandCard], deck: list[Card]):
 
     card = deck.pop()
     hand_card = HandCard(card.color, card.value)
-    hand.append(hand_card)
+    hand.insert(0, hand_card)
 
 
 def new_hand(deck: list[Card], num_cards: int) -> list[HandCard]:
