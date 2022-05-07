@@ -78,7 +78,7 @@ def add_player(
     if name in player_to_user:
         name += "_" + str(len(player_to_user))
 
-    server.bot.sendMessage(chat_id, name + " joined")
+    server.bot.sendMessage(chat_id, f"{name} joined")
     player_to_user[name] = user_id
     user_to_message[user_id] = None
 
@@ -111,7 +111,7 @@ def start_game(server: BotServer, chat_id: ChatId, user_id: UserId):
         players.append(name)
 
     server.games[chat_id].game = hanabi.Game(players)
-    server.bot.sendMessage(chat_id, "Game started with players " + str(players))
+    server.bot.sendMessage(chat_id, f"Game started with players {players}")
 
     # send a view to all the players
     chat_game = server.games[chat_id]
@@ -143,24 +143,24 @@ def send_keyboard(bot: telepot.Bot, chat_id: ChatId, keyboard_type: KeyboardType
         keyboard = [
             [
                 InlineKeyboardButton(
-                    text="Discard", callback_data="discard|" + str(chat_id)
+                    text="Discard", callback_data=f"discard|{chat_id}"
                 ),
-                InlineKeyboardButton(text="Play", callback_data="play|" + str(chat_id)),
+                InlineKeyboardButton(text="Play", callback_data=f"play|{chat_id}"),
             ]
         ]
         if chat_game.game.hints > 0:
             keyboard[0].append(
-                InlineKeyboardButton(text="Hint", callback_data="hint|" + str(chat_id))
+                InlineKeyboardButton(text="Hint", callback_data=f"hint|{chat_id}")
             )
 
         keyboard = InlineKeyboardMarkup(inline_keyboard=keyboard)
         if chat_game.user_to_message[user_id] is not None:
             edit_message(
-                chat_game, bot, user_id, player + ", choose an action", keyboard
+                chat_game, bot, user_id, f"{player}, choose an action", keyboard
             )
         else:
             chat_game.user_to_message[user_id] = bot.sendMessage(
-                user_id, player + ", it's your turn", reply_markup=keyboard
+                user_id, f"{player}, it's your turn", reply_markup=keyboard
             )
 
     elif keyboard_type in [KeyboardType.PLAY, KeyboardType.DISCARD]:
@@ -171,19 +171,13 @@ def send_keyboard(bot: telepot.Bot, chat_id: ChatId, keyboard_type: KeyboardType
         for i, card in enumerate(player_hand):
             info = card.known_name()
             options.append(
-                InlineKeyboardButton(
-                    text=info, callback_data=str(i + 1) + "|" + str(chat_id)
-                )
+                InlineKeyboardButton(text=info, callback_data=f"{i + 1}|{chat_id}")
             )
 
-        back = [InlineKeyboardButton(text="Back", callback_data="back|" + str(chat_id))]
+        back = [InlineKeyboardButton(text="Back", callback_data=f"back|{chat_id}")]
         keyboard = InlineKeyboardMarkup(inline_keyboard=[options, back])
         edit_message(
-            chat_game,
-            bot,
-            user_id,
-            "Choose card to " + str(keyboard_type.value),
-            keyboard,
+            chat_game, bot, user_id, f"Choose card to {keyboard_type.value}", keyboard
         )
 
     elif keyboard_type == KeyboardType.PLAYER:
@@ -192,9 +186,9 @@ def send_keyboard(bot: telepot.Bot, chat_id: ChatId, keyboard_type: KeyboardType
         for p in players:
             if p != player:
                 options.append(
-                    InlineKeyboardButton(text=p, callback_data=p + "|" + str(chat_id))
+                    InlineKeyboardButton(text=p, callback_data=f"{p}|{chat_id}")
                 )
-        back = [InlineKeyboardButton(text="Back", callback_data="back|" + str(chat_id))]
+        back = [InlineKeyboardButton(text="Back", callback_data=f"back|{chat_id}")]
         keyboard = InlineKeyboardMarkup(inline_keyboard=[options, back])
         edit_message(
             chat_game, bot, user_id, "Choose a player to hint", keyboard=keyboard
@@ -205,17 +199,13 @@ def send_keyboard(bot: telepot.Bot, chat_id: ChatId, keyboard_type: KeyboardType
         colors = []
         values = []
         for c in hanabi.COLORS:
-            colors.append(
-                InlineKeyboardButton(text=c, callback_data=c + "|" + str(chat_id))
-            )
+            colors.append(InlineKeyboardButton(text=c, callback_data=f"{c}|{chat_id}"))
         for i in range(1, 6):
             values.append(
-                InlineKeyboardButton(
-                    text=str(i), callback_data=str(i) + "|" + str(chat_id)
-                )
+                InlineKeyboardButton(text=str(i), callback_data=f"{i}|{chat_id}")
             )
 
-        back = [InlineKeyboardButton(text="Back", callback_data="back|" + str(chat_id))]
+        back = [InlineKeyboardButton(text="Back", callback_data=f"back|{chat_id}")]
         keyboard = InlineKeyboardMarkup(inline_keyboard=[colors, values, back])
         edit_message(
             chat_game, bot, user_id, "Choose information to hint", keyboard=keyboard
@@ -240,9 +230,9 @@ def handle_game_ending(bot: telepot.Bot, chat_game: ChatGame):
 
     score = hanabi.get_score(game)
     for name, user_id in chat_game.player_to_user.items():
-        bot.sendMessage(user_id, "The game ended with score " + str(score))
+        bot.sendMessage(user_id, f"The game ended with score {score}")
 
-    bot.sendMessage(chat_id, "The game ended with score " + str(score))
+    bot.sendMessage(chat_id, f"The game ended with score {score}")
     bot.sendMessage(chat_id, "Send /restart to play again")
     chat_game.game = None
 

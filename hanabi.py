@@ -133,10 +133,10 @@ class Game:
 
 
 def print_hand(game: Game, player: Player, show_value: bool, show_info: bool):
-    print(player + "'s hand:")
+    print(f"{player}'s hand:")
     for i, card in enumerate(game.hands[player]):
         s = to_string(card, show_value, show_info)
-        print("[" + str(i + 1) + "]:", s)
+        print(f"[{i + 1}]: {s}")
 
 
 def check_color_finished(game: Game, color: Color) -> bool:
@@ -249,7 +249,7 @@ def discard_card(game: Game, player: Player, index: int) -> bool:
     if index < 1 or index > len(game.hands[player]):
         return False
 
-    print("discarding", index)
+    print(f"discarding {index}")
 
     hand = game.hands[player]
     card = hand.pop(index - 1)
@@ -419,7 +419,7 @@ def perform_action(game: Game, player: Player, action: str) -> bool:
             ok = give_hint(game, other_player, Value(index))
         else:
             ok = give_hint(game, other_player, Color(hint))
-        description += 'hinted "' + str(hint) + '" to ' + other_player
+        description += f"hinted {hint!r} to {other_player}"
 
     if not ok:
         print("Invalid action. Please repeat.")
@@ -445,12 +445,12 @@ def print_board_state(game: Game, seen_from: Optional[Player] = None):
         print()
 
     for color in COLORS:
-        print(color + ": " + str(game.piles[color]) + "  " + str(game.discarded[color]))
+        print(f"{color:6}: {game.piles[color]}  {game.discarded[color]}")
     print()
 
     score = get_score(game)
-    print("hints: " + str(game.hints) + ", errors: " + str(game.errors))
-    print("score: " + str(score) + ", deck: " + str(len(game.deck)))
+    print(f"hints: {game.hints}, errors: {game.errors}")
+    print(f"score: {score}, deck: {len(game.deck)}")
     print()
 
 
