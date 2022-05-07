@@ -297,6 +297,14 @@ def check_state(game: Game) -> int:
     if len(game.deck) == 0 and game.final_moves == len(game.players):
         return -1
 
+    if all(
+        count_discarded(game, color, Value(game.piles[color] + 1))
+        == CARD_COUNT[Value(game.piles[color] + 1)]
+        for color in COLORS
+        if Value(game.piles[color] + 1) in VALUES
+    ):
+        return -1
+
     return 0
 
 
