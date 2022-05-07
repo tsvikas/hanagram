@@ -11,7 +11,6 @@ def rounded_rectangle(
     xy: tuple[tuple[float, float], tuple[float, float]],
     corner_radius: float,
     fill: Optional[tuple[int, int, int]] = None,
-    outline: Optional[tuple[int, int, int]] = None,
 ):
     upper_left_point = xy[0]
     bottom_right_point = xy[1]
@@ -21,7 +20,7 @@ def rounded_rectangle(
             (bottom_right_point[0], bottom_right_point[1] - corner_radius),
         ],
         fill=fill,
-        outline=outline,
+        outline=None,
     )
     image.rectangle(
         [
@@ -29,7 +28,7 @@ def rounded_rectangle(
             (bottom_right_point[0] - corner_radius, bottom_right_point[1]),
         ],
         fill=fill,
-        outline=outline,
+        outline=None,
     )
     image.pieslice(
         [
@@ -42,7 +41,7 @@ def rounded_rectangle(
         180,
         270,
         fill=fill,
-        outline=outline,
+        outline=None,
     )
     image.pieslice(
         [
@@ -55,7 +54,7 @@ def rounded_rectangle(
         0,
         90,
         fill=fill,
-        outline=outline,
+        outline=None,
     )
     image.pieslice(
         [
@@ -65,7 +64,7 @@ def rounded_rectangle(
         90,
         180,
         fill=fill,
-        outline=outline,
+        outline=None,
     )
     image.pieslice(
         [
@@ -75,7 +74,7 @@ def rounded_rectangle(
         270,
         360,
         fill=fill,
-        outline=outline,
+        outline=None,
     )
 
 
