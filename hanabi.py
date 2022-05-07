@@ -96,9 +96,8 @@ class Game:
         self.piles = {}
         self.final_moves = 0
         self.active_player = 0
-        self.last_action_description = (
-            "Game just started"  # TODO: better initial sentence
-        )
+        # TODO: better initial sentence
+        self.last_action_description = "Game just started"
 
         for color in COLORS:
             self.discarded[color] = []
