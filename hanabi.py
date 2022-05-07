@@ -84,13 +84,6 @@ def new_hand(deck, num_cards):
     return hand
 
 
-def print_hand(game, player, show_value, show_info):
-    print(player + "'s hand:")
-    for i, card in enumerate(game.hands[player]):
-        s = to_string(card, show_value, show_info)
-        print("[" + str(i + 1) + "]:", s)
-
-
 class Game(object):
     def __init__(self, player_names):
         assert 2 <= len(player_names) <= 5
@@ -114,6 +107,13 @@ class Game(object):
         num_cards = 5 if len(self.players) < 4 else 4
         for player in player_names:
             self.hands[player] = new_hand(self.deck, num_cards)
+
+
+def print_hand(game: Game, player: Player, show_value: bool, show_info: bool):
+    print(player + "'s hand:")
+    for i, card in enumerate(game.hands[player]):
+        s = to_string(card, show_value, show_info)
+        print("[" + str(i + 1) + "]:", s)
 
 
 def check_color_finished(game, color):
