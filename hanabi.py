@@ -284,6 +284,11 @@ def play_card(game: Game, player: Player, index: int) -> bool:
 
 
 def check_state(game: Game) -> int:
+    """
+    return -1 if game has ended because of errors or empty deck,
+    1 if game has ended because of full score
+    0 if game has not ended
+    """
     if game.errors == 3:
         return -1
 
