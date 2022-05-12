@@ -173,7 +173,7 @@ def send_keyboard(bot, chat_id, keyboard_type):
         # TODO: ugly keyboard on desktop
         colors = []
         values = []
-        for c in hanabi.colors:
+        for c in hanabi.COLORS:
             colors.append(
                 InlineKeyboardButton(text=c, callback_data=c + "|" + str(chat_id))
             )

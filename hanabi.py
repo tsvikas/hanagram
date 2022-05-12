@@ -4,12 +4,12 @@ from random import shuffle
 
 import draw
 
-colors = ["red", "blue", "green", "white", "yellow"]
+COLORS = ["red", "blue", "green", "white", "yellow"]
 
 
 def new_deck():
     deck = []
-    for color in colors:
+    for color in COLORS:
         for i in range(1, 6):
             count = 2
             if i == 1:
@@ -106,7 +106,7 @@ class Game(object):
             "Game just started"  # TODO: better initial sentence
         )
 
-        for color in colors:
+        for color in COLORS:
             self.discarded[color] = []
             self.piles[color] = 0
 
@@ -134,7 +134,7 @@ def check_value_finished(game, value):
                 count += 1
     piles = game.piles
     discarded = game.discarded
-    for color in colors:
+    for color in COLORS:
         if piles[color] >= value:
             count += 1
         count += discarded[color].count(value)
@@ -193,7 +193,7 @@ def update_not_values(card, value):
 
 
 def update_hand_info(game):
-    for color in colors:
+    for color in COLORS:
         if check_color_finished(game, color):
             for hand in game.hands.values():
                 for card in hand:
@@ -208,7 +208,7 @@ def update_hand_info(game):
     for hand in game.hands.values():
         for card in hand:
             if card.is_value_known and not card.is_color_known:
-                for color in colors:
+                for color in COLORS:
                     if check_card_finished(game, color, card.value):
                         update_not_colors(card, color)
 
@@ -373,7 +373,7 @@ def perform_action(game, player, action):
             return False
         if other_player not in game.hands.keys():
             return False
-        if not hint in colors:
+        if not hint in COLORS:
             index, ok = parse_int(hint)
             if not ok:
                 return False
@@ -408,7 +408,7 @@ def print_board_state(game, seen_from=None):
         print_hand(game, player, player != seen_from, True)
         print()
 
-    for color in colors:
+    for color in COLORS:
         print(color + ": " + str(game.piles[color]) + "  " + str(game.discarded[color]))
     print()
 

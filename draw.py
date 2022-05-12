@@ -148,7 +148,7 @@ def draw_board_state(game, player_viewing):
     left_margin = 35 / size
     x = left_margin
     y = 65 / size
-    for color in hanabi.colors:
+    for color in hanabi.COLORS:
         value = game.piles[color]
         if value == 0:
             value = ""
