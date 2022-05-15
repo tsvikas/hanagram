@@ -246,9 +246,6 @@ def update_hand_info(game: Game):
 def discard_card(game: Game, player: Player, index: int) -> bool:
     if index < 1 or index > len(game.hands[player]):
         return False
-
-    print(f"discarding {index}")
-
     hand = game.hands[player]
     card = hand.pop(index - 1)
     game.discarded[card.color].append(card.value)
