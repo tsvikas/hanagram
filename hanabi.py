@@ -376,6 +376,8 @@ def parse_int(s: str) -> tuple[int, bool]:
 
 
 def perform_action(game: Game, player: Player, action: str) -> bool:
+    if " " not in action.strip():
+        return False
     name, value = action.strip().split(" ", 1)
     ok = False
     description = player[:] + " "
@@ -481,6 +483,12 @@ def main(output_fn=print_board_state):
                 print()
                 print("    *****************")
                 print()
+            else:
+                print("Usage:")
+                print("discard <SLOT>")
+                print("play <SLOT>")
+                print("hint <PLAYER> <COLOR>")
+                print("hint <PLAYER> <VALUE>")
 
 
 if __name__ == "__main__":
