@@ -371,11 +371,7 @@ def handle_message(message_object: Message):
             )
             return
         server.games[chat_id] = ChatGame(chat_id, admin=user_id)
-        keyboard = [
-            [
-                InlineKeyboardButton(text="Join", callback_data="join"),
-            ]
-        ]
+        keyboard = [[InlineKeyboardButton(text="Join", callback_data="join")]]
         keyboard = InlineKeyboardMarkup(inline_keyboard=keyboard)
         server.bot.sendMessage(
             chat_id, "A new game has been created", reply_markup=keyboard
