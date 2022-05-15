@@ -229,9 +229,8 @@ def handle_game_ending(bot: telepot.Bot, chat_game: ChatGame):
     score = hanabi.get_score(game)
     for name, user_id in chat_game.player_to_user.items():
         bot.sendMessage(user_id, f"The game ended with score {score}")
-
     bot.sendMessage(chat_id, f"The game ended with score {score}")
-    bot.sendMessage(chat_id, "Send /restart to play again")
+    bot.sendMessage(chat_id, "Send /start_game to play again")
     chat_game.game = None
 
 
@@ -342,6 +341,26 @@ def handle_message(message_object: Message):
     if data:
         print("DATA", data)
 
+    if text == "/start":
+        my_name = "hanagram2bot"
+        server.bot.sendMessage(chat_id, "Thanks for trying Hanagram bot.")
+        server.bot.sendMessage(
+            chat_id,
+            f"type /new_game@{my_name} in a group to create a game. This will overwrite previous game from that group",
+        )
+        server.bot.sendMessage(
+            chat_id,
+            f"type /start_game@{my_name} in a group to start the game with the players who joined",
+        )
+        server.bot.sendMessage(
+            chat_id, f"type /end_game@{my_name} in a group to end the game"
+        )
+        server.bot.sendMessage(
+            chat_id,
+            f"type /refresh@{my_name} in a group to resend the menu to the current player",
+        )
+        server.bot.sendMessage(chat_id, "type /test in any chat, to playtest")
+
     if text == "/new_game":
         server.games[chat_id] = ChatGame(chat_id, admin=user_id)
         keyboard = [
@@ -358,7 +377,7 @@ def handle_message(message_object: Message):
         edit_message(server.games[chat_id], server.bot, user_id, "The game ended.")
         del server.games[chat_id]
 
-    elif text in ["/start", "/restart"]:
+    elif text in ["/start_game"]:
         start_game(server, chat_id, user_id)
 
     elif text.startswith("/test"):
