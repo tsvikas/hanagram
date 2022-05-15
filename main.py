@@ -374,6 +374,10 @@ def handle_message(message_object: Message):
             add_player(server, chat_id, user_id, name, allow_repeated_players=True)
         start_game(server, chat_id, user_id)
 
+    if text.startswith("/refresh"):
+        if server.games[chat_id].game:
+            restart_turn(chat_id)
+
 
 def main(token: str):
     global server
