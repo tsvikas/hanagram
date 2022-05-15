@@ -1,0 +1,20 @@
+# chore: pre-commit line endings
+# 41b9301ca5bd15baa4e28041a246a81dd2dcc1b8
+
+# chore: pre-commit isort
+# 6bccc85903f748e6dd214d8846459042720630f9
+
+# style: black
+c026fd9cf4494b51982ea480e4fed81de330314e
+
+# style: black -S
+4723a78c8d974cae7d5b3f2e81b213069683b637
+
+# chore: pre-commit remove trailing whitespace
+2bf5360f8829917feb36c918ed5ebcbd5c53b9e2
+
+# chore: pre-commit fix EOF newline
+# 33ae27c76f633b60a731c6ce17ebe6c0c1906834
+
+# chore: pre-commit check YAML
+# 1ed0a1012a0d96dc0e879b114560ff422d6f7a39
