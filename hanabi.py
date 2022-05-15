@@ -469,7 +469,7 @@ def main(output_fn=print_board_state):
 
         result = check_state(game)
         if result is GameState.MAX_SCORE:
-            print("*** You win! ***")
+            print("*** You won! ***")
             break
         elif result is not GameState.RUNNING:
             print("*** You lost! ***")
@@ -480,10 +480,10 @@ def main(output_fn=print_board_state):
             action = input(players[game.active_player] + ": ")
             ok = perform_action(game, players[game.active_player], action)
             if ok:
+                print()
+                print("-" * len(game.last_action_description))
                 print(game.last_action_description)
-                print()
-                print("    *****************")
-                print()
+                print("-" * len(game.last_action_description))
             else:
                 print("Usage:")
                 print("discard <SLOT>")
