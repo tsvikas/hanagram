@@ -383,12 +383,7 @@ def handle_message(message_object: Message):
     if not game:
         return
 
-    active_player = hanabi.get_active_player_name(chat_game.game)
-    active_user_id = chat_game.player_to_user[active_player]
-    if user_id == active_user_id:
-        restart_turn(chat_id)
-    else:
-        server.bot.sendMessage(chat_id, "Wait for your turn.")
+    restart_turn(chat_id)
 
 
 def main(token: str):
