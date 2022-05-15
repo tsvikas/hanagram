@@ -3,8 +3,6 @@ import sys
 from random import shuffle
 from typing import NamedTuple, Optional, Union
 
-import draw
-
 ALLOWED_ERRORS = 3
 INITIAL_HINTS = 8
 HAND_SIZE = {2: 5, 3: 5, 4: 4, 5: 4, 6: 3}
@@ -458,16 +456,13 @@ def print_board_state(game: Game, seen_from: Optional[Player] = None):
     print()
 
 
-def main():
+def main(output_fn=print_board_state):
     players = [Player(s) for s in sys.argv[1:]]
     print(players)
     game = Game(players)
 
     while True:
-        # print_board_state(game, game.players[game.active_player])
-        image = draw.draw_board_state(game, game.players[game.active_player])
-        with open("image.png", "wb") as f:
-            f.write(image.read())
+        output_fn(game, game.players[game.active_player])
 
         result = check_state(game)
         if result is GameState.MAX_SCORE:
