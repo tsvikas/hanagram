@@ -362,6 +362,14 @@ def handle_message(message_object: Message):
         server.bot.sendMessage(chat_id, "type /test in any chat, to playtest")
 
     if text == "/new_game":
+        if user_id == chat_id:
+            server.bot.sendMessage(chat_id, "Start the game in a group chat")
+            return
+        if chat_id in server.games:
+            server.bot.sendMessage(
+                chat_id, "Game in progress. Send /end_game if you want to end it"
+            )
+            return
         server.games[chat_id] = ChatGame(chat_id, admin=user_id)
         keyboard = [
             [
@@ -374,8 +382,15 @@ def handle_message(message_object: Message):
         )
 
     elif text == "/end_game":
-        edit_message(server.games[chat_id], server.bot, user_id, "The game ended.")
-        del server.games[chat_id]
+        if chat_id not in server.games:
+            server.bot.sendMessage(chat_id, "No game to end")
+        elif not server.games[chat_id].game:
+            server.bot.sendMessage(chat_id, "Ending the game which has not started yet")
+            del server.games[chat_id]
+        else:
+            server.bot.sendMessage(chat_id, "Ending the game")
+            edit_message(server.games[chat_id], server.bot, user_id, "The game ended.")
+            del server.games[chat_id]
 
     elif text in ["/start_game"]:
         start_game(server, chat_id, user_id)
@@ -396,7 +411,11 @@ def handle_message(message_object: Message):
         start_game(server, chat_id, user_id)
 
     if text.startswith("/refresh"):
-        if server.games[chat_id].game:
+        if chat_id not in server.games:
+            server.bot.sendMessage(chat_id, "No game to refresh")
+        elif not server.games[chat_id].game:
+            server.bot.sendMessage(chat_id, "Game has not started yet")
+        else:
             restart_turn(chat_id)
 
 
