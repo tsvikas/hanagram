@@ -22,12 +22,12 @@ class ChatId(int):
 Message = NewType("Message", dict)
 
 
-class KeyboardType(enum.StrEnum):
-    ACTION = enum.auto()
-    PLAY = enum.auto()
-    DISCARD = enum.auto()
-    PLAYER = enum.auto()
-    INFO = enum.auto()
+class KeyboardType(enum.Enum):
+    ACTION = "action"
+    PLAY = "play"
+    DISCARD = "discard"
+    PLAYER = "player"
+    INFO = "info"
 
 
 class ChatGame:
@@ -180,7 +180,11 @@ def send_keyboard(bot: telepot.Bot, chat_id: ChatId, keyboard_type: KeyboardType
         back = [InlineKeyboardButton(text="Back", callback_data="back|" + str(chat_id))]
         keyboard = InlineKeyboardMarkup(inline_keyboard=[options, back])
         edit_message(
-            chat_game, bot, user_id, "Choose card to " + str(keyboard_type), keyboard
+            chat_game,
+            bot,
+            user_id,
+            "Choose card to " + str(keyboard_type.value),
+            keyboard,
         )
 
     elif keyboard_type == KeyboardType.PLAYER:
