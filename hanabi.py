@@ -5,13 +5,16 @@ import draw
 
 colors = ['red', 'blue', 'green', 'white', 'yellow']
 
+
 def new_deck():
-    deck = [];
+    deck = []
     for color in colors:
         for i in range(1, 6):
             count = 2
-            if i == 1: count = 3
-            if i == 5: count = 1
+            if i == 1:
+                count = 3
+            if i == 5:
+                count = 1
             for _ in range(count):
                 deck.append(namedtuple('Card', 'color value')(color, i))
 
@@ -39,8 +42,10 @@ def to_string(card, show_value, show_info):
         result += card.color + ' ' + str(card.value)
 
     if show_info:
-        if card.is_color_known: info.append(card.color)
-        if card.is_value_known: info.append(str(card.value))
+        if card.is_color_known:
+            info.append(card.color)
+        if card.is_value_known:
+            info.append(str(card.value))
 
         for color in card.not_colors:
             info.append('not ' + color)
@@ -70,7 +75,7 @@ def draw_card(hand, deck):
 
 
 def new_hand(deck, num_cards):
-    assert(num_cards in [4,5])
+    assert num_cards in [4, 5]
     hand = []
     for _ in range(num_cards):
         draw_card(hand, deck)
@@ -86,7 +91,7 @@ def print_hand(game, player, show_value, show_info):
 
 class Game(object):
     def __init__(self, player_names):
-        assert(len(player_names) >= 2 and len(player_names) <= 5)
+        assert len(player_names) >= 2 and len(player_names) <= 5
         self.players = player_names
         self.deck = new_deck()
         self.discarded = {}
@@ -96,7 +101,9 @@ class Game(object):
         self.piles = {}
         self.final_moves = 0
         self.active_player = 0
-        self.last_action_description = 'Game just started' # TODO: better initial sentence
+        self.last_action_description = (
+            'Game just started'  # TODO: better initial sentence
+        )
 
         for color in colors:
             self.discarded[color] = []
@@ -133,11 +140,12 @@ def check_value_finished(game, value):
     if value == 1:
         return count == 15
 
-    elif value in [2,3,4]:
+    elif value in [2, 3, 4]:
         return count == 10
 
     elif value == 5:
         return count == 5
+
 
 def count_discarded(game, color, value):
     count = 0
@@ -145,6 +153,7 @@ def count_discarded(game, color, value):
         if dicarded_value == value:
             count += 1
     return count
+
 
 def check_card_finished(game, color, value):
     discarded = count_discarded(game, color, value)
@@ -155,9 +164,12 @@ def check_card_finished(game, color, value):
             if card.is_color_known and card.is_value_known:
                 if card.value == value and card.color == color:
                     count += 1
-    if value == 1 and count < 3: return False
-    if value in [2,3,4] and count < 2: return False
-    if value == 5 and count < 1: return False
+    if value == 1 and count < 3:
+        return False
+    if value in [2, 3, 4] and count < 2:
+        return False
+    if value == 5 and count < 1:
+        return False
     return True
 
 
@@ -168,6 +180,7 @@ def update_not_colors(card, color):
             if len(card.not_colors) == 4:
                 card.not_colors = []
                 card.is_color_known = True
+
 
 def update_not_values(card, value):
     if card.value != value:
@@ -185,7 +198,7 @@ def update_hand_info(game):
                 for card in hand:
                     update_not_colors(card, color)
 
-    for value in [1,2,3,4,5]:
+    for value in [1, 2, 3, 4, 5]:
         if check_value_finished(game, value):
             for hand in game.hands.values():
                 for card in hand:
@@ -213,13 +226,14 @@ def discard_card(game, player, index):
     hand = game.hands[player]
     card = hand.pop(index - 1)
     game.discarded[card.color].append(card.value)
-    game.hints = min(game.hints+1, 8)
+    game.hints = min(game.hints + 1, 8)
 
     if len(game.deck) == 0:
         game.final_moves += 1
 
     draw_card(hand, game.deck)
     return True
+
 
 def play_card(game, player, index):
     if index < 1 or index > len(game.hands[player]):
@@ -233,7 +247,7 @@ def play_card(game, player, index):
     if card.value == pile + 1:
         success = True
         if card.value == 5:
-            game.hints = min(game.hints+1, 8)
+            game.hints = min(game.hints + 1, 8)
 
     if success:
         game.piles[card.color] += 1
@@ -259,15 +273,18 @@ def check_state(game):
             win = False
             break
 
-    if win: return 1
+    if win:
+        return 1
 
     if len(game.deck) == 0 and game.final_moves == len(game.players):
         return -1
 
     return 0
 
+
 def get_active_player_name(game):
     return game.players[game.active_player]
+
 
 def give_color_hint(hand, color):
     for card in hand:
@@ -298,7 +315,7 @@ def give_value_hint(hand, value):
 
 
 def give_hint(game, player, hint):
-    assert(game.hints > 0)
+    assert game.hints > 0
     hand = game.hands[player]
     if type(hint) is str:
         give_color_hint(hand, hint)
@@ -312,11 +329,13 @@ def give_hint(game, player, hint):
         game.final_moves += 1
     return True
 
+
 def concatenate(result, l, f, c):
     for i in range(len(l) - 1):
         f(result, l[i])
         c(result)
     f(result, l[-1])
+
 
 def parse_int(s):
     i = -1
@@ -325,6 +344,7 @@ def parse_int(s):
     except ValueError:
         return 0, False
 
+
 def perform_action(game, player, action):
     name, value = action.strip().split(' ', 1)
     ok = False
@@ -332,14 +352,16 @@ def perform_action(game, player, action):
 
     if name == 'discard':
         index, ok = parse_int(value)
-        if not ok: return False
+        if not ok:
+            return False
         description += 'discarded a '
         description += str(game.hands[player][index - 1])
         ok = discard_card(game, player, index)
 
     elif name == 'play':
         index, ok = parse_int(value)
-        if not ok: return False
+        if not ok:
+            return False
         description += 'played a '
         description += str(game.hands[player][index - 1])
         ok = play_card(game, player, index)
@@ -352,7 +374,8 @@ def perform_action(game, player, action):
             return False
         if not hint in colors:
             index, ok = parse_int(hint)
-            if not ok: return False
+            if not ok:
+                return False
             ok = give_hint(game, other_player, index)
         else:
             ok = give_hint(game, other_player, hint)
@@ -370,11 +393,13 @@ def perform_action(game, player, action):
         update_hand_info(game)
     return ok
 
+
 def get_score(game):
     score = 0
     for color, value in game.piles.items():
         score += value
     return score
+
 
 def print_board_state(game, seen_from=None):
     for player in game.players:
@@ -390,6 +415,7 @@ def print_board_state(game, seen_from=None):
     print('hints: ' + str(game.hints) + ', errors: ' + str(game.errors))
     print('score: ' + str(score) + ', deck: ' + str(len(game.deck)))
     print()
+
 
 def main():
     players = sys.argv[1:]
