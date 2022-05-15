@@ -146,24 +146,23 @@ def check_color_finished(game: Game, color: Color) -> bool:
         for card in hand
         if card.is_color_known and card.color == color
     )
-    pile_value = game.piles[color]
+    in_pile = game.piles[color]
     discarded = len(game.discarded[color])
-    return (hinted + pile_value + discarded) == COLOR_COUNT
+    total = hinted + in_pile + discarded
+    return total == COLOR_COUNT
 
 
 def check_value_finished(game: Game, value: Value) -> bool:
-    count = sum(
+    hinted = sum(
         1
         for hand in game.hands.values()
         for card in hand
         if card.is_value_known and card.value == value
     )
-    piles = game.piles
-    discarded = game.discarded
-    count += sum(1 for color in COLORS if piles[color] >= value)
-    for color in COLORS:
-        count += discarded[color].count(value)
-    return count == len(COLORS) * CARD_COUNT[value]
+    in_piles = sum(1 for color in COLORS if game.piles[color] >= value)
+    discarded = sum(game.discarded[color].count(value) for color in COLORS)
+    total = hinted + in_piles + discarded
+    return total == len(COLORS) * CARD_COUNT[value]
 
 
 def count_discarded(game: Game, color: Color, value: Value) -> int:
