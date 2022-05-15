@@ -3,7 +3,7 @@ import sys
 from collections import namedtuple
 import draw
 
-colors = ['red', 'blue', 'green', 'white', 'yellow']
+colors = ["red", "blue", "green", "white", "yellow"]
 
 
 def new_deck():
@@ -16,7 +16,7 @@ def new_deck():
             if i == 5:
                 count = 1
             for _ in range(count):
-                deck.append(namedtuple('Card', 'color value')(color, i))
+                deck.append(namedtuple("Card", "color value")(color, i))
 
     shuffle(deck)
     return deck
@@ -32,14 +32,14 @@ class HandCard(object):
         self.not_values = []
 
     def __str__(self):
-        return self.color + ' ' + str(self.value)
+        return self.color + " " + str(self.value)
 
 
 def to_string(card, show_value, show_info):
     info = []
-    result = ''
+    result = ""
     if show_value:
-        result += card.color + ' ' + str(card.value)
+        result += card.color + " " + str(card.value)
 
     if show_info:
         if card.is_color_known:
@@ -48,19 +48,19 @@ def to_string(card, show_value, show_info):
             info.append(str(card.value))
 
         for color in card.not_colors:
-            info.append('not ' + color)
+            info.append("not " + color)
         for value in card.not_values:
-            info.append('not ' + str(value))
+            info.append("not " + str(value))
 
     if len(info) > 0:
         if show_value:
-            result += ', '
-        result += '{'
+            result += ", "
+        result += "{"
         for i in range(len(info) - 1):
             result += info[i]
-            result += ', '
+            result += ", "
         result += info[-1]
-        result += '}'
+        result += "}"
 
     return result
 
@@ -86,7 +86,7 @@ def print_hand(game, player, show_value, show_info):
     print(player + "'s hand:")
     for i, card in enumerate(game.hands[player]):
         s = to_string(card, show_value, show_info)
-        print('[' + str(i + 1) + ']:', s)
+        print("[" + str(i + 1) + "]:", s)
 
 
 class Game(object):
@@ -102,7 +102,7 @@ class Game(object):
         self.final_moves = 0
         self.active_player = 0
         self.last_action_description = (
-            'Game just started'  # TODO: better initial sentence
+            "Game just started"  # TODO: better initial sentence
         )
 
         for color in colors:
@@ -221,7 +221,7 @@ def discard_card(game, player, index):
     if index < 1 or index > len(game.hands[player]):
         return False
 
-    print('discarding', index)
+    print("discarding", index)
 
     hand = game.hands[player]
     card = hand.pop(index - 1)
@@ -346,28 +346,28 @@ def parse_int(s):
 
 
 def perform_action(game, player, action):
-    name, value = action.strip().split(' ', 1)
+    name, value = action.strip().split(" ", 1)
     ok = False
-    description = player[:] + ' '
+    description = player[:] + " "
 
-    if name == 'discard':
+    if name == "discard":
         index, ok = parse_int(value)
         if not ok:
             return False
-        description += 'discarded a '
+        description += "discarded a "
         description += str(game.hands[player][index - 1])
         ok = discard_card(game, player, index)
 
-    elif name == 'play':
+    elif name == "play":
         index, ok = parse_int(value)
         if not ok:
             return False
-        description += 'played a '
+        description += "played a "
         description += str(game.hands[player][index - 1])
         ok = play_card(game, player, index)
 
-    elif name == 'hint':
-        other_player, hint = value.split(' ')
+    elif name == "hint":
+        other_player, hint = value.split(" ")
         if other_player == player:
             return False
         if other_player not in game.hands.keys():
@@ -382,7 +382,7 @@ def perform_action(game, player, action):
         description += 'hinted "' + str(hint) + '" to ' + other_player
 
     if not ok:
-        print('Invalid action. Please repeat.')
+        print("Invalid action. Please repeat.")
     else:
         game.active_player += 1
         if game.active_player == len(game.players):
@@ -408,12 +408,12 @@ def print_board_state(game, seen_from=None):
         print()
 
     for color in colors:
-        print(color + ': ' + str(game.piles[color]) + '  ' + str(game.discarded[color]))
+        print(color + ": " + str(game.piles[color]) + "  " + str(game.discarded[color]))
     print()
 
     score = get_score(game)
-    print('hints: ' + str(game.hints) + ', errors: ' + str(game.errors))
-    print('score: ' + str(score) + ', deck: ' + str(len(game.deck)))
+    print("hints: " + str(game.hints) + ", errors: " + str(game.errors))
+    print("score: " + str(score) + ", deck: " + str(len(game.deck)))
     print()
 
 
@@ -425,26 +425,26 @@ def main():
     while True:
         # print_board_state(game, game.players[game.active_player])
         image = draw.draw_board_state(game, game.players[game.active_player])
-        with open('image.png', 'wb') as f:
+        with open("image.png", "wb") as f:
             f.write(image.read())
 
         result = check_state(game)
         if result > 0:
-            print('*** You win! ***')
+            print("*** You win! ***")
         elif result < 0:
-            print('*** You lost! ***')
+            print("*** You lost! ***")
             break
 
         ok = False
         while not ok:
-            action = input(players[game.active_player] + ': ')
+            action = input(players[game.active_player] + ": ")
             ok, description = perform_action(game, players[game.active_player], action)
             if ok:
                 print(description)
                 print()
-                print('    *****************')
+                print("    *****************")
                 print()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

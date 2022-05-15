@@ -73,18 +73,18 @@ def rounded_rectangle(image: ImageDraw, xy, corner_radius, fill=None, outline=No
 # ImageDraw.rounded_rectangle = rounded_rectangle
 
 size = 1 / 3
-card_font = ImageFont.truetype('Avenir.ttc', int(50 / size))
-text_font = ImageFont.truetype('Avenir.ttc', int(20 / size))
-text_font_discarded = ImageFont.truetype('Avenir.ttc', int(15 / size))
-text_font_small = ImageFont.truetype('Avenir.ttc', int(10 / size))
+card_font = ImageFont.truetype("Avenir.ttc", int(50 / size))
+text_font = ImageFont.truetype("Avenir.ttc", int(20 / size))
+text_font_discarded = ImageFont.truetype("Avenir.ttc", int(15 / size))
+text_font_small = ImageFont.truetype("Avenir.ttc", int(10 / size))
 
 colors_rbg = {
-    'red': (230, 20, 20),
-    'green': (50, 150, 50),
-    'blue': (50, 100, 250),
-    'yellow': (250, 200, 0),
-    'white': (230, 230, 230),
-    'grey': (100, 100, 100),
+    "red": (230, 20, 20),
+    "green": (50, 150, 50),
+    "blue": (50, 100, 250),
+    "yellow": (250, 200, 0),
+    "white": (230, 230, 230),
+    "grey": (100, 100, 100),
 }
 
 
@@ -116,29 +116,29 @@ def draw_board_state(game, player_viewing):
         height += 100
 
     background = (20, 20, 20)
-    image = Image.new('RGB', (width, height), background)
+    image = Image.new("RGB", (width, height), background)
     draw = ImageDraw.Draw(image)
     text_fill = (200, 200, 200)
     # piles
     x = 20 / size
     draw.text(
-        (x, 25 / size), 'Hints: ' + str(game.hints), font=text_font, fill=text_fill
+        (x, 25 / size), "Hints: " + str(game.hints), font=text_font, fill=text_fill
     )
     draw.text(
         (x + (100 - 10) / size, 25 / size),
-        'Errors: ' + str(game.errors),
+        "Errors: " + str(game.errors),
         font=text_font,
         fill=text_fill,
     )
     draw.text(
         (x + (200 - 10) / size, 25 / size),
-        'Deck: ' + str(len(game.deck)),
+        "Deck: " + str(len(game.deck)),
         font=text_font,
         fill=text_fill,
     )
     draw.text(
         (x + (300 - 10) / size, 25 / size),
-        'Score: ' + str(hanabi.get_score(game)),
+        "Score: " + str(hanabi.get_score(game)),
         font=text_font,
         fill=text_fill,
     )
@@ -149,7 +149,7 @@ def draw_board_state(game, player_viewing):
     for color in hanabi.colors:
         value = game.piles[color]
         if value == 0:
-            value = ''
+            value = ""
         else:
             value = str(value)
         render_card(draw, x, y, color, value)
@@ -186,9 +186,9 @@ def draw_board_state(game, player_viewing):
             value = str(card.value)
             if player == player_viewing:
                 if not card.is_color_known:
-                    color = 'grey'
+                    color = "grey"
                 if not card.is_value_known:
-                    value = ''
+                    value = ""
 
             render_card(draw, x, y, color, value)
 
@@ -235,9 +235,9 @@ def draw_board_state(game, player_viewing):
             xx = x + 5 / size
             if player_viewing != player:
                 if not card.is_color_known:
-                    color = 'grey'
+                    color = "grey"
                 if not card.is_value_known:
-                    value = ''
+                    value = ""
                 render_card_friend(draw, x, yy, color, str(value))
 
                 if not card.is_color_known:
@@ -292,9 +292,9 @@ def draw_board_state(game, player_viewing):
     return image_file
 
 
-if __name__ == '__main__':
-    game = hanabi.Game(['Giacomo', 'Gabriele', 'Fabrizio'])
-    hanabi.perform_action(game, 'Giacomo', 'hint Gabriele yellow')
+if __name__ == "__main__":
+    game = hanabi.Game(["Giacomo", "Gabriele", "Fabrizio"])
+    hanabi.perform_action(game, "Giacomo", "hint Gabriele yellow")
     # hanabi.give_hint(game, 'Giacomo', 'red')
     # hanabi.give_hint(game, 'Giacomo', 'blue')
     # hanabi.give_hint(game, 'Giacomo', 'white')
@@ -302,10 +302,10 @@ if __name__ == '__main__':
     # hanabi.give_hint(game, 'Giacomo', 1)
     # hanabi.give_hint(game, 'Giacomo', 2)
     # hanabi.give_hint(game, 'Giacomo', 3)
-    game.discarded['red'] = [5, 2, 1, 1, 3, 3, 2]
+    game.discarded["red"] = [5, 2, 1, 1, 3, 3, 2]
     # game.hands['Giacomo'][0].is_value_known = True
     # game.hands['Giacomo'][0].not_values = [1, 2, 3]
     # game.hands['Giacomo'][0].not_colors = ['red', 'blue', 'green']
-    image = draw_board_state(game, 'Giacomo')
-    with open('image.png', 'wb') as f:
+    image = draw_board_state(game, "Giacomo")
+    with open("image.png", "wb") as f:
         f.write(image.read())
