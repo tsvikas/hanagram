@@ -379,6 +379,10 @@ def perform_action(game: Game, player: Player, action: str) -> bool:
     ok = False
     description = player[:] + " "
 
+    aliases = {"h": "hint", "d": "discard", "p": "play"}
+    if name in aliases:
+        name = aliases[name]
+
     if name == "discard":
         index, ok = parse_int(value)
         if not ok:
