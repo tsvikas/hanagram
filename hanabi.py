@@ -67,30 +67,27 @@ class HandCard:
 
 
 def to_string(card: HandCard, show_value: bool, show_info: bool) -> str:
+    assert show_value or show_info
+
+    card_value = f"{card.color} {card.value}"
+    if not show_info:
+        return card_value
+
     info = []
-    result = ""
+    if card.is_color_known:
+        info.append(card.color)
+    if card.is_value_known:
+        info.append(str(card.value))
+    for color in card.not_colors:
+        info.append("not " + color)
+    for value in card.not_values:
+        info.append("not " + str(value))
+    info_str = "{" + ", ".join(info) + "}"
+
     if show_value:
-        result += card.color + " " + str(card.value)
-
-    if show_info:
-        if card.is_color_known:
-            info.append(card.color)
-        if card.is_value_known:
-            info.append(str(card.value))
-
-        for color in card.not_colors:
-            info.append("not " + color)
-        for value in card.not_values:
-            info.append("not " + str(value))
-
-    if info:
-        if show_value:
-            result += ", "
-        result += "{"
-        result += ", ".join(info)
-        result += "}"
-
-    return result
+        return f"{card_value:>8}, {info_str}"
+    else:
+        return info_str
 
 
 def draw_card(hand: list[HandCard], deck: list[Card]):
