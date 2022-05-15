@@ -1,6 +1,7 @@
-from random import shuffle
 import sys
 from collections import namedtuple
+from random import shuffle
+
 import draw
 
 colors = ["red", "blue", "green", "white", "yellow"]

@@ -1,10 +1,12 @@
+import sys
 import time
+
 import telepot
 from telepot.loop import MessageLoop
-import sys
-import hanabi
+from telepot.namedtuple import InlineKeyboardButton, InlineKeyboardMarkup
+
 import draw
-from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton
+import hanabi
 
 
 class ChatGame:

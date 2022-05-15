@@ -1,6 +1,8 @@
-import hanabi
-from PIL import Image, ImageDraw, ImageFont
 import io
+
+from PIL import Image, ImageDraw, ImageFont
+
+import hanabi
 
 
 def rounded_rectangle(image: ImageDraw, xy, corner_radius, fill=None, outline=None):
