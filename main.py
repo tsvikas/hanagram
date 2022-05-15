@@ -11,7 +11,7 @@ import draw
 import hanabi
 
 MIN_PLAYERS = 2
-MAX_PLAYERS = max(hanabi.HAND_SIZE.keys())
+MAX_PLAYERS = max(hanabi.HAND_SIZE)
 DEFAULT_N_PLAYERS_IN_TEST = 4
 
 
@@ -108,9 +108,7 @@ def start_game(server: BotServer, chat_id: ChatId, user_id: UserId):
         server.bot.sendMessage(chat_id, "Too few players")
         return
 
-    players = []
-    for name in player_to_user.keys():
-        players.append(name)
+    players = list(player_to_user)
 
     server.games[chat_id].game = hanabi.Game(players)
     server.bot.sendMessage(chat_id, f"Game started with players {players}")
