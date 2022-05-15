@@ -238,7 +238,7 @@ def handle_game_ending(bot: telepot.Bot, chat_game: ChatGame):
 def complete_processed_action(bot: telepot.Bot, chat_id: ChatId):
     # check game ending
     chat_game = server.games[chat_id]
-    if hanabi.check_state(chat_game.game) != 0:
+    if hanabi.check_state(chat_game.game) is not hanabi.GameState.RUNNING:
         handle_game_ending(bot, chat_game)
         return
 

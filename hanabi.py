@@ -1,3 +1,4 @@
+import enum
 import sys
 from random import shuffle
 from typing import NamedTuple, Optional, Union
@@ -292,20 +293,23 @@ def play_card(game: Game, player: Player, index: int) -> bool:
     return True
 
 
-def check_state(game: Game) -> int:
-    """
-    return -1 if game has ended because of errors or empty deck,
-    1 if game has ended because of full score
-    0 if game has not ended
-    """
+class GameState(enum.Enum):
+    RUNNING = enum.auto()
+    MAX_SCORE = enum.auto()
+    NO_LIVES = enum.auto()
+    TIMEOUT = enum.auto()
+    STUCK = enum.auto()
+
+
+def check_state(game: Game) -> GameState:
     if game.errors == ALLOWED_ERRORS:
-        return -1
+        return GameState.NO_LIVES
 
     if all(p == MAX_VALUE for p in game.piles.values()):
-        return 1
+        return GameState.MAX_SCORE
 
     if len(game.deck) == 0 and game.final_moves == len(game.players):
-        return -1
+        return GameState.TIMEOUT
 
     if all(
         count_discarded(game, color, Value(game.piles[color] + 1))
@@ -313,9 +317,9 @@ def check_state(game: Game) -> int:
         for color in COLORS
         if Value(game.piles[color]) < MAX_VALUE
     ):
-        return -1
+        return GameState.STUCK
 
-    return 0
+    return GameState.RUNNING
 
 
 def get_active_player_name(game: Game) -> Player:
@@ -466,10 +470,10 @@ def main():
             f.write(image.read())
 
         result = check_state(game)
-        if result > 0:
+        if result is GameState.MAX_SCORE:
             print("*** You win! ***")
             break
-        elif result < 0:
+        elif result is not GameState.RUNNING:
             print("*** You lost! ***")
             break
 
