@@ -118,6 +118,9 @@ def start_game(server: BotServer, chat_id: ChatId, user_id: UserId):
     send_game_views(server.bot, chat_game)
     server.bot.sendMessage(chat_id, "Game started!")
 
+    # send keyboard
+    restart_turn(chat_id)
+
 
 def edit_message(
     chat_game: ChatGame,
@@ -348,12 +351,10 @@ def handle_message(message_object: Message):
         server.bot.sendMessage(
             chat_id, "A new game has been created", reply_markup=keyboard
         )
-        return
 
     elif text == "/end_game":
         edit_message(server.games[chat_id], server.bot, user_id, "The game ended.")
         del server.games[chat_id]
-        return
 
     elif text in ["/start", "/restart"]:
         start_game(server, chat_id, user_id)
@@ -372,16 +373,6 @@ def handle_message(message_object: Message):
         for name in test_players[:n]:
             add_player(server, chat_id, user_id, name, allow_repeated_players=True)
         start_game(server, chat_id, user_id)
-    else:
-        return
-
-    chat_game = server.games[chat_id]
-    game = chat_game.game
-
-    if not game:
-        return
-
-    restart_turn(chat_id)
 
 
 def main(token: str):
