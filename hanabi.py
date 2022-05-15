@@ -475,9 +475,9 @@ def main(output_fn=print_board_state):
         ok = False
         while not ok:
             action = input(players[game.active_player] + ": ")
-            ok, description = perform_action(game, players[game.active_player], action)
+            ok = perform_action(game, players[game.active_player], action)
             if ok:
-                print(description)
+                print(game.last_action_description)
                 print()
                 print("    *****************")
                 print()
