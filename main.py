@@ -278,26 +278,10 @@ def handle_keyboard_response(msg: Message) -> Optional[bool]:
         return
 
     # perform action
-    if chat_game.current_action in [
-        "discard",
-        "play",
-    ] or chat_game.current_action.strip().startswith("hint "):
-        chat_game.current_action += " " + data
-        success = hanabi.perform_action(game, active_player, chat_game.current_action)
-
-        if success:
-            delete_message(chat_game, server.bot, user_id)
-            chat_game.user_to_message[active_user_id] = None
-            complete_processed_action(server.bot, chat_id)
-        else:
-            restart_turn(chat_id)
-
-    if chat_game.current_action == "hint":
-        chat_game.current_action += " " + data
-        send_keyboard(server.bot, chat_id, KeyboardType.INFO)
 
     if data == "back":
-        send_keyboard(server.bot, chat_id, KeyboardType.ACTION)
+        restart_turn(chat_id)
+        return True
 
     if data == "discard":
         if chat_game.current_action != "":
@@ -324,6 +308,24 @@ def handle_keyboard_response(msg: Message) -> Optional[bool]:
         else:
             send_keyboard(server.bot, chat_id, KeyboardType.PLAYER)
         return True
+
+    if chat_game.current_action in [
+        "discard",
+        "play",
+    ] or chat_game.current_action.startswith("hint "):
+        chat_game.current_action += " " + data
+        success = hanabi.perform_action(game, active_player, chat_game.current_action)
+
+        if success:
+            delete_message(chat_game, server.bot, user_id)
+            chat_game.user_to_message[active_user_id] = None
+            complete_processed_action(server.bot, chat_id)
+        else:
+            restart_turn(chat_id)
+
+    if chat_game.current_action == "hint":
+        chat_game.current_action += " " + data
+        send_keyboard(server.bot, chat_id, KeyboardType.INFO)
 
 
 def handle_message(message_object: Message):
