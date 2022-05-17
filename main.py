@@ -1,4 +1,5 @@
 import enum
+import itertools
 import sys
 import time
 from typing import NewType, Optional
@@ -16,6 +17,16 @@ START_LINK = f"https://t.me/{USERNAME}"
 MIN_PLAYERS = 2
 MAX_PLAYERS = max(hanabi.HAND_SIZE)
 DEFAULT_N_PLAYERS_IN_TEST = 4
+
+BACKGROUND_COLORS_RGB = itertools.cycle(
+    (
+        (20, 20, 20),  # black
+        (100, 20, 20),  # red
+        (10, 50, 10),  # green
+        (15, 30, 74),  # blue
+        (75, 0, 70),  # purple
+    )
+)
 
 
 class UserId(int):
@@ -45,6 +56,7 @@ class ChatGame:
         self.user_to_message = {}  # type: dict[UserId, Optional[Message]]
         self.current_action = ""
         self.chat_id = chat_id
+        self.background_color = None
 
 
 class BotServer:
@@ -90,7 +102,9 @@ def add_player(
 
 def send_game_views(bot: telepot.Bot, chat_game: ChatGame):
     for name, user_id in chat_game.player_to_user.items():
-        image = draw.draw_board_state(chat_game.game, name)
+        image = draw.draw_board_state(
+            chat_game.game, name, background=chat_game.background_color
+        )
         try:
             bot.sendPhoto(user_id, image)
         except Exception as ex:
@@ -112,7 +126,7 @@ def start_game(server: BotServer, chat_id: ChatId, user_id: UserId):
         return
 
     players = list(player_to_user)
-
+    server.games[chat_id].background_color = next(BACKGROUND_COLORS_RGB)
     server.games[chat_id].game = hanabi.Game(players)
     server.bot.sendMessage(chat_id, f"Game started with players {players}")
 
@@ -226,7 +240,9 @@ def handle_game_ending(bot: telepot.Bot, chat_game: ChatGame):
     send_game_views(bot, chat_game)
     chat_id = chat_game.chat_id
     game = chat_game.game
-    image = draw.draw_board_state(chat_game.game, player_viewing=None)
+    image = draw.draw_board_state(
+        chat_game.game, player_viewing=None, background=chat_game.background_color
+    )
     try:
         bot.sendPhoto(chat_id, image)
     except Exception as ex:
@@ -238,6 +254,7 @@ def handle_game_ending(bot: telepot.Bot, chat_game: ChatGame):
     bot.sendMessage(chat_id, f"The game ended with score {score}")
     bot.sendMessage(chat_id, "Send /start_game to play again")
     chat_game.game = None
+    chat_game.background_color = None
 
 
 def complete_processed_action(bot: telepot.Bot, chat_id: ChatId):

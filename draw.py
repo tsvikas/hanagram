@@ -62,14 +62,15 @@ def render_card_friend(image: ImageDraw, x: float, y: float, color: str, value: 
 
 
 def draw_board_state(
-    game: hanabi.Game, player_viewing: Optional[hanabi.Player]
+    game: hanabi.Game,
+    player_viewing: Optional[hanabi.Player],
+    background: tuple[int, int, int] = (20, 20, 20),
 ) -> io.BytesIO:
     width = 400 * size
     height = (width * 16) // 9
     if len(game.players) > 3:
         height += 100 * (len(game.players) - 3)
 
-    background = (20, 20, 20)
     image = Image.new("RGB", (width, height), background)
     draw = ImageDraw.Draw(image)
     text_fill = (200, 200, 200)
