@@ -410,7 +410,7 @@ def perform_action(game: Game, player: Player, action: str) -> bool:
         errors = game.errors
         ok = play_card(game, player, index)
         if game.errors != errors:
-            description += ", and it failed"
+            description = "BOOM! " + description
         elif game.piles[hand_card.color] == MAX_VALUE:
             description = "+ " + description
 
