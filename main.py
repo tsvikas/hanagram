@@ -152,7 +152,10 @@ def send_keyboard(bot: telepot.Bot, chat_id: ChatId, keyboard_type: KeyboardType
         ]
         if chat_game.game.hints > 0:
             action_row.append(
-                InlineKeyboardButton(text="Hint", callback_data=f"hint|{chat_id}")
+                InlineKeyboardButton(
+                    text=f"Hint ({chat_game.game.hints})",
+                    callback_data=f"hint|{chat_id}",
+                )
             )
 
         keyboard = InlineKeyboardMarkup(inline_keyboard=[action_row])
