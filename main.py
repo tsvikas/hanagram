@@ -249,7 +249,7 @@ def handle_game_ending(bot: telepot.Bot, chat_game: ChatGame):
         print(ex)
 
     score = hanabi.get_score(game)
-    for name, user_id in chat_game.player_to_user.items():
+    for user_id in set(chat_game.player_to_user.values()):
         bot.sendMessage(user_id, f"The game ended with score {score}")
     bot.sendMessage(chat_id, f"The game ended with score {score}")
     bot.sendMessage(chat_id, "Send /start_game to play again")
