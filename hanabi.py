@@ -402,13 +402,17 @@ def perform_action(game: Game, player: Player, action: str) -> bool:
         if not hinted:
             description += "blind-"
         description += "played a "
-        if is_critical_card(game, hand_card.color, hand_card.value):
+        if hand_card.value != MAX_VALUE and is_critical_card(
+            game, hand_card.color, hand_card.value
+        ):
             description += "critical "
         description += str(hand_card)
         errors = game.errors
         ok = play_card(game, player, index)
         if game.errors != errors:
             description += ", and it failed"
+        elif game.piles[hand_card.color] == MAX_VALUE:
+            description = "+ " + description
 
     elif name == "hint":
         other_player, hint = value.split(" ")
