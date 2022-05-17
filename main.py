@@ -10,6 +10,8 @@ from telepot.namedtuple import InlineKeyboardButton, InlineKeyboardMarkup
 import draw
 import hanabi
 
+USERNAME = "hanagram2bot"
+
 MIN_PLAYERS = 2
 MAX_PLAYERS = max(hanabi.HAND_SIZE)
 DEFAULT_N_PLAYERS_IN_TEST = 4
@@ -342,22 +344,21 @@ def handle_message(message_object: Message):
         print("DATA", data)
 
     if text == "/start":
-        my_name = "hanagram2bot"
         server.bot.sendMessage(chat_id, "Thanks for trying Hanagram bot.")
         server.bot.sendMessage(
             chat_id,
-            f"type /new_game@{my_name} in a group to create a game. This will overwrite previous game from that group",
+            f"type /new_game@{USERNAME} in a group to create a game. This will overwrite previous game from that group",
         )
         server.bot.sendMessage(
             chat_id,
-            f"type /start_game@{my_name} in a group to start the game with the players who joined",
+            f"type /start_game@{USERNAME} in a group to start the game with the players who joined",
         )
         server.bot.sendMessage(
-            chat_id, f"type /end_game@{my_name} in a group to end the game"
+            chat_id, f"type /end_game@{USERNAME} in a group to end the game"
         )
         server.bot.sendMessage(
             chat_id,
-            f"type /refresh@{my_name} in a group to resend the menu to the current player",
+            f"type /refresh@{USERNAME} in a group to resend the menu to the current player",
         )
         server.bot.sendMessage(chat_id, "type /test in any chat, to playtest")
 
