@@ -138,15 +138,16 @@ def start_game(server: BotServer, chat_id: ChatId, user_id: UserId):
     players = list(player_to_user)
     server.games[chat_id].background_color = next(BACKGROUND_COLORS_RGB)
     server.games[chat_id].game = hanabi.Game(players)
-    server.bot.sendMessage(chat_id, f"Game started with players {players}")
+    server.bot.sendMessage(chat_id, f"Starting game with players {players}")
 
     # send a view to all the players
     chat_game = server.games[chat_id]
     send_game_views(server.bot, chat_game)
-    server.bot.sendMessage(chat_id, "Game started!")
 
     # send keyboard
     restart_turn(chat_id)
+
+    server.bot.sendMessage(chat_id, "Game started!")
 
 
 def edit_message(
