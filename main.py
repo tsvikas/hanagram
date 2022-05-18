@@ -405,7 +405,7 @@ def handle_message(message_object: Message):
         if user_id == chat_id:
             server.bot.sendMessage(chat_id, "Start the game in a group chat")
             return
-        if chat_id in server.games:
+        if chat_id in server.games and server.games[chat_id].game:
             server.bot.sendMessage(
                 chat_id, "Game in progress. Send /end_game if you want to end it"
             )
@@ -424,9 +424,13 @@ def handle_message(message_object: Message):
             server.bot.sendMessage(chat_id, "Ending the game which has not started yet")
             del server.games[chat_id]
         else:
-            server.bot.sendMessage(chat_id, "Ending the game")
-            edit_message(server.games[chat_id], server.bot, user_id, "The game ended.")
-            del server.games[chat_id]
+            try:
+                server.bot.sendMessage(chat_id, "Ending the game")
+                edit_message(
+                    server.games[chat_id], server.bot, user_id, "The game ended."
+                )
+            finally:
+                del server.games[chat_id]
 
     elif text in ["/start_game"]:
         start_game(server, chat_id, user_id)
