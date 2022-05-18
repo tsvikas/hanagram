@@ -49,7 +49,7 @@ class KeyboardType(enum.Enum):
 
 
 class ChatGame:
-    def __init__(self, chat_id: ChatId, admin: UserId):
+    def __init__(self, chat_id: ChatId, admin: UserId, test_mode: bool = False):
         self.game = None  # type: Optional[hanabi.Game]
         self.admin = admin
         self.player_to_user = {}  # type: dict[hanabi.Player, UserId]
@@ -57,6 +57,7 @@ class ChatGame:
         self.current_action = ""
         self.chat_id = chat_id
         self.background_color = None
+        self.test_mode = test_mode
 
 
 class BotServer:
@@ -101,6 +102,15 @@ def add_player(
 
 
 def send_game_views(bot: telepot.Bot, chat_game: ChatGame):
+    if chat_game.test_mode:
+        image = draw.draw_board_state(
+            chat_game.game, player_viewing=None, background=chat_game.background_color
+        )
+        try:
+            bot.sendPhoto(chat_game.admin, image)
+        except Exception as ex:
+            print(ex)
+        return
     for name, user_id in chat_game.player_to_user.items():
         image = draw.draw_board_state(
             chat_game.game, name, background=chat_game.background_color
@@ -426,7 +436,7 @@ def handle_message(message_object: Message):
             n = int(n)
         except ValueError:
             n = DEFAULT_N_PLAYERS_IN_TEST
-        server.games[chat_id] = ChatGame(chat_id, admin=user_id)
+        server.games[chat_id] = ChatGame(chat_id, admin=user_id, test_mode=True)
         server.bot.sendMessage(chat_id, "A new game has been created.")
         test_players = [
             hanabi.Player(s) for s in ["Alice", "Bob", "Carol", "Dan", "Erin", "Frank"]
