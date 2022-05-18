@@ -69,7 +69,8 @@ def draw_board_state(
     width = 400 * size
     height = (width * 16) // 9
     if len(game.players) > 3:
-        height += 100 * (len(game.players) - 3)
+        height += 140 * (len(game.players) - 3) * size
+        height += -50 * size
 
     image = Image.new("RGB", (width, height), background)
     draw = ImageDraw.Draw(image)
