@@ -250,7 +250,7 @@ def draw_board_state(
         y -= 40 * size
     draw.text((x, y), game.last_action_description, font=text_font, fill=text_fill)
     image_file = io.BytesIO()
-    image.save(image_file, "PNG")
+    image.save(image_file, "webp", method=3, quality=0)
     image_file.seek(0)
     return image_file
 
