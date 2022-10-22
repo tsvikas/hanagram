@@ -82,13 +82,13 @@ def draw_board_state(
         (x, 25 * size), "Hints: " + str(game.hints), font=text_font, fill=text_fill
     )
     draw.text(
-        (x + (100 - 10) * size, 25 * size),
-        "Errors: " + str(game.errors),
+        (x + (100 - 15) * size, 25 * size),
+        f"Errors: {game.errors}/{hanabi.ALLOWED_ERRORS}",
         font=text_font,
         fill=text_fill,
     )
     draw.text(
-        (x + (200 - 10) * size, 25 * size),
+        (x + (200 - 5) * size, 25 * size),
         "Deck: " + str(len(game.deck)),
         font=text_font,
         fill=text_fill,
