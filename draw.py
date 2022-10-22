@@ -259,7 +259,7 @@ def draw_board_state(
     draw.text((x, y), last, font=text_font, fill=text_fill)
     # to image
     image_file = io.BytesIO()
-    image.save(image_file, "png")
+    image.save(image_file, "webp")
     image_file.seek(0)
     return image_file
 
