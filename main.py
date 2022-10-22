@@ -105,8 +105,14 @@ def send_game_views(bot: telepot.Bot, chat_game: ChatGame):
     if chat_game.test_mode:
         send_game_view(None, chat_game.admin, bot, chat_game)
         return
+
+    next_player = hanabi.get_active_player_name(chat_game.game)
+    next_user_id = chat_game.player_to_user[next_player]
+    send_game_view(next_player, next_user_id, bot, chat_game)
+
     for name, user_id in chat_game.player_to_user.items():
-        send_game_view(name, user_id, bot, chat_game)
+        if name != next_player:
+            send_game_view(name, user_id, bot, chat_game)
 
 
 def send_game_view(
