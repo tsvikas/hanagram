@@ -111,13 +111,14 @@ def send_game_views(bot: telepot.Bot, chat_game: ChatGame, keyboard: bool = Fals
     next_player = hanabi.get_active_player_name(chat_game.game)
     next_user_id = chat_game.player_to_user[next_player]
     send_game_view(next_player, next_user_id, bot, chat_game)
-    if keyboard:
-        chat_game.current_action = ""
-        send_keyboard(bot, chat_game.chat_id, KeyboardType.ACTION)
 
     for name, user_id in chat_game.player_to_user.items():
         if name != next_player:
             send_game_view(name, user_id, bot, chat_game)
+
+    if keyboard:
+        chat_game.current_action = ""
+        send_keyboard(bot, chat_game.chat_id, KeyboardType.ACTION)
 
 
 def send_game_view(
