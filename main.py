@@ -157,8 +157,9 @@ def edit_message(
     message: str,
     keyboard: Optional[InlineKeyboardMarkup] = None,
 ):
-    edited = telepot.message_identifier(chat_game.user_to_message[user_id])
-    bot.editMessageText(edited, message, reply_markup=keyboard)
+    if msg := chat_game.user_to_message[user_id]:
+        edited = telepot.message_identifier(msg)
+        bot.editMessageText(edited, message, reply_markup=keyboard)
 
 
 def delete_message(chat_game: ChatGame, bot: telepot.Bot, user_id: UserId):
