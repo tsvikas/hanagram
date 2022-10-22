@@ -249,6 +249,15 @@ def draw_board_state(
     else:
         y -= 40 * size
     draw.text((x, y), game.last_action_description, font=text_font, fill=text_fill)
+    # last player
+    x = left_margin
+    y -= 30 * size
+    last = (
+        "" if game.deck else f"{len(game.players) - game.final_moves} turns until end"
+    )
+    last = "Game ended" if last.startswith("0") else last
+    draw.text((x, y), last, font=text_font, fill=text_fill)
+    # to image
     image_file = io.BytesIO()
     image.save(image_file, "webp", method=3, quality=0)
     image_file.seek(0)
