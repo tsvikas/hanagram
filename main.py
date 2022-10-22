@@ -101,14 +101,19 @@ def add_player(
     user_to_message[user_id] = None
 
 
-def send_game_views(bot: telepot.Bot, chat_game: ChatGame):
+def send_game_views(bot: telepot.Bot, chat_game: ChatGame, keyboard: bool = False):
     if chat_game.test_mode:
         send_game_view(None, chat_game.admin, bot, chat_game)
+        chat_game.current_action = ""
+        send_keyboard(bot, chat_game.chat_id, KeyboardType.ACTION)
         return
 
     next_player = hanabi.get_active_player_name(chat_game.game)
     next_user_id = chat_game.player_to_user[next_player]
     send_game_view(next_player, next_user_id, bot, chat_game)
+    if keyboard:
+        chat_game.current_action = ""
+        send_keyboard(bot, chat_game.chat_id, KeyboardType.ACTION)
 
     for name, user_id in chat_game.player_to_user.items():
         if name != next_player:
@@ -284,9 +289,7 @@ def complete_processed_action(bot: telepot.Bot, chat_id: ChatId):
         handle_game_ending(bot, chat_game)
         return
 
-    send_game_views(bot, chat_game)
-    chat_game.current_action = ""
-    send_keyboard(server.bot, chat_id, KeyboardType.ACTION)
+    send_game_views(bot, chat_game, keyboard=True)
 
 
 def handle_keyboard_response(msg: Message) -> Optional[bool]:
