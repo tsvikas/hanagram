@@ -156,10 +156,7 @@ def start_game(server: BotServer, chat_id: ChatId, user_id: UserId):
 
     # send a view to all the players
     chat_game = server.games[chat_id]
-    send_game_views(server.bot, chat_game)
-
-    # send keyboard
-    restart_turn(chat_id)
+    send_game_views(server.bot, chat_game, keyboard=True)
 
     server.bot.sendMessage(chat_id, "Game started!")
 
