@@ -103,22 +103,25 @@ def add_player(
 
 def send_game_views(bot: telepot.Bot, chat_game: ChatGame):
     if chat_game.test_mode:
-        image = draw.draw_board_state(
-            chat_game.game, player_viewing=None, background=chat_game.background_color
-        )
-        try:
-            bot.sendPhoto(chat_game.admin, image)
-        except Exception as ex:
-            print(ex)
+        send_game_view(None, chat_game.admin, bot, chat_game)
         return
     for name, user_id in chat_game.player_to_user.items():
-        image = draw.draw_board_state(
-            chat_game.game, name, background=chat_game.background_color
-        )
-        try:
-            bot.sendPhoto(user_id, image)
-        except Exception as ex:
-            print(ex)
+        send_game_view(name, user_id, bot, chat_game)
+
+
+def send_game_view(
+    name: Optional[hanabi.Player],
+    user_id: UserId,
+    bot: telepot.Bot,
+    chat_game: ChatGame,
+):
+    image = draw.draw_board_state(
+        chat_game.game, player_viewing=name, background=chat_game.background_color
+    )
+    try:
+        bot.sendPhoto(user_id, image)
+    except Exception as ex:
+        print(ex)
 
 
 def start_game(server: BotServer, chat_id: ChatId, user_id: UserId):
