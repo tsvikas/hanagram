@@ -255,7 +255,7 @@ def draw_board_state(
     return image_file
 
 
-if __name__ == "__main__":
+def main():
     players = [hanabi.Player(s) for s in ["Giacomo", "Gabriele", "Fabrizio"]]
     player1 = players[0]
     game = hanabi.Game(players)
@@ -276,3 +276,7 @@ if __name__ == "__main__":
     image = draw_board_state(game, player1)
     with open("image.png", "wb") as f:
         f.write(image.read())
+
+
+if __name__ == "__main__":
+    main()
