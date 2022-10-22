@@ -24,7 +24,7 @@ def rounded_rectangle(
     image.pieslice([(bottom - r * 2, left), (bottom, left + r * 2)], 270, 360, **color)
 
 
-size = 3
+size = 1
 card_font = ImageFont.truetype("Avenir.ttc", 50 * size)
 text_font = ImageFont.truetype("Avenir.ttc", 20 * size)
 text_font_discarded = ImageFont.truetype("Avenir.ttc", 15 * size)
@@ -259,7 +259,7 @@ def draw_board_state(
     draw.text((x, y), last, font=text_font, fill=text_fill)
     # to image
     image_file = io.BytesIO()
-    image.save(image_file, "webp", method=3, quality=0)
+    image.save(image_file, "png")
     image_file.seek(0)
     return image_file
 
