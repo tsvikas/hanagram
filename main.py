@@ -159,16 +159,16 @@ def start_game(server: BotServer, chat_id: ChatId, user_id: UserId):
         return
 
     players = list(player_to_user)
-    server.games[chat_id].background_color = next(BACKGROUND_COLORS_RGB)
-    server.games[chat_id].game = hanabi.Game(players)
     server.bot.sendMessage(chat_id, f"Starting game with players {players}")
     server.bot.sendMessage(chat_id, f"FYI: newest card → oldest card")
+    chat_game = server.games[chat_id]
+    chat_game.background_color = next(BACKGROUND_COLORS_RGB)
+    chat_game.game = hanabi.Game(players)
     server.bot.sendMessage(
         chat_id, f"Go to [private chat]({START_LINK}) to play", parse_mode="Markdown"
     )
 
     # send a view to all the players
-    chat_game = server.games[chat_id]
     send_game_views(server.bot, chat_game, keyboard=True)
 
 
