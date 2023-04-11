@@ -275,7 +275,7 @@ def handle_game_ending(bot: telepot.Bot, chat_game: ChatGame):
     score = hanabi.get_score(game)
     for user_id in set(chat_game.player_to_user.values()).union([UserId(chat_id)]):
         bot.sendMessage(user_id, f"The game ended with score {score}")
-    bot.sendMessage(chat_id, "Send /start_game to play again")
+    bot.sendMessage(chat_id, "Send /deal_cards to play again")
     chat_game.game = None
     chat_game.background_color = None
 
@@ -393,7 +393,7 @@ def handle_message(message_object: Message):
         )
         server.bot.sendMessage(
             chat_id,
-            f"type /start_game@{USERNAME} in a group to start the game with the players who joined",
+            f"type /deal_cards@{USERNAME} in a group to start the game with the players who joined",
         )
         server.bot.sendMessage(
             chat_id, f"type /end_game@{USERNAME} in a group to end the game"
@@ -427,6 +427,9 @@ def handle_message(message_object: Message):
         server.bot.sendMessage(
             chat_id, "A new game has been created", reply_markup=keyboard
         )
+        server.bot.sendMessage(
+            chat_id, f"type /deal_cards@{USERNAME} to start the game"
+        )
 
     elif text == "/end_game":
         if chat_id not in server.games:
@@ -443,7 +446,7 @@ def handle_message(message_object: Message):
             finally:
                 del server.games[chat_id]
 
-    elif text in ["/start_game"]:
+    if text == "/deal_cards":
         start_game(server, chat_id, user_id)
 
     elif text.startswith("/test"):
