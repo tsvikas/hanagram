@@ -19,9 +19,9 @@ MAX_PLAYERS = max(hanabi.HAND_SIZE)
 DEFAULT_N_PLAYERS_IN_TEST = 4
 BOT_COMMAND_DESCRIPTIONS = {
     "start": "show help",
-    "link_for_newbies": "send instructions to enable bot in private chat",
-    "new_game": "create a new game for this group, publish a join link",
-    "start_game": "start the created game for this group",
+    "link_for_newbies": "send instructions to enable bot for new players",
+    "new_game": "create a new game for this group, and publish a join link",
+    "deal_cards": "start this group game",
     "end_game": "end this group game",
     "test": "start a playtest",
     "refresh": "resend current player the menu",
