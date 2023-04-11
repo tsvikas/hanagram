@@ -371,6 +371,15 @@ def handle_keyboard_response(msg: Message) -> Optional[bool]:
         send_keyboard(server.bot, chat_id, KeyboardType.INFO)
 
 
+def link_for_newbies(chat_id):
+    server.bot.sendMessage(
+        chat_id,
+        "Before you join a game for the first time, "
+        f"please open a [chat with me]({START_LINK}) and press the big blue START button at the bottom.",
+        parse_mode="Markdown",
+    )
+
+
 def handle_message(message_object: Message):
     content_type, _chat_type, chat_id = telepot.glance(message_object)
 
@@ -403,14 +412,11 @@ def handle_message(message_object: Message):
             f"type /refresh@{USERNAME} in a group to resend the menu to the current player",
         )
         server.bot.sendMessage(chat_id, "type /test in any chat, to playtest")
+        if chat_id != user_id:
+            link_for_newbies(chat_id)
 
-    if text == "/link_for_newbies" or text == "/start" and chat_id != user_id:
-        server.bot.sendMessage(
-            chat_id,
-            "Before you join a game for the first time, "
-            f"please open a [chat with me]({START_LINK}) and press the big blue START button at the bottom.",
-            parse_mode="Markdown",
-        )
+    if text == "/link_for_newbies":
+        link_for_newbies(chat_id)
 
     if text == "/new_game":
         if user_id == chat_id:
