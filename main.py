@@ -440,7 +440,7 @@ def handle_message(message_object: Message):
             chat_id, f"type /deal_cards@{USERNAME} to start the game"
         )
 
-    elif text == "/end_game":
+    if text == "/end_game":
         if chat_id not in server.games:
             server.bot.sendMessage(chat_id, "No game to end")
         elif not server.games[chat_id].game:
@@ -458,7 +458,7 @@ def handle_message(message_object: Message):
     if text == "/deal_cards":
         start_game(server, chat_id, user_id)
 
-    elif text.startswith("/test"):
+    if text.startswith("/test"):
         try:
             _, n = text.split(" ")
             n = int(n)
@@ -473,7 +473,7 @@ def handle_message(message_object: Message):
             add_player(server, chat_id, user_id, name, allow_repeated_players=True)
         start_game(server, chat_id, user_id)
 
-    if text.startswith("/refresh"):
+    if text == "/refresh":
         if chat_id not in server.games:
             server.bot.sendMessage(chat_id, "No game to refresh")
         elif not server.games[chat_id].game:
