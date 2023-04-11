@@ -17,6 +17,15 @@ START_LINK = f"https://t.me/{USERNAME}"
 MIN_PLAYERS = 2
 MAX_PLAYERS = max(hanabi.HAND_SIZE)
 DEFAULT_N_PLAYERS_IN_TEST = 4
+BOT_COMMAND_DESCRIPTIONS = {
+    "start": "show help",
+    "link_for_newbies": "send instructions to enable bot in private chat",
+    "new_game": "create a new game for this group, publish a join link",
+    "start_game": "start the created game for this group",
+    "end_game": "end this group game",
+    "test": "start a playtest",
+    "refresh": "resend current player the menu",
+}
 
 BACKGROUND_COLORS_RGB = itertools.cycle(
     (
@@ -401,15 +410,15 @@ def handle_message(message_object: Message):
         server.bot.sendMessage(chat_id, "Thanks for trying Hanagram bot.")
         server.bot.sendMessage(
             chat_id,
-            f"type /new_game@{USERNAME} in a group to create a game. This will overwrite previous game from that group",
+            f"type /new_game@{USERNAME} in a group to create a game",
         )
-        server.bot.sendMessage(
-            chat_id,
-            f"type /deal_cards@{USERNAME} in a group to start the game with the players who joined",
-        )
-        server.bot.sendMessage(
-            chat_id, f"type /end_game@{USERNAME} in a group to end the game"
-        )
+        # server.bot.sendMessage(
+        #     chat_id,
+        #     f"type /deal_cards@{USERNAME} in a group to start the game with the players who joined",
+        # )
+        # server.bot.sendMessage(
+        #     chat_id, f"type /end_game@{USERNAME} in a group to end the game"
+        # )
         server.bot.sendMessage(
             chat_id,
             f"type /refresh@{USERNAME} in a group to resend the menu to the current player",
@@ -490,6 +499,12 @@ def handle_message(message_object: Message):
 def main(token: str):
     global server
     server = BotServer(token)
+    server.bot.setMyCommands(
+        [
+            {"command": command, "description": description}
+            for command, description in BOT_COMMAND_DESCRIPTIONS
+        ]
+    )
 
     print("*** Telegram bot started ***")
     print("    Now listening...")
