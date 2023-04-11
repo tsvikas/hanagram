@@ -502,7 +502,7 @@ def main(token: str):
     server.bot.setMyCommands(
         [
             {"command": command, "description": description}
-            for command, description in BOT_COMMAND_DESCRIPTIONS
+            for command, description in BOT_COMMAND_DESCRIPTIONS.items()
         ]
     )
 
