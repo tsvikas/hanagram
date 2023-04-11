@@ -431,8 +431,11 @@ def handle_message(message_object: Message):
         keyboard = [[InlineKeyboardButton(text="Join", callback_data="join")]]
         keyboard = InlineKeyboardMarkup(inline_keyboard=keyboard)
         server.bot.sendMessage(
-            chat_id, "A new game has been created", reply_markup=keyboard
+            chat_id,
+            "🎴 A new game has been created. Click here ↓ to join.",
+            reply_markup=keyboard,
         )
+        link_for_newbies(chat_id)
         server.bot.sendMessage(
             chat_id, f"type /deal_cards@{USERNAME} to start the game"
         )
