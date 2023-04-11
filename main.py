@@ -154,12 +154,13 @@ def start_game(server: BotServer, chat_id: ChatId, user_id: UserId):
     server.games[chat_id].game = hanabi.Game(players)
     server.bot.sendMessage(chat_id, f"Starting game with players {players}")
     server.bot.sendMessage(chat_id, f"FYI: newest card → oldest card")
+    server.bot.sendMessage(
+        chat_id, f"Go to [private chat]({START_LINK}) to play", parse_mode="Markdown"
+    )
 
     # send a view to all the players
     chat_game = server.games[chat_id]
     send_game_views(server.bot, chat_game, keyboard=True)
-
-    server.bot.sendMessage(chat_id, "Game started!")
 
 
 def edit_message(
@@ -275,7 +276,7 @@ def handle_game_ending(bot: telepot.Bot, chat_game: ChatGame):
     score = hanabi.get_score(game)
     for user_id in set(chat_game.player_to_user.values()).union([UserId(chat_id)]):
         bot.sendMessage(user_id, f"The game ended with score {score}")
-    bot.sendMessage(chat_id, "Send /deal_cards to play again")
+    bot.sendMessage(chat_id, f"Type /deal_cards@{USERNAME} to play again")
     chat_game.game = None
     chat_game.background_color = None
 
@@ -377,6 +378,7 @@ def link_for_newbies(chat_id):
         "Before you join a game for the first time, "
         f"please open a [chat with me]({START_LINK}) and press the big blue START button at the bottom.",
         parse_mode="Markdown",
+        disable_web_page_preview=True,
     )
 
 
@@ -432,12 +434,14 @@ def handle_message(message_object: Message):
         keyboard = InlineKeyboardMarkup(inline_keyboard=keyboard)
         server.bot.sendMessage(
             chat_id,
-            "🎴 A new game has been created. Click here ↓ to join.",
-            reply_markup=keyboard,
+            "🎴 A new game has been created.\n"
+            f"After everyone joined, type /deal_cards@{USERNAME} to start the game",
         )
         link_for_newbies(chat_id)
         server.bot.sendMessage(
-            chat_id, f"type /deal_cards@{USERNAME} to start the game"
+            chat_id,
+            "Click here ↓ to join.",
+            reply_markup=keyboard,
         )
 
     if text == "/end_game":
