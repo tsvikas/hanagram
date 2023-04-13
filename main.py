@@ -247,6 +247,7 @@ def send_keyboard(bot: telepot.Bot, chat_id: ChatId, keyboard_type: KeyboardType
         )
 
     elif keyboard_type == KeyboardType.INFO:
+        _action, hinted_player = chat_game.current_action.split(" ")
         colors_row = [
             InlineKeyboardButton(text=str(c), callback_data=f"{c}|{chat_id}")
             for c in hanabi.COLORS
@@ -260,7 +261,11 @@ def send_keyboard(bot: telepot.Bot, chat_id: ChatId, keyboard_type: KeyboardType
             inline_keyboard=[colors_row, values_row, back_row]
         )
         edit_message(
-            chat_game, bot, user_id, "Choose information to hint", keyboard=keyboard
+            chat_game,
+            bot,
+            user_id,
+            f"Choose information to hint to {hinted_player}",
+            keyboard=keyboard,
         )
 
 
