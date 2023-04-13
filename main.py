@@ -195,8 +195,8 @@ def send_keyboard(bot: telepot.Bot, chat_id: ChatId, keyboard_type: KeyboardType
     user_id = chat_game.player_to_user[player]
     if keyboard_type is KeyboardType.ACTION:
         action_row = [
-            InlineKeyboardButton(text="Discard", callback_data=f"discard|{chat_id}"),
             InlineKeyboardButton(text="Play", callback_data=f"play|{chat_id}"),
+            InlineKeyboardButton(text="Discard", callback_data=f"discard|{chat_id}"),
         ]
         if chat_game.game.hints > 0:
             action_row.append(
