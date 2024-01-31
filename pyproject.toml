@@ -5,8 +5,8 @@ description = ""
 authors = ["Your Name <you@example.com>"]
 
 [tool.poetry.dependencies]
-python = ">=3.7,<4"
-Pillow = "^9.1.0"
+python = "3.10.*"
+Pillow = "^10.2.0"
 telepota = "^1.0"
 
 [tool.poetry.dev-dependencies]
