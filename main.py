@@ -1,9 +1,10 @@
 import enum
 import itertools
-import sys
+import os
 import time
 from typing import NewType, Optional
 
+import dotenv
 import telepot
 from telepot.loop import MessageLoop
 from telepot.namedtuple import InlineKeyboardButton, InlineKeyboardMarkup
@@ -11,7 +12,10 @@ from telepot.namedtuple import InlineKeyboardButton, InlineKeyboardMarkup
 import draw
 import hanabi
 
-USERNAME = "hanagram2bot"
+dotenv.load_dotenv()
+
+USERNAME = os.environ["TELEGRAM_USERNAME"]
+TELEGRAM_API_KEY = os.environ["TELEGRAM_API_KEY"]
 START_LINK = f"https://t.me/{USERNAME}"
 
 MIN_PLAYERS = 2
@@ -520,4 +524,4 @@ def main(token: str):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1])
+    main(os.environ["TELEGRAM_API_KEY"])

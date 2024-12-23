@@ -1,3 +1,4 @@
 *.png
 __pycache*
 run_bot.sh
+.env
