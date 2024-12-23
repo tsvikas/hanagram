@@ -8,6 +8,7 @@ authors = ["Your Name <you@example.com>"]
 python = ">=3.9,<3.11"
 Pillow = "^11"
 telepota = "^1.0"
+python-dotenv = "^1.0.1"
 
 [tool.poetry.dev-dependencies]
 pre-commit = "^4"
