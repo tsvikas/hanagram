@@ -6,7 +6,7 @@ authors = ["Your Name <you@example.com>"]
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.11"
-Pillow = "^9.1.0"
+Pillow = "^11"
 telepota = "^1.0"
 
 [tool.poetry.dev-dependencies]
