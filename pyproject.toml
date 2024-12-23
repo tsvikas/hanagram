@@ -5,7 +5,7 @@ description = ""
 authors = ["Your Name <you@example.com>"]
 
 [tool.poetry.dependencies]
-python = ">=3.7,<4"
+python = ">=3.7,<3.11"
 Pillow = "^9.1.0"
 telepota = "^1.0"
 
