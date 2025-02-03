@@ -266,30 +266,29 @@ def draw_board_state(
     return image_file
 
 
-def main():
-    players = [hanabi.Player(s) for s in ["Giacomo", "Gabriele", "Fabrizio"]]
-    player1 = players[0]
+def create_screenshot():
+    import random
+
+    random.seed(0)
+    players = [hanabi.Player(s) for s in ["Tsvika", "Inbar", "Yoav"]]
+    # player1 = players[0]
     game = hanabi.Game(players)
-    hanabi.perform_action(game, player1, "hint Gabriele yellow")
-    # hanabi.give_hint(game, player1, hanabi.Color('red'))
-    # hanabi.give_hint(game, player1, hanabi.Color('blue'))
-    # hanabi.give_hint(game, player1, hanabi.Color('white'))
-    # hanabi.give_hint(game, player1, hanabi.Color('yellow'))
-    # hanabi.give_hint(game, player1, hanabi.Value(1))
-    # hanabi.give_hint(game, player1, hanabi.Value(2))
-    # hanabi.give_hint(game, player1, hanabi.Value(3))
-    game.discarded[hanabi.Color("red")] = [
-        hanabi.Value(v) for v in [5, 2, 1, 1, 3, 3, 2]
-    ]
-    # game.hands[player1][0].is_value_known = True
-    # game.hands[player1][0].not_values = [hanabi.Value(v) for v in [1, 2, 3]]
-    # game.hands[player1][0].not_colors = [
-    #     hanabi.Color(c) for c in ['red', 'blue', 'green']
-    # ]
-    image = draw_board_state(game, player1)
-    with open("image.png", "wb") as f:
+    hanabi.perform_action(game, players[0], "hint Inbar white")
+    hanabi.perform_action(game, players[1], "play 1")
+    hanabi.perform_action(game, players[2], "hint Inbar 1")
+    hanabi.perform_action(game, players[0], "hint Yoav 1")
+    hanabi.perform_action(game, players[1], "discard 5")
+    hanabi.perform_action(game, players[2], "play 5")
+    hanabi.perform_action(game, players[0], "hint Inbar 5")
+    hanabi.perform_action(game, players[1], "discard 5")
+    hanabi.perform_action(game, players[2], "hint Tsvika 1")
+    hanabi.perform_action(game, players[0], "play 2")
+    hanabi.perform_action(game, players[1], "hint Tsvika 2")
+    hanabi.perform_action(game, players[2], "hint Tsvika green")
+    hanabi.perform_action(game, players[0], "play 5")
+    hanabi.perform_action(game, players[1], "hint Yoav yellow")
+    hanabi.perform_action(game, players[2], "hint Tsvika 5")
+
+    image = draw_board_state(game, players[0])
+    with open("assets/example.webp", "wb") as f:
         f.write(image.read())
-
-
-if __name__ == "__main__":
-    main()
