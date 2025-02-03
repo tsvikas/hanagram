@@ -428,19 +428,19 @@ def handle_message(message_object: Message):
     if text == "/start":
         server.bot.sendMessage(chat_id, "Thanks for trying Hanagram bot.")
         server.bot.sendMessage(
-            chat_id,
-            f"type /new_game@{USERNAME} in a group to create a game",
+            chat_id, "Add me to a group, than type /new_game to create a game."
         )
         server.bot.sendMessage(
             chat_id,
-            f"type /refresh@{USERNAME} in a group "
-            "to resend the menu to the current player",
+            "Type /refresh in that group to resend the menu to the current player.",
         )
-        server.bot.sendMessage(chat_id, "type /test in any chat, to playtest")
+        server.bot.sendMessage(
+            chat_id, "Type /test in a group or a private chat, to run a playtest."
+        )
         server.bot.sendMessage(
             chat_id,
             "If i'm sleeping, try to go to https://hanagram.onrender.com/ . "
-            "It'll not show anything, but it might wake me up",
+            "It won't show anything, but it might wake me up.",
         )
         if chat_id != user_id:
             link_for_newbies(chat_id)
