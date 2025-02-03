@@ -45,7 +45,6 @@ def render_card(image: ImageDraw, x: float, y: float, color: str, value: str):
         image, ((x, y), (x + width, y + width * 1.3)), width / 7, fill=colors_rbg[color]
     )
     text_fill = (0, 0, 0)
-    # if color == 'black': text_fill = (255, 255, 255)
     image.text((x + width / 4, y), value, font=card_font, fill=text_fill)
 
 
@@ -56,7 +55,6 @@ def render_card_friend(image: ImageDraw, x: float, y: float, color: str, value: 
         image, ((x, y), (x + width, y + height)), width / 10, fill=colors_rbg[color]
     )
     text_fill = (0, 0, 0)
-    # if color == 'black': text_fill = (255, 255, 255)
     image.text((x + width / 2.5, y + height / 8), value, font=text_font, fill=text_fill)
 
 
@@ -154,7 +152,6 @@ def draw_board_state(
 
                 if not card.is_color_known:
                     for not_color in card.not_colors:
-                        # draw.ellipse((xx, yy, xx + 10*size, yy + 5*size), fill=colors_rbg[not_color])
                         start = (xx, yy + 2 * size)
                         radius = 10 * size
                         draw.ellipse(

@@ -419,13 +419,6 @@ def handle_message(message_object: Message):
             chat_id,
             f"type /new_game@{USERNAME} in a group to create a game",
         )
-        # server.bot.sendMessage(
-        #     chat_id,
-        #     f"type /deal_cards@{USERNAME} in a group to start the game with the players who joined",
-        # )
-        # server.bot.sendMessage(
-        #     chat_id, f"type /end_game@{USERNAME} in a group to end the game"
-        # )
         server.bot.sendMessage(
             chat_id,
             f"type /refresh@{USERNAME} in a group to resend the menu to the current player",
