@@ -437,6 +437,11 @@ def handle_message(message_object: Message):
             "to resend the menu to the current player",
         )
         server.bot.sendMessage(chat_id, "type /test in any chat, to playtest")
+        server.bot.sendMessage(
+            chat_id,
+            "If i'm sleeping, try to go to https://hanagram.onrender.com/ . "
+            "It'll not show anything, but it might wake me up",
+        )
         if chat_id != user_id:
             link_for_newbies(chat_id)
 
