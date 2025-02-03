@@ -2,7 +2,7 @@
 # Hanagram
 Telegram bot to play Hanabi with your friends.
 
-<img src="example.jpg">
+<img src="assets/example.jpg">
 
 # Install
 Install Hanagram and its dependencies:
