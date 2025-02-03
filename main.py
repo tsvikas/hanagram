@@ -147,7 +147,7 @@ def send_game_view(
         chat_game.game, player_viewing=name, background=chat_game.background_color
     )
     try:
-        bot.sendPhoto(user_id, image)
+        bot.sendPhoto(user_id, draw.image_to_bytes(image))
     except Exception as ex:
         print(ex)
 
@@ -293,7 +293,7 @@ def handle_game_ending(bot: telepot.Bot, chat_game: ChatGame):
         chat_game.game, player_viewing=None, background=chat_game.background_color
     )
     try:
-        bot.sendPhoto(chat_id, image)
+        bot.sendPhoto(chat_id, draw.image_to_bytes(image))
     except Exception as ex:
         print(ex)
 

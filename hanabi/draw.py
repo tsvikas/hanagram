@@ -70,7 +70,7 @@ def draw_board_state(
     game: hanabi.Game,
     player_viewing: hanabi.Player | None,
     background: tuple[int, int, int] = (20, 20, 20),
-) -> io.BytesIO:
+) -> Image.Image:
     width = 400 * size
     height = (width * 16) // 9
     if len(game.players) > 3:
@@ -259,7 +259,10 @@ def draw_board_state(
     )
     last = "Game ended" if last.startswith("0") else last
     draw.text((x, y), last, font=text_font, fill=text_fill)
-    # to image
+    return image
+
+
+def image_to_bytes(image: Image.Image) -> io.BytesIO:
     image_file = io.BytesIO()
     image.save(image_file, "webp")
     image_file.seek(0)
@@ -289,6 +292,4 @@ def create_screenshot():
     hanabi.perform_action(game, players[1], "hint Yoav yellow")
     hanabi.perform_action(game, players[2], "hint Tsvika 5")
 
-    image = draw_board_state(game, players[0])
-    with open("assets/example.webp", "wb") as f:
-        f.write(image.read())
+    draw_board_state(game, players[0]).save("assets/example.webp")
