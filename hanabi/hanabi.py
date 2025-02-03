@@ -13,15 +13,21 @@ class Player(str):
     pass
 
 
-class Color(str):
-    pass
+class Color(enum.StrEnum):
+    RED = enum.auto()
+    BLUE = enum.auto()
+    GREEN = enum.auto()
+    WHITE = enum.auto()
+    YELLOW = enum.auto()
+
+
+COLORS = Color.__members__.values()
 
 
 class Value(int):
     pass
 
 
-COLORS = [Color(s) for s in ["red", "blue", "green", "white", "yellow"]]
 CARD_COUNT = {Value(1): 3, Value(2): 2, Value(3): 2, Value(4): 2, Value(5): 1}
 
 # calculate useful constants
@@ -169,10 +175,14 @@ def check_value_finished(game: Game, value: Value) -> bool:
         for card in hand
         if card.is_value_known and card.value == value
     )
-    in_piles = sum(1 for color in COLORS if game.piles[color] >= value)
-    discarded = sum(game.discarded[color].count(value) for color in COLORS)
-    total = hinted + in_piles + discarded
-    return total == len(COLORS) * CARD_COUNT[value]
+    in_piles = sum(color_value >= value for _color, color_value in game.piles.items())
+    discarded = sum(
+        color_discarded.count(value)
+        for _color, color_discarded in game.discarded.items()
+    )
+    seen = hinted + in_piles + discarded
+    total = len(COLORS) * CARD_COUNT[value]
+    return seen == total
 
 
 def count_discarded(game: Game, color: Color, value: Value) -> int:
@@ -439,13 +449,13 @@ def perform_action(game: Game, player: Player, action: str) -> bool:
             return False
         if other_player not in game.hands:
             return False
-        if hint not in COLORS:
+        if hint in COLORS:
+            ok = give_hint(game, other_player, Color(hint))
+        else:
             index, ok = parse_int(hint)
             if not ok:
                 return False
             ok = give_hint(game, other_player, Value(index))
-        else:
-            ok = give_hint(game, other_player, Color(hint))
         description += f"hinted {hint!r} to {other_player}"
 
     if not ok:
