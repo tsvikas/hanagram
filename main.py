@@ -71,7 +71,7 @@ class ChatGame:
         self.user_to_message: dict[UserId, Message | None] = {}
         self.current_action = ""
         self.chat_id = chat_id
-        self.background_color = None
+        self.background_color = (70, 70, 70)  # fallback value
         self.test_mode = test_mode
 
 
@@ -302,7 +302,6 @@ def handle_game_ending(bot: telepot.Bot, chat_game: ChatGame):
         bot.sendMessage(user_id, f"The game ended with score {score}")
     bot.sendMessage(chat_id, f"Type /deal_cards@{USERNAME} to play again")
     chat_game.game = None
-    chat_game.background_color = None
 
 
 def complete_processed_action(bot: telepot.Bot, chat_id: ChatId):
