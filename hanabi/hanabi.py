@@ -1,5 +1,6 @@
 import enum
 import sys
+import textwrap
 from random import shuffle
 from typing import NamedTuple
 
@@ -54,7 +55,7 @@ class HandCard:
         self.not_colors: list[Color] = []
         self.not_values: list[Value] = []
 
-    def __str__(self):
+    def __repr__(self):
         return self.color + " " + str(self.value)
 
     def known_name(self) -> str:
@@ -124,6 +125,21 @@ class Game:
         self.active_player = 0
         # TODO: better initial sentence
         self.last_action_description = "Game just started"
+
+    def __str__(self):
+        return textwrap.dedent(
+            f"""\
+            players: {self.players}
+            deck_size: {len(self.deck)}
+            errors: {self.errors}
+            hints: {self.hints}
+            piles: {self.piles}
+            discarded_cards: {self.discarded}
+            hands: {self.hands}
+            active_player: {self.active_player}[{self.players[self.active_player]}]
+            last_action: {self.last_action_description}
+        """
+        )
 
 
 def print_hand(game: Game, player: Player, show_value: bool, show_info: bool):
