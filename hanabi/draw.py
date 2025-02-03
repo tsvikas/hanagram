@@ -274,7 +274,9 @@ def main():
     ]
     # game.hands[player1][0].is_value_known = True
     # game.hands[player1][0].not_values = [hanabi.Value(v) for v in [1, 2, 3]]
-    # game.hands[player1][0].not_colors = [hanabi.Color(c) for c in ['red', 'blue', 'green']]
+    # game.hands[player1][0].not_colors = [
+    #     hanabi.Color(c) for c in ['red', 'blue', 'green']
+    # ]
     image = draw_board_state(game, player1)
     with open("image.png", "wb") as f:
         f.write(image.read())

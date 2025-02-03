@@ -393,7 +393,8 @@ def link_for_newbies(chat_id):
     server.bot.sendMessage(
         chat_id,
         "Before you join a game for the first time, "
-        f"please open a [chat with me]({START_LINK}) and press the big blue START button at the bottom.",
+        f"please open a [chat with me]({START_LINK}) "
+        "and press the big blue START button at the bottom.",
         parse_mode="Markdown",
         disable_web_page_preview=True,
     )
@@ -421,7 +422,8 @@ def handle_message(message_object: Message):
         )
         server.bot.sendMessage(
             chat_id,
-            f"type /refresh@{USERNAME} in a group to resend the menu to the current player",
+            f"type /refresh@{USERNAME} in a group "
+            "to resend the menu to the current player",
         )
         server.bot.sendMessage(chat_id, "type /test in any chat, to playtest")
         if chat_id != user_id:
