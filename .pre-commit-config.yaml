@@ -59,6 +59,8 @@ repos:
     rev: 0.5.26
     hooks:
       - id: uv-lock
+      - id: uv-export
+        args: ["--no-dev", "--output-file=requirements.txt"]
 
   # jupyter notebooks
   - repo: local
