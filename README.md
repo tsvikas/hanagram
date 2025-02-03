@@ -4,19 +4,27 @@ Telegram bot to play Hanabi with your friends.
 
 <img src="assets/example.jpg">
 
-# Install
+# Usage
 
-Install Hanagram and its dependencies:
+- Get an API TOKEN from `@BotFather`
+- Save to the `.env` file:
 
 ```bash
-poetry install
+cp .env.sample .env
+nano .env  # set the API TOKEN
+```
+
+And run the server with
+[uv](https://docs.astral.sh/uv/getting-started/installation/)
+
+```bash
+uv run main.py
 ```
 
 # Telegram game
 
 How to play a Telegram game:
 
-- Start the server with `python main.py <your-bot-token>`
 - Send `/test <number-of-players>` in a private chat, to test.
 - Add your bot to a group chat.
 - Send `/new_game` in a group chat to create a new game.
@@ -28,7 +36,7 @@ How to play a Telegram game:
 
 How to play a local game. Let's say players are Alice, Bob and Casey.
 
-- Run `python hanabi.py Alice Bob Casey`
+- Run `uv run python hanabi/hanabi.py Alice Bob Casey`
 - On each turn, type one of those actions:
   - `play <index of card to play>`
   - `discard <index of card to play>`
