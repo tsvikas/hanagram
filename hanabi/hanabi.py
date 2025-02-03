@@ -479,8 +479,8 @@ def print_board_state(game: Game, seen_from: Player | None = None):
     print()
 
 
-def main(output_fn=print_board_state):
-    players = [Player(s) for s in sys.argv[1:]]
+def main(player_names: list[str], output_fn=print_board_state):
+    players = [Player(s) for s in player_names]
     print(players)
     game = Game(players)
 
@@ -513,4 +513,4 @@ def main(output_fn=print_board_state):
 
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1:])
