@@ -51,8 +51,8 @@ class HandCard:
         self.value = value
         self.is_color_known = False
         self.is_value_known = False
-        self.not_colors = []
-        self.not_values = []
+        self.not_colors: list[Color] = []
+        self.not_values: list[Value] = []
 
     def __str__(self):
         return self.color + " " + str(self.value)
@@ -73,9 +73,9 @@ def to_string(card: HandCard, show_value: bool, show_info: bool) -> str:
     if not show_info:
         return card_value
 
-    info = []
+    info: list[str] = []
     if card.is_color_known:
-        info.append(card.color)
+        info.append(str(card.color))
     if card.is_value_known:
         info.append(str(card.value))
     for color in card.not_colors:
@@ -101,7 +101,7 @@ def draw_card(hand: list[HandCard], deck: list[Card]):
 
 def new_hand(deck: list[Card], num_cards: int) -> list[HandCard]:
     assert num_cards in HAND_SIZE.values()
-    hand = []
+    hand: list[HandCard] = []
     for _ in range(num_cards):
         draw_card(hand, deck)
     return hand
@@ -417,7 +417,8 @@ def perform_action(game: Game, player: Player, action: str) -> bool:
             description = "+ " + description
 
     elif name == "hint":
-        other_player, hint = value.split(" ")
+        other_player_str, hint = value.split(" ")
+        other_player = Player(other_player_str)
         if other_player == player:
             return False
         if other_player not in game.hands:

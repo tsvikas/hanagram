@@ -1,8 +1,14 @@
 import io
+from typing import TypedDict
 
 from PIL import Image, ImageDraw, ImageFont
 
 from . import hanabi
+
+
+class RectangleParams(TypedDict):
+    fill: tuple[int, int, int] | None
+    outline: tuple[int, int, int] | None
 
 
 def rounded_rectangle(
@@ -14,7 +20,7 @@ def rounded_rectangle(
     r = corner_radius
     up, left = xy[0]
     bottom, right = xy[1]
-    color = dict(fill=fill, outline=None)
+    color: RectangleParams = dict(fill=fill, outline=None)
     image.rectangle([(up, left + r), (bottom, right - r)], **color)
     image.rectangle([(up + r, left), (bottom - r, right)], **color)
     image.pieslice([(up, left), (up + r * 2, left + r * 2)], 180, 270, **color)
@@ -103,8 +109,8 @@ def draw_board_state(
     y = 65 * size
     for color in hanabi.COLORS:
         value = game.piles[color]
-        value = "" if value == 0 else str(value)
-        render_card(draw, x, y, color, value)
+        value_str = "" if value == 0 else str(value)
+        render_card(draw, x, y, color, value_str)
         xx = x
         yy = y
         for i, discarded in enumerate(sorted(game.discarded[color])):
@@ -136,16 +142,17 @@ def draw_board_state(
         y += 30 * size
         for card in game.hands[player]:
             # big card with full info for other players, known info for current player
-            color = card.color
-            value = str(card.value)
+            color_name = str(card.color)
+            value_str = str(card.value)
             if player == player_viewing:
                 if not card.is_color_known:
-                    color = "grey"
+                    color_name = "grey"
                 if not card.is_value_known:
-                    value = ""
-            render_card(draw, x, y, color, value)
+                    value_str = ""
+            render_card(draw, x, y, color_name, value_str)
 
             # for current player, fill big card with negative info
+            start: tuple[float, float]
             if player_viewing == player:
                 yy = y + 0 * size
                 xx = x + 5 * size
@@ -190,10 +197,10 @@ def draw_board_state(
             if player_viewing != player:
                 # positive info
                 if not card.is_color_known:
-                    color = "grey"
+                    color_name = "grey"
                 if not card.is_value_known:
-                    value = ""
-                render_card_friend(draw, x, yy, color, str(value))
+                    value_str = ""
+                render_card_friend(draw, x, yy, color_name, value_str)
 
                 # negative info
                 if not card.is_color_known:

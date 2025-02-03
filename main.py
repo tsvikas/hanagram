@@ -5,9 +5,12 @@ import time
 from typing import NewType
 
 import dotenv
-import telepot
-from telepot.loop import MessageLoop
-from telepot.namedtuple import InlineKeyboardButton, InlineKeyboardMarkup
+import telepot  # type: ignore[import-untyped]
+from telepot.loop import MessageLoop  # type: ignore[import-untyped]
+from telepot.namedtuple import (  # type: ignore[import-untyped]
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+)
 
 from hanabi import draw, hanabi
 
@@ -106,7 +109,7 @@ def add_player(
         return
 
     if name in player_to_user:
-        name += "_" + str(len(player_to_user))
+        name = hanabi.Player(f"{name}_{len(player_to_user)}")
 
     server.bot.sendMessage(chat_id, f"{name} joined")
     player_to_user[name] = user_id
@@ -119,6 +122,7 @@ def send_game_views(bot: telepot.Bot, chat_game: ChatGame, keyboard: bool = Fals
         send_game_view(None, chat_game.admin, bot, chat_game)
     else:
         # first player
+        assert chat_game.game is not None
         next_player = hanabi.get_active_player_name(chat_game.game)
         next_user_id = chat_game.player_to_user[next_player]
         send_game_view(next_player, next_user_id, bot, chat_game)
@@ -138,6 +142,7 @@ def send_game_view(
     bot: telepot.Bot,
     chat_game: ChatGame,
 ):
+    assert chat_game.game is not None
     image = draw.draw_board_state(
         chat_game.game, player_viewing=name, background=chat_game.background_color
     )
@@ -194,6 +199,7 @@ def delete_message(chat_game: ChatGame, bot: telepot.Bot, user_id: UserId):
 
 def send_keyboard(bot: telepot.Bot, chat_id: ChatId, keyboard_type: KeyboardType):
     chat_game = server.games[chat_id]
+    assert chat_game.game is not None
     player = hanabi.get_active_player_name(chat_game.game)
     user_id = chat_game.player_to_user[player]
     if keyboard_type is KeyboardType.ACTION:
@@ -279,6 +285,7 @@ def restart_turn(chat_id: ChatId):
 
 
 def handle_game_ending(bot: telepot.Bot, chat_game: ChatGame):
+    assert chat_game.game is not None
     send_game_views(bot, chat_game)
     chat_id = chat_game.chat_id
     game = chat_game.game
@@ -301,6 +308,7 @@ def handle_game_ending(bot: telepot.Bot, chat_game: ChatGame):
 def complete_processed_action(bot: telepot.Bot, chat_id: ChatId):
     # check game ending
     chat_game = server.games[chat_id]
+    assert chat_game.game is not None
     if hanabi.check_state(chat_game.game) is not hanabi.GameState.RUNNING:
         handle_game_ending(bot, chat_game)
         return
@@ -313,30 +321,30 @@ def handle_keyboard_response(msg: Message) -> bool | None:
         _query_id, _from_id, data = telepot.glance(msg, flavor="callback_query")
     except Exception:
         print("[ERROR]", msg)
-        return
+        return None
 
     user_id = UserId(msg["from"]["id"])
     chat_id = ChatId(msg["message"]["chat"]["id"])
 
     if data == "join":
         add_player(server, chat_id, user_id, msg["from"]["first_name"])
-        return
+        return None
 
     data, chat_id = data.split("|")
     chat_id = ChatId(chat_id)
 
     chat_game = server.games.get(chat_id, None)
     if not chat_game:
-        return
+        return None
 
     game = chat_game.game
     if not game:
-        return
+        return None
 
     active_player = hanabi.get_active_player_name(game)
     active_user_id = chat_game.player_to_user[active_player]
     if user_id != active_user_id:
-        return
+        return None
 
     # perform action
 
@@ -383,10 +391,14 @@ def handle_keyboard_response(msg: Message) -> bool | None:
             complete_processed_action(server.bot, chat_id)
         else:
             restart_turn(chat_id)
+        return None
 
     if chat_game.current_action == "hint":
         chat_game.current_action += " " + data
         send_keyboard(server.bot, chat_id, KeyboardType.INFO)
+        return None
+
+    raise RuntimeError(f"invalid state, {chat_game.current_action=}, {data=}")
 
 
 def link_for_newbies(chat_id):
@@ -476,8 +488,8 @@ def handle_message(message_object: Message):
 
     if text.startswith("/test"):
         try:
-            _, n = text.split(" ")
-            n = int(n)
+            _, n_str = text.split(" ")
+            n = int(n_str)
         except ValueError:
             n = DEFAULT_N_PLAYERS_IN_TEST
         server.games[chat_id] = ChatGame(chat_id, admin=user_id, test_mode=True)
