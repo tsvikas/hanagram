@@ -41,3 +41,7 @@ How to play a local game. Let's say players are Alice, Bob and Casey.
   - `play <index of card to play>`
   - `discard <index of card to play>`
   - `hint <player name to hint> <color or value>`
+
+# Development
+
+- please run `uv run pre-commit install` to set up the pre-commit hooks.
