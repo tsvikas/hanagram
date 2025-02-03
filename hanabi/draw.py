@@ -299,4 +299,10 @@ def create_screenshot():
         hanabi.perform_action(game, players[i % len(players)], action)
         images.append(draw_board_state(game, players[0]))
 
-    images[-1].save("assets/example.webp")
+    images[0].save(
+        "assets/example.gif",
+        save_all=True,
+        append_images=images[1:],
+        duration=3000,
+        loop=1,
+    )
