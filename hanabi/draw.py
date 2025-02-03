@@ -305,7 +305,7 @@ def create_screenshot(seed=0):
     images[0].save(
         "assets/example.gif",
         save_all=True,
-        append_images=images[1:],
+        append_images=[*images[1:], images[-1], images[-1], images[-1]],
         duration=3000,
         loop=1,
     )
