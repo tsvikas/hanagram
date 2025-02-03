@@ -2,7 +2,7 @@
 
 Telegram bot to play Hanabi with your friends.
 
-<img src="assets/example.webp">
+<img src="assets/example.gif">
 
 # Usage
 
