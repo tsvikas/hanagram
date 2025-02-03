@@ -1,7 +1,7 @@
 import enum
 import sys
 from random import shuffle
-from typing import NamedTuple, Optional, Union
+from typing import NamedTuple
 
 ALLOWED_ERRORS = 3
 INITIAL_HINTS = 8
@@ -194,27 +194,31 @@ def is_critical_card(game: Game, color: Color, value: Value) -> bool:
             == CARD_COUNT[Value(lower_value)]
         ):
             return False
-    if count_discarded(game, color, value) == CARD_COUNT[value] - 1:
-        return True
-    return False
+    return count_discarded(game, color, value) == CARD_COUNT[value] - 1
 
 
 def update_not_colors(card: HandCard, color: Color):
-    if card.color != color:
-        if not card.is_color_known and color not in card.not_colors:
-            card.not_colors.append(color)
-            if len(card.not_colors) == len(COLORS) - 1:
-                card.not_colors = []
-                card.is_color_known = True
+    if (
+        (card.color != color)
+        and (not card.is_color_known)
+        and (color not in card.not_colors)
+    ):
+        card.not_colors.append(color)
+        if len(card.not_colors) == len(COLORS) - 1:
+            card.not_colors = []
+            card.is_color_known = True
 
 
 def update_not_values(card: HandCard, value: Value):
-    if card.value != value:
-        if not card.is_value_known and value not in card.not_values:
-            card.not_values.append(value)
-            if len(card.not_values) == len(VALUES) - 1:
-                card.not_values = []
-                card.is_value_known = True
+    if (
+        (card.value != value)
+        and (not card.is_value_known)
+        and (value not in card.not_values)
+    ):
+        card.not_values.append(value)
+        if len(card.not_values) == len(VALUES) - 1:
+            card.not_values = []
+            card.is_value_known = True
 
 
 def update_hand_info(game: Game):
@@ -346,7 +350,7 @@ def give_value_hint(hand: list[HandCard], value: Value):
             card.is_value_known = True
 
 
-def give_hint(game: Game, player: Player, hint: Union[Color, Value]) -> bool:
+def give_hint(game: Game, player: Player, hint: Color | Value) -> bool:
     assert game.hints > 0
     hand = game.hands[player]
     if isinstance(hint, Color):
@@ -444,7 +448,7 @@ def get_score(game: Game):
     return sum(game.piles.values())
 
 
-def print_board_state(game: Game, seen_from: Optional[Player] = None):
+def print_board_state(game: Game, seen_from: Player | None = None):
     for player in game.players:
         print()
         print_hand(game, player, player != seen_from, True)

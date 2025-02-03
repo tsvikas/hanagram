@@ -2,7 +2,7 @@ import enum
 import itertools
 import os
 import time
-from typing import NewType, Optional
+from typing import NewType
 
 import dotenv
 import telepot
@@ -133,7 +133,7 @@ def send_game_views(bot: telepot.Bot, chat_game: ChatGame, keyboard: bool = Fals
 
 
 def send_game_view(
-    name: Optional[hanabi.Player],
+    name: hanabi.Player | None,
     user_id: UserId,
     bot: telepot.Bot,
     chat_game: ChatGame,
@@ -163,7 +163,7 @@ def start_game(server: BotServer, chat_id: ChatId, user_id: UserId):
 
     players = list(player_to_user)
     server.bot.sendMessage(chat_id, f"Starting game with players {players}")
-    server.bot.sendMessage(chat_id, f"FYI: newest card → oldest card")
+    server.bot.sendMessage(chat_id, "FYI: newest card → oldest card")
     chat_game = server.games[chat_id]
     chat_game.background_color = next(BACKGROUND_COLORS_RGB)
     chat_game.game = hanabi.Game(players)
@@ -180,7 +180,7 @@ def edit_message(
     bot: telepot.Bot,
     user_id: UserId,
     message: str,
-    keyboard: Optional[InlineKeyboardMarkup] = None,
+    keyboard: InlineKeyboardMarkup | None = None,
 ):
     if msg := chat_game.user_to_message[user_id]:
         edited = telepot.message_identifier(msg)
@@ -308,7 +308,7 @@ def complete_processed_action(bot: telepot.Bot, chat_id: ChatId):
     send_game_views(bot, chat_game, keyboard=True)
 
 
-def handle_keyboard_response(msg: Message) -> Optional[bool]:
+def handle_keyboard_response(msg: Message) -> bool | None:
     try:
         _query_id, _from_id, data = telepot.glance(msg, flavor="callback_query")
     except Exception:

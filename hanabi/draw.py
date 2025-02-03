@@ -1,5 +1,4 @@
 import io
-from typing import Optional
 
 from PIL import Image, ImageDraw, ImageFont
 
@@ -63,7 +62,7 @@ def render_card_friend(image: ImageDraw, x: float, y: float, color: str, value: 
 
 def draw_board_state(
     game: hanabi.Game,
-    player_viewing: Optional[hanabi.Player],
+    player_viewing: hanabi.Player | None,
     background: tuple[int, int, int] = (20, 20, 20),
 ) -> io.BytesIO:
     width = 400 * size
@@ -106,10 +105,7 @@ def draw_board_state(
     y = 65 * size
     for color in hanabi.COLORS:
         value = game.piles[color]
-        if value == 0:
-            value = ""
-        else:
-            value = str(value)
+        value = "" if value == 0 else str(value)
         render_card(draw, x, y, color, value)
         xx = x
         yy = y
