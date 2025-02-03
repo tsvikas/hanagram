@@ -274,22 +274,29 @@ def create_screenshot():
 
     random.seed(0)
     players = [hanabi.Player(s) for s in ["Tsvika", "Inbar", "Yoav"]]
-    # player1 = players[0]
     game = hanabi.Game(players)
-    hanabi.perform_action(game, players[0], "hint Inbar white")
-    hanabi.perform_action(game, players[1], "play 1")
-    hanabi.perform_action(game, players[2], "hint Inbar 1")
-    hanabi.perform_action(game, players[0], "hint Yoav 1")
-    hanabi.perform_action(game, players[1], "discard 5")
-    hanabi.perform_action(game, players[2], "play 5")
-    hanabi.perform_action(game, players[0], "hint Inbar 5")
-    hanabi.perform_action(game, players[1], "discard 5")
-    hanabi.perform_action(game, players[2], "hint Tsvika 1")
-    hanabi.perform_action(game, players[0], "play 2")
-    hanabi.perform_action(game, players[1], "hint Tsvika 2")
-    hanabi.perform_action(game, players[2], "hint Tsvika green")
-    hanabi.perform_action(game, players[0], "play 5")
-    hanabi.perform_action(game, players[1], "hint Yoav yellow")
-    hanabi.perform_action(game, players[2], "hint Tsvika 5")
 
-    draw_board_state(game, players[0]).save("assets/example.webp")
+    images = []
+    for i, action in enumerate(
+        [
+            "hint Inbar white",
+            "play 1",
+            "hint Inbar 1",
+            "hint Yoav 1",
+            "discard 5",
+            "play 5",
+            "hint Inbar 5",
+            "discard 5",
+            "hint Tsvika 1",
+            "play 2",
+            "hint Tsvika 2",
+            "hint Tsvika green",
+            "play 5",
+            "hint Yoav yellow",
+            "hint Tsvika 5",
+        ]
+    ):
+        hanabi.perform_action(game, players[i % len(players)], action)
+        images.append(draw_board_state(game, players[0]))
+
+    images[-1].save("assets/example.webp")
