@@ -12,7 +12,7 @@ class RectangleParams(TypedDict):
 
 
 def rounded_rectangle(
-    image: ImageDraw,
+    image: ImageDraw.ImageDraw,
     xy: tuple[tuple[float, float], tuple[float, float]],
     corner_radius: float,
     fill: tuple[int, int, int],
@@ -45,7 +45,7 @@ colors_rbg = {
 }
 
 
-def render_card(image: ImageDraw, x: float, y: float, color: str, value: str):
+def render_card(image: ImageDraw.ImageDraw, x: float, y: float, color: str, value: str):
     width = 50 * size
     rounded_rectangle(
         image, ((x, y), (x + width, y + width * 1.3)), width / 7, fill=colors_rbg[color]
@@ -54,7 +54,9 @@ def render_card(image: ImageDraw, x: float, y: float, color: str, value: str):
     image.text((x + width / 4, y), value, font=card_font, fill=text_fill)
 
 
-def render_card_friend(image: ImageDraw, x: float, y: float, color: str, value: str):
+def render_card_friend(
+    image: ImageDraw.ImageDraw, x: float, y: float, color: str, value: str
+):
     width = 50 * size
     height = 30 * size
     rounded_rectangle(
