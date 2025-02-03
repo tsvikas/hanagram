@@ -9,8 +9,7 @@ import telepot
 from telepot.loop import MessageLoop
 from telepot.namedtuple import InlineKeyboardButton, InlineKeyboardMarkup
 
-import draw
-import hanabi
+from hanabi import draw, hanabi
 
 dotenv.load_dotenv()
 

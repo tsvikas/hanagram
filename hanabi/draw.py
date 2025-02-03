@@ -3,7 +3,7 @@ from typing import Optional
 
 from PIL import Image, ImageDraw, ImageFont
 
-import hanabi
+from . import hanabi
 
 
 def rounded_rectangle(
@@ -25,10 +25,10 @@ def rounded_rectangle(
 
 
 size = 1
-card_font = ImageFont.truetype("Avenir.ttc", 50 * size)
-text_font = ImageFont.truetype("Avenir.ttc", 20 * size)
-text_font_discarded = ImageFont.truetype("Avenir.ttc", 15 * size)
-text_font_small = ImageFont.truetype("Avenir.ttc", 10 * size)
+card_font = ImageFont.truetype("assets/Avenir.ttc", 50 * size)
+text_font = ImageFont.truetype("assets/Avenir.ttc", 20 * size)
+text_font_discarded = ImageFont.truetype("assets/Avenir.ttc", 15 * size)
+text_font_small = ImageFont.truetype("assets/Avenir.ttc", 10 * size)
 
 colors_rbg = {
     "red": (230, 20, 20),
