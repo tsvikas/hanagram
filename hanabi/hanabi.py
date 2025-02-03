@@ -112,16 +112,14 @@ class Game:
         assert len(player_names) in HAND_SIZE
         self.players = player_names
         self.deck = new_deck()
-        self.discarded = {
-            color: [] for color in COLORS
-        }  # type: dict[Color, list[Value]]
+        self.discarded: dict[Color, list[Value]] = {color: [] for color in COLORS}
         self.errors = 0
         self.hints = INITIAL_HINTS
         num_cards = HAND_SIZE[len(self.players)]
-        self.hands = {
+        self.hands: dict[Player, list[HandCard]] = {
             player: new_hand(self.deck, num_cards) for player in player_names
-        }  # type: dict[Player, list[HandCard]]
-        self.piles = {color: 0 for color in COLORS}  # type: dict[Color, int]
+        }
+        self.piles: dict[Color, int] = {color: 0 for color in COLORS}
         self.final_moves = 0
         self.active_player = 0
         # TODO: better initial sentence

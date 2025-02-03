@@ -62,10 +62,10 @@ class KeyboardType(enum.Enum):
 
 class ChatGame:
     def __init__(self, chat_id: ChatId, admin: UserId, test_mode: bool = False):
-        self.game = None  # type: Optional[hanabi.Game]
+        self.game: hanabi.Game | None = None
         self.admin = admin
-        self.player_to_user = {}  # type: dict[hanabi.Player, UserId]
-        self.user_to_message = {}  # type: dict[UserId, Optional[Message]]
+        self.player_to_user: dict[hanabi.Player, UserId] = {}
+        self.user_to_message: dict[UserId, Message | None] = {}
         self.current_action = ""
         self.chat_id = chat_id
         self.background_color = None
@@ -76,7 +76,7 @@ class BotServer:
     def __init__(self, token: str):
         self.bot = telepot.Bot(token)
         self.token = token
-        self.games = {}  # type: dict[ChatId, ChatGame]
+        self.games: dict[ChatId, ChatGame] = {}
 
 
 server = BotServer("DEADBEEF")
@@ -407,8 +407,8 @@ def handle_message(message_object: Message):
     if content_type != "text":
         return
 
-    text = message_object["text"].split("@")[0].strip()  # type: str
-    data = message_object.get("callback_data", None)  # type: str
+    text: str = message_object["text"].split("@")[0].strip()
+    data: str = message_object.get("callback_data", None)
     chat_id = ChatId(chat_id)
     if data:
         print("DATA", data)
