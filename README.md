@@ -25,12 +25,16 @@ uv run main.py
 
 How to play a Telegram game:
 
-- Send `/test <number-of-players>` in a private chat, to test.
-- Add your bot to a group chat.
+- Add the bot to a telegram group.
+- All players should start a private chat with the bot. Send `/link_for_newbies`
+  to help them do it.
 - Send `/new_game` in a group chat to create a new game.
-- Players must first activate the bot with `/start` in private chat.
-- Users can join the game with the `Join` button displayed.
-- Send `/start_game` to start playing!
+- Users can now join the game with the `Join` button displayed.
+- When everyone joined, send `/start_game` to start playing!
+
+Alternatively:
+
+- Send `/test <number-of-players>` in a private chat.
 
 # Local game
 
