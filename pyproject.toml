@@ -12,6 +12,7 @@ dependencies = [
 
 [project.scripts]
 screenshot = "hanabi.draw:create_screenshot"
+play-repl = "hanabi.hanabi:main"
 
 [dependency-groups]
 dev = [

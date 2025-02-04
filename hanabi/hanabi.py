@@ -481,7 +481,7 @@ def print_board_state(game: Game, seen_from: Player | None = None):
     print()
 
 
-def main(player_names: list[str], output_fn=print_board_state):
+def play_repl(player_names: list[str], output_fn=print_board_state):
     players = [Player(s) for s in player_names]
     print(players)
     game = Game(players)
@@ -514,7 +514,7 @@ def main(player_names: list[str], output_fn=print_board_state):
                 print("hint <PLAYER> <VALUE>")
 
 
-if __name__ == "__main__":
+def main():
     try:
         main(sys.argv[1:])
     except EOFError:
