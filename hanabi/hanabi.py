@@ -84,14 +84,34 @@ class HandCard:
             info.append(str(self.color))
         if self.is_value_known:
             info.append(str(self.value))
-        info.extend(f"not {color}" for color in self.not_colors)
-        info.extend(f"not {value}" for value in self.not_values)
+        if not self.is_color_known:
+            info.extend(f"not {color}" for color in self.not_colors)
+        if not self.is_value_known:
+            info.extend(f"not {value}" for value in self.not_values)
 
         info_str = "{" + ", ".join(info) + "}"
         if show_value:
             return f"{self.real_name():>8}, {info_str}"
         else:
             return info_str
+
+    def give_color_hint(self, color: Color):
+        if self.color == color:
+            self.is_color_known = True
+        else:
+            if color not in self.not_colors:
+                self.not_colors.append(color)
+                if len(self.not_colors) == len(COLORS) - 1:
+                    self.is_color_known = True
+
+    def give_value_hint(self, value: Value):
+        if self.value == value:
+            self.is_value_known = True
+        else:
+            if value not in self.not_values:
+                self.not_values.append(value)
+                if len(self.not_values) == len(VALUES) - 1:
+                    self.is_value_known = True
 
 
 class Hand(list[HandCard]):
@@ -100,6 +120,14 @@ class Hand(list[HandCard]):
             f"[{i + 1}]: {hand_card.to_string(show_value)}"
             for i, hand_card in enumerate(self)
         )
+
+    def give_color_hint(self, color: Color):
+        for card in self:
+            card.give_color_hint(color)
+
+    def give_value_hint(self, value: Value):
+        for card in self:
+            card.give_value_hint(value)
 
 
 def draw_card(hand: Hand, deck: Deck):
@@ -338,41 +366,13 @@ def get_active_player_name(game: Game) -> Player:
     return game.players[game.active_player]
 
 
-def give_color_hint(hand: Hand, color: Color):
-    for card in hand:
-        if card.color == color:
-            card.is_color_known = True
-            card.not_colors = []
-        else:
-            if color not in card.not_colors:
-                card.not_colors.append(color)
-
-        if len(card.not_colors) == len(COLORS) - 1:
-            card.not_colors = []
-            card.is_color_known = True
-
-
-def give_value_hint(hand: Hand, value: Value):
-    for card in hand:
-        if card.value == value:
-            card.is_value_known = True
-            card.not_values = []
-        else:
-            if value not in card.not_values:
-                card.not_values.append(value)
-
-        if len(card.not_values) == len(VALUES) - 1:
-            card.not_values = []
-            card.is_value_known = True
-
-
 def give_hint(game: Game, player: Player, hint: Color | Value) -> bool:
     assert game.hints > 0
     hand = game.hands[player]
     if isinstance(hint, Color):
-        give_color_hint(hand, hint)
+        hand.give_color_hint(hint)
     elif isinstance(hint, Value):
-        give_value_hint(hand, hint)
+        hand.give_value_hint(hint)
     else:
         return False
 
