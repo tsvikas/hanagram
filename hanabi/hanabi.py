@@ -182,9 +182,7 @@ def check_value_finished(game: Game, value: Value) -> bool:
 
 
 def count_discarded(game: Game, color: Color, value: Value) -> int:
-    return sum(
-        1 for discarded_value in game.discarded[color] if discarded_value == value
-    )
+    return game.discarded[color].count(value)
 
 
 def check_card_finished(game: Game, color: Color, value: Value) -> bool:
