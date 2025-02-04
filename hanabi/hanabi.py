@@ -167,9 +167,7 @@ class Game:
 
     def __post_init__(self) -> None:
         num_cards = HAND_SIZE[len(self.players)]
-        self.hands: dict[Player, Hand] = {
-            player: new_hand(self.deck, num_cards) for player in self.players
-        }
+        self.hands = {player: new_hand(self.deck, num_cards) for player in self.players}
 
 
 def print_hand(game: Game, player: Player, show_value: bool):
