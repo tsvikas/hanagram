@@ -1,8 +1,8 @@
 import enum
 import sys
 import textwrap
+from dataclasses import dataclass
 from random import shuffle
-from typing import NamedTuple
 
 ALLOWED_ERRORS = 3
 INITIAL_HINTS = 8
@@ -36,7 +36,8 @@ MAX_VALUE = max(VALUES)
 COLOR_COUNT = sum(CARD_COUNT.values())
 
 
-class Card(NamedTuple):
+@dataclass(frozen=True, slots=True)
+class Card:
     color: Color
     value: Value
 
