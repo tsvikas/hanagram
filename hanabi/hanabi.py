@@ -84,10 +84,8 @@ class HandCard:
             info.append(str(self.color))
         if self.is_value_known:
             info.append(str(self.value))
-        for color in self.not_colors:
-            info.append("not " + color)
-        for value in self.not_values:
-            info.append("not " + str(value))
+        info.extend(f"not {color}" for color in self.not_colors)
+        info.extend(f"not {value}" for value in self.not_values)
 
         info_str = "{" + ", ".join(info) + "}"
         if show_value:
