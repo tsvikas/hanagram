@@ -5,17 +5,19 @@ from PIL import Image, ImageDraw, ImageFont
 
 from . import hanabi
 
+RGBColor = tuple[int, int, int]
+
 
 class RectangleParams(TypedDict):
-    fill: tuple[int, int, int] | None
-    outline: tuple[int, int, int] | None
+    fill: RGBColor | None
+    outline: RGBColor | None
 
 
 def rounded_rectangle(
     image: ImageDraw.ImageDraw,
     xy: tuple[tuple[float, float], tuple[float, float]],
     corner_radius: float,
-    fill: tuple[int, int, int],
+    fill: RGBColor,
 ):
     r = corner_radius
     up, left = xy[0]
@@ -69,7 +71,7 @@ def render_card_friend(
 def draw_board_state(
     game: hanabi.Game,
     player_viewing: hanabi.Player | None,
-    background: tuple[int, int, int] = (20, 20, 20),
+    background: RGBColor = (20, 20, 20),
 ) -> Image.Image:
     width = 400 * size
     height = (width * 16) // 9
