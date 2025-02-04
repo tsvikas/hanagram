@@ -12,7 +12,7 @@ from telepot.namedtuple import (  # type: ignore[import-untyped]
     InlineKeyboardMarkup,
 )
 
-from hanabi import draw, hanabi
+from . import draw, hanabi
 
 dotenv.load_dotenv()
 
