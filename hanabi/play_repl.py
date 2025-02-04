@@ -42,7 +42,7 @@ def play_repl(player_names: list[str], output_fn=print_board_state):
         if result is GameState.MAX_SCORE:
             print("*** You won! ***")
             break
-        elif result is not GameState.RUNNING:
+        if result is not GameState.RUNNING:
             print("*** You lost! ***")
             break
 
