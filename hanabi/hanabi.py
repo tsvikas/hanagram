@@ -91,26 +91,23 @@ class HandCard:
         info_str = "{" + ", ".join(info) + "}"
         if show_value:
             return f"{self.real_name():>8}, {info_str}"
-        else:
-            return info_str
+        return info_str
 
     def give_color_hint(self, color: Color):
         if self.color == color:
             self.is_color_known = True
-        else:
-            if color not in self.not_colors:
-                self.not_colors.append(color)
-                if len(self.not_colors) == len(COLORS) - 1:
-                    self.is_color_known = True
+        elif color not in self.not_colors:
+            self.not_colors.append(color)
+            if len(self.not_colors) == len(COLORS) - 1:
+                self.is_color_known = True
 
     def give_value_hint(self, value: Value):
         if self.value == value:
             self.is_value_known = True
-        else:
-            if value not in self.not_values:
-                self.not_values.append(value)
-                if len(self.not_values) == len(VALUES) - 1:
-                    self.is_value_known = True
+        elif value not in self.not_values:
+            self.not_values.append(value)
+            if len(self.not_values) == len(VALUES) - 1:
+                self.is_value_known = True
 
 
 class Hand(list[HandCard]):
