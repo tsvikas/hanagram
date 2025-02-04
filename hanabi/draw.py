@@ -272,10 +272,10 @@ def image_to_bytes(image: Image.Image) -> io.BytesIO:
     return image_file
 
 
-def create_screenshot():
+def create_screenshot(seed=0):
     import random
 
-    random.seed(0)
+    random.seed(seed)
     players = [hanabi.Player(s) for s in ["Tsvika", "Inbar", "Yoav"]]
     game = hanabi.Game(players)
 
