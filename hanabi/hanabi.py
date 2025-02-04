@@ -97,7 +97,11 @@ class HandCard:
 
 
 class Hand(list[HandCard]):
-    pass
+    def to_string(self, show_value: bool):
+        return "\n".join(
+            f"[{i + 1}]: {hand_card.to_string(show_value)}"
+            for i, hand_card in enumerate(self)
+        )
 
 
 def draw_card(hand: Hand, deck: Deck):
@@ -144,9 +148,7 @@ class Game:
 
 def print_hand(game: Game, player: Player, show_value: bool):
     print(f"{player}'s hand:")
-    for i, card in enumerate(game.hands[player]):
-        s = card.to_string(show_value)
-        print(f"[{i + 1}]: {s}")
+    print(game.hands[player].to_string(show_value))
 
 
 def check_color_finished(game: Game, color: Color) -> bool:
