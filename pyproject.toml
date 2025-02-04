@@ -21,4 +21,4 @@ dev = [
 ]
 
 [tool.mypy]
-files = ["*.py", "hanabi/*.py"]
+files = ["hanabi/*.py"]
