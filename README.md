@@ -40,7 +40,7 @@ Alternatively:
 
 How to play a local game. Let's say players are Alice, Bob and Casey.
 
-- Run `uv run python hanabi/hanabi.py Alice Bob Casey`
+- Run `uv run play-repl Alice Bob Casey`
 - On each turn, type one of those actions:
   - `play <index of card to play>`
   - `discard <index of card to play>`
