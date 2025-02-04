@@ -6,6 +6,7 @@ from PIL import Image, ImageDraw, ImageFont
 from . import hanabi
 
 RGBColor = tuple[int, int, int]
+Point = tuple[float, float]
 
 
 class RectangleParams(TypedDict):
@@ -15,7 +16,7 @@ class RectangleParams(TypedDict):
 
 def rounded_rectangle(
     image: ImageDraw.ImageDraw,
-    xy: tuple[tuple[float, float], tuple[float, float]],
+    xy: tuple[Point, Point],
     corner_radius: float,
     fill: RGBColor,
 ):
@@ -156,7 +157,7 @@ def draw_board_state(
             render_card(draw, x, y, color_name, value_str)
 
             # for current player, fill big card with negative info
-            start: tuple[float, float]
+            start: Point
             if player_viewing == player:
                 yy = y + 0 * size
                 xx = x + 5 * size
