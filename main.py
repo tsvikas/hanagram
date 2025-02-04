@@ -413,18 +413,17 @@ def link_for_newbies(chat_id):
 
 def handle_message(message_object: Message):
     content_type, _chat_type, chat_id = telepot.glance(message_object)
-
     user_id = UserId(message_object["from"]["id"])
+    chat_id = ChatId(chat_id)
 
     if content_type != "text":
         return
 
-    text: str = message_object["text"].split("@")[0].strip()
-    data: str = message_object.get("callback_data", None)
-    chat_id = ChatId(chat_id)
+    data = message_object.get("callback_data", None)
     if data:
         print("DATA", data)
 
+    text = message_object["text"].split("@")[0].strip()
     if text == "/start":
         server.bot.sendMessage(chat_id, "Thanks for trying Hanagram bot.")
         server.bot.sendMessage(
