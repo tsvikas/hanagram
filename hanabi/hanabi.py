@@ -24,14 +24,18 @@ class Color(enum.StrEnum):
 COLORS = Color.__members__.values()
 
 
-class Value(int):
-    pass
+class Value(enum.IntEnum):
+    _1 = 1
+    _2 = 2
+    _3 = 3
+    _4 = 4
+    _5 = 5
 
 
-CARD_COUNT = {Value(1): 3, Value(2): 2, Value(3): 2, Value(4): 2, Value(5): 1}
+CARD_COUNT = {Value._1: 3, Value._2: 2, Value._3: 2, Value._4: 2, Value._5: 1}
 
 # calculate useful constants
-VALUES = list(CARD_COUNT)
+VALUES = Value.__members__.values()
 MAX_VALUE = max(VALUES)
 COLOR_COUNT = sum(CARD_COUNT.values())
 
@@ -336,7 +340,7 @@ def check_state(game: Game) -> GameState:
         count_discarded(game, color, Value(game.piles[color] + 1))
         == CARD_COUNT[Value(game.piles[color] + 1)]
         for color in COLORS
-        if Value(game.piles[color]) < MAX_VALUE
+        if game.piles[color] < MAX_VALUE
     ):
         return GameState.STUCK
 
@@ -481,7 +485,9 @@ def print_board_state(game: Game, seen_from: Player | None = None):
         print()
 
     for color in COLORS:
-        print(f"{color:6}: {game.piles[color]}  {game.discarded[color]}")
+        print(
+            f"{color:6}: {game.piles[color]}  {[int(v) for v in game.discarded[color]]}"
+        )
     print()
 
     score = get_score(game)
