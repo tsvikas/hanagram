@@ -18,7 +18,7 @@ And run the server with
 [uv](https://docs.astral.sh/uv/getting-started/installation/)
 
 ```bash
-uv run main.py
+uv run play-telegram
 ```
 
 # Telegram game
