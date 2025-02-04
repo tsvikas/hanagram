@@ -519,5 +519,5 @@ def main(player_names: list[str], output_fn=print_board_state):
 if __name__ == "__main__":
     try:
         main(sys.argv[1:])
-    except KeyboardInterrupt:
+    except (KeyboardInterrupt, EOFError):
         sys.exit(1)
