@@ -1,7 +1,6 @@
 import enum
 import sys
-import textwrap
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from random import shuffle
 
 ALLOWED_ERRORS = 3
@@ -118,38 +117,29 @@ def new_hand(deck: Deck, num_cards: int) -> Hand:
     return hand
 
 
+@dataclass(slots=True)
 class Game:
-    def __init__(self, player_names: list[Player]):
-        assert len(player_names) in HAND_SIZE
-        self.players = player_names
-        self.deck = Deck.new()
-        self.discarded: dict[Color, list[Value]] = {color: [] for color in COLORS}
-        self.errors = 0
-        self.hints = INITIAL_HINTS
+    players: list[Player]
+    deck: Deck = field(default_factory=Deck.new)
+    errors: int = 0
+    hints: int = INITIAL_HINTS
+    piles: dict[Color, int] = field(
+        default_factory=lambda: {color: 0 for color in COLORS}
+    )
+    discarded: dict[Color, list[Value]] = field(
+        default_factory=lambda: {color: [] for color in COLORS}
+    )
+    final_moves: int = 0
+    active_player: int = 0
+    hands: dict[Player, Hand] = field(init=False)
+    # TODO: change to game-log
+    last_action_description: str = "Game just started"
+
+    def __post_init__(self) -> None:
         num_cards = HAND_SIZE[len(self.players)]
         self.hands: dict[Player, Hand] = {
-            player: new_hand(self.deck, num_cards) for player in player_names
+            player: new_hand(self.deck, num_cards) for player in self.players
         }
-        self.piles: dict[Color, int] = {color: 0 for color in COLORS}
-        self.final_moves = 0
-        self.active_player = 0
-        # TODO: better initial sentence
-        self.last_action_description = "Game just started"
-
-    def __str__(self):
-        return textwrap.dedent(
-            f"""\
-            players: {self.players}
-            deck_size: {len(self.deck)}
-            errors: {self.errors}
-            hints: {self.hints}
-            piles: {self.piles}
-            discarded_cards: {self.discarded}
-            hands: {self.hands}
-            active_player: {self.active_player}[{self.players[self.active_player]}]
-            last_action: {self.last_action_description}
-        """
-        )
 
 
 def print_hand(game: Game, player: Player, show_value: bool):
