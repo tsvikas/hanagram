@@ -516,6 +516,6 @@ def play_repl(player_names: list[str], output_fn=print_board_state):
 
 def main():
     try:
-        main(sys.argv[1:])
+        play_repl(sys.argv[1:])
     except EOFError:
         sys.exit(1)
