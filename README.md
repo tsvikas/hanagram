@@ -30,7 +30,7 @@ How to play a Telegram game:
   to help them do it.
 - Send `/new_game` in a group chat to create a new game.
 - Users can now join the game with the `Join` button displayed.
-- When everyone joined, send `/start_game` to start playing!
+- When everyone joined, send `/deal_cards` to start playing!
 
 Alternatively:
 
