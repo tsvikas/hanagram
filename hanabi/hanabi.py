@@ -97,7 +97,11 @@ class HandCard:
             return info_str
 
 
-def draw_card(hand: list[HandCard], deck: list[Card]):
+class Hand(list[HandCard]):
+    pass
+
+
+def draw_card(hand: Hand, deck: Deck):
     if not deck:
         return
 
@@ -106,9 +110,9 @@ def draw_card(hand: list[HandCard], deck: list[Card]):
     hand.insert(0, hand_card)
 
 
-def new_hand(deck: list[Card], num_cards: int) -> list[HandCard]:
+def new_hand(deck: Deck, num_cards: int) -> Hand:
     assert num_cards in HAND_SIZE.values()
-    hand: list[HandCard] = []
+    hand = Hand()
     for _ in range(num_cards):
         draw_card(hand, deck)
     return hand
@@ -123,7 +127,7 @@ class Game:
         self.errors = 0
         self.hints = INITIAL_HINTS
         num_cards = HAND_SIZE[len(self.players)]
-        self.hands: dict[Player, list[HandCard]] = {
+        self.hands: dict[Player, Hand] = {
             player: new_hand(self.deck, num_cards) for player in player_names
         }
         self.piles: dict[Color, int] = {color: 0 for color in COLORS}
@@ -346,7 +350,7 @@ def get_active_player_name(game: Game) -> Player:
     return game.players[game.active_player]
 
 
-def give_color_hint(hand: list[HandCard], color: Color):
+def give_color_hint(hand: Hand, color: Color):
     for card in hand:
         if card.color == color:
             card.is_color_known = True
@@ -360,7 +364,7 @@ def give_color_hint(hand: list[HandCard], color: Color):
             card.is_color_known = True
 
 
-def give_value_hint(hand: list[HandCard], value: Value):
+def give_value_hint(hand: Hand, value: Value):
     for card in hand:
         if card.value == value:
             card.is_value_known = True
