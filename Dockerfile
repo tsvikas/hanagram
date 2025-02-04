@@ -8,4 +8,4 @@ ENV UV_COMPILE_BYTECODE=1 \
 WORKDIR /app
 COPY . .
 
-ENTRYPOINT ["uv", "run", "--locked", "main.py"]
+ENTRYPOINT ["uv", "run", "--locked", "play-telegram"]

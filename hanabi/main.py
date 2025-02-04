@@ -513,7 +513,7 @@ def handle_message(message_object: Message):
             restart_turn(chat_id)
 
 
-def main(token: str):
+def start_telegram_bot(token: str = TELEGRAM_API_KEY):
     global server
     server = BotServer(token)
     server.bot.setMyCommands(
@@ -530,7 +530,3 @@ def main(token: str):
     ).run_as_thread()
     while 1:
         time.sleep(10)
-
-
-if __name__ == "__main__":
-    main(TELEGRAM_API_KEY)
