@@ -46,15 +46,17 @@ class Card:
     value: Value
 
 
-def new_deck() -> list[Card]:
-    deck = [
-        Card(color, value)
-        for color in COLORS
-        for value in VALUES
-        for _ in range(CARD_COUNT[value])
-    ]
-    shuffle(deck)
-    return deck
+class Deck(list[Card]):
+    @classmethod
+    def new(cls):
+        deck = [
+            Card(color, value)
+            for color in COLORS
+            for value in VALUES
+            for _ in range(CARD_COUNT[value])
+        ]
+        shuffle(deck)
+        return cls(deck)
 
 
 class HandCard:
@@ -123,7 +125,7 @@ class Game:
     def __init__(self, player_names: list[Player]):
         assert len(player_names) in HAND_SIZE
         self.players = player_names
-        self.deck = new_deck()
+        self.deck = Deck.new()
         self.discarded: dict[Color, list[Value]] = {color: [] for color in COLORS}
         self.errors = 0
         self.hints = INITIAL_HINTS
