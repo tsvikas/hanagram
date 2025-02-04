@@ -79,29 +79,23 @@ class HandCard:
         name = " ".join(data).strip()
         return name or " "
 
+    def to_string(self, show_value: bool) -> str:
+        info: list[str] = []
+        if self.is_color_known:
+            info.append(str(self.color))
+        if self.is_value_known:
+            info.append(str(self.value))
+        for color in self.not_colors:
+            info.append("not " + color)
+        for value in self.not_values:
+            info.append("not " + str(value))
 
-def to_string(card: HandCard, show_value: bool, show_info: bool) -> str:
-    assert show_value or show_info
-
-    card_value = f"{card.color} {card.value}"
-    if not show_info:
-        return card_value
-
-    info: list[str] = []
-    if card.is_color_known:
-        info.append(str(card.color))
-    if card.is_value_known:
-        info.append(str(card.value))
-    for color in card.not_colors:
-        info.append("not " + color)
-    for value in card.not_values:
-        info.append("not " + str(value))
-    info_str = "{" + ", ".join(info) + "}"
-
-    if show_value:
-        return f"{card_value:>8}, {info_str}"
-    else:
-        return info_str
+        info_str = "{" + ", ".join(info) + "}"
+        if show_value:
+            card_value = f"{self.color} {self.value}"
+            return f"{card_value:>8}, {info_str}"
+        else:
+            return info_str
 
 
 def draw_card(hand: list[HandCard], deck: list[Card]):
@@ -155,10 +149,10 @@ class Game:
         )
 
 
-def print_hand(game: Game, player: Player, show_value: bool, show_info: bool):
+def print_hand(game: Game, player: Player, show_value: bool):
     print(f"{player}'s hand:")
     for i, card in enumerate(game.hands[player]):
-        s = to_string(card, show_value, show_info)
+        s = card.to_string(show_value)
         print(f"[{i + 1}]: {s}")
 
 
@@ -483,7 +477,7 @@ def get_score(game: Game):
 def print_board_state(game: Game, seen_from: Player | None = None):
     for player in game.players:
         print()
-        print_hand(game, player, player != seen_from, True)
+        print_hand(game, player, show_value=player != seen_from)
         print()
 
     for color in COLORS:
