@@ -68,8 +68,8 @@ class HandCard:
         self.not_colors: list[Color] = []
         self.not_values: list[Value] = []
 
-    def __repr__(self):
-        return self.color + " " + str(self.value)
+    def real_name(self) -> str:
+        return f"{self.color} {self.value}"
 
     def known_name(self) -> str:
         data = [
@@ -92,8 +92,7 @@ class HandCard:
 
         info_str = "{" + ", ".join(info) + "}"
         if show_value:
-            card_value = f"{self.color} {self.value}"
-            return f"{card_value:>8}, {info_str}"
+            return f"{self.real_name():>8}, {info_str}"
         else:
             return info_str
 
@@ -419,7 +418,7 @@ def perform_action(game: Game, player: Player, action: str) -> bool:
             description += "critical "
         if hand_card.is_value_known or hand_card.is_color_known:
             description += "hinted "
-        description += str(hand_card)
+        description += hand_card.real_name()
         ok = discard_card(game, player, index)
 
     elif name == "play":
@@ -435,7 +434,7 @@ def perform_action(game: Game, player: Player, action: str) -> bool:
             game, hand_card.color, hand_card.value
         ):
             description += "critical "
-        description += str(hand_card)
+        description += hand_card.real_name()
         errors = game.errors
         ok = play_card(game, player, index)
         if game.errors != errors:
