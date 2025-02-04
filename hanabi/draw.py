@@ -23,7 +23,7 @@ def rounded_rectangle(
     r = corner_radius
     up, left = xy[0]
     bottom, right = xy[1]
-    color: RectangleParams = dict(fill=fill, outline=None)
+    color = RectangleParams(fill=fill, outline=None)
     image.rectangle([(up, left + r), (bottom, right - r)], **color)
     image.rectangle([(up + r, left), (bottom - r, right)], **color)
     image.pieslice([(up, left), (up + r * 2, left + r * 2)], 180, 270, **color)

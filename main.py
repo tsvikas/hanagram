@@ -534,4 +534,4 @@ def main(token: str):
 
 
 if __name__ == "__main__":
-    main(os.environ["TELEGRAM_API_KEY"])
+    main(TELEGRAM_API_KEY)
