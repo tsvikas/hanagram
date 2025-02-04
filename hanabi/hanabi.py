@@ -526,4 +526,7 @@ def main(player_names: list[str], output_fn=print_board_state):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    try:
+        main(sys.argv[1:])
+    except KeyboardInterrupt:
+        sys.exit(1)
