@@ -23,14 +23,14 @@ COLORS = Color.__members__.values()
 
 
 class Value(enum.IntEnum):
-    _1 = 1
-    _2 = 2
-    _3 = 3
-    _4 = 4
-    _5 = 5
+    n1 = 1
+    n2 = 2
+    n3 = 3
+    n4 = 4
+    n5 = 5
 
 
-CARD_COUNT = {Value._1: 3, Value._2: 2, Value._3: 2, Value._4: 2, Value._5: 1}
+CARD_COUNT = {Value.n1: 3, Value.n2: 2, Value.n3: 2, Value.n4: 2, Value.n5: 1}
 
 # calculate useful constants
 VALUES = Value.__members__.values()
