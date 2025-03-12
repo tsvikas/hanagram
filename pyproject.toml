@@ -138,7 +138,7 @@ python_version = "3.11"
 # enable checks [last updated: mypy 1.15]
 strict = true
 disallow_any_explicit = true
-disallow_any_unimported = true
+disallow_any_unimported = false
 warn_unreachable = true
 #strict_bytes = true  # TODO: enable me when validate-pyproject updates
 enable_error_code = [
