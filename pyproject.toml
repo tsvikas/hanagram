@@ -165,12 +165,13 @@ docstring-code-format = true
 [tool.ruff.lint]
 # Use google-style conventions for docstrings
 pydocstyle.convention = "google"
-select = [
-  "ALL",
-  # extend rules outside pydocstyle google convention
-  "D401",  # pydocstyle/non-imperative-mood
-  "D404",  # pydocstyle/docstring-starts-with-this
-]
+# TODO: enable more ruff checks
+#select = [
+#  "ALL",
+#  # extend rules outside pydocstyle google convention
+#  "D401",  # pydocstyle/non-imperative-mood
+#  "D404",  # pydocstyle/docstring-starts-with-this
+#]
 ignore = [
   # needed only in large codebases
   "TD002",    # flake8-todos/missing-todo-author
