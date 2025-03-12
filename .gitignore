@@ -1,16 +1,65 @@
-# Python-generated files
+# Created by https://www.toptal.com/developers/gitignore/api/pythonvanilla
+# Edit at https://www.toptal.com/developers/gitignore?templates=pythonvanilla
+
+### PythonVanilla ###
+# Byte-compiled / optimized / DLL files
 __pycache__/
-*.py[oc]
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
 build/
+develop-eggs/
 dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+__pypackages__/
+sdist/
+var/
 wheels/
-*.egg-info
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
 
-# Virtual environments
-.venv
+# Unit test / coverage reports
+.cache
+.pytest_cache/
+.coverage
 
-# secrets
+# End of https://www.toptal.com/developers/gitignore/api/pythonvanilla
+# version file
+_version.py
+
+# virtual envs
+venv/
+.venv/
+
+# development tools
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+.benchmarks/
+
+# Secrets
 .env
 
-# todo file
-TODO.md
+# jupyter
+.ipynb_checkpoints/
+
+# TODO
+TODO*
+
+# LLMs
+CLAUDE.md
+
+# specific to this project:
