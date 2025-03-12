@@ -1,4 +1,5 @@
 import sys
+from collections.abc import Callable
 
 from .hanabi import (
     COLORS,
@@ -11,7 +12,7 @@ from .hanabi import (
 )
 
 
-def print_board_state(game: Game, seen_from: Player | None = None):
+def print_board_state(game: Game, seen_from: Player | None = None) -> None:
     for player in game.players:
         print()
         print(f"{player}'s hand:")
@@ -30,7 +31,10 @@ def print_board_state(game: Game, seen_from: Player | None = None):
     print()
 
 
-def play_repl(player_names: list[str], output_fn=print_board_state):
+def play_repl(
+    player_names: list[str],
+    output_fn: Callable[[Game, Player], None] = print_board_state,
+) -> None:
     players = [Player(s) for s in player_names]
     print(players)
     game = Game(players)
@@ -63,7 +67,7 @@ def play_repl(player_names: list[str], output_fn=print_board_state):
                 print("hint <PLAYER> <VALUE>")
 
 
-def main():
+def main() -> None:
     try:
         play_repl(sys.argv[1:])
     except EOFError:

@@ -19,7 +19,7 @@ def rounded_rectangle(
     xy: tuple[Point, Point],
     corner_radius: float,
     fill: RGBColor,
-):
+) -> None:
     r = corner_radius
     up, left = xy[0]
     bottom, right = xy[1]
@@ -48,7 +48,9 @@ colors_rbg = {
 }
 
 
-def render_card(image: ImageDraw.ImageDraw, x: float, y: float, color: str, value: str):
+def render_card(
+    image: ImageDraw.ImageDraw, x: float, y: float, color: str, value: str
+) -> None:
     width = 50 * size
     rounded_rectangle(
         image, ((x, y), (x + width, y + width * 1.3)), width / 7, fill=colors_rbg[color]
@@ -59,7 +61,7 @@ def render_card(image: ImageDraw.ImageDraw, x: float, y: float, color: str, valu
 
 def render_card_friend(
     image: ImageDraw.ImageDraw, x: float, y: float, color: str, value: str
-):
+) -> None:
     width = 50 * size
     height = 30 * size
     rounded_rectangle(
@@ -272,7 +274,7 @@ def image_to_bytes(image: Image.Image) -> io.BytesIO:
     return image_file
 
 
-def create_screenshot(seed=0):
+def create_screenshot(seed: int = 0) -> None:
     import random
 
     random.seed(seed)

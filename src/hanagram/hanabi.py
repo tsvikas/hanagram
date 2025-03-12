@@ -1,4 +1,5 @@
 import enum
+import typing
 from dataclasses import dataclass, field
 from random import shuffle
 
@@ -46,7 +47,7 @@ class Card:
 
 class Deck(list[Card]):
     @classmethod
-    def new(cls):
+    def new(cls) -> typing.Self:
         deck = [
             Card(color, value)
             for color in COLORS
@@ -93,7 +94,7 @@ class HandCard:
             return f"{self.real_name():>8}, {info_str}"
         return info_str
 
-    def give_color_hint(self, color: Color):
+    def give_color_hint(self, color: Color) -> None:
         if self.color == color:
             self.is_color_known = True
         elif color not in self.not_colors:
@@ -101,7 +102,7 @@ class HandCard:
             if len(self.not_colors) == len(COLORS) - 1:
                 self.is_color_known = True
 
-    def give_value_hint(self, value: Value):
+    def give_value_hint(self, value: Value) -> None:
         if self.value == value:
             self.is_value_known = True
         elif value not in self.not_values:
@@ -111,22 +112,22 @@ class HandCard:
 
 
 class Hand(list[HandCard]):
-    def to_string(self, show_value: bool):
+    def to_string(self, show_value: bool) -> str:
         return "\n".join(
             f"[{i + 1}]: {hand_card.to_string(show_value)}"
             for i, hand_card in enumerate(self)
         )
 
-    def give_color_hint(self, color: Color):
+    def give_color_hint(self, color: Color) -> None:
         for card in self:
             card.give_color_hint(color)
 
-    def give_value_hint(self, value: Value):
+    def give_value_hint(self, value: Value) -> None:
         for card in self:
             card.give_value_hint(value)
 
 
-def draw_card(hand: Hand, deck: Deck):
+def draw_card(hand: Hand, deck: Deck) -> None:
     if not deck:
         return
 
@@ -230,7 +231,7 @@ def is_critical_card(game: Game, color: Color, value: Value) -> bool:
     return count_discarded(game, color, value) == CARD_COUNT[value] - 1
 
 
-def update_not_colors(card: HandCard, color: Color):
+def update_not_colors(card: HandCard, color: Color) -> None:
     if (
         (card.color != color)
         and (not card.is_color_known)
@@ -242,7 +243,7 @@ def update_not_colors(card: HandCard, color: Color):
             card.is_color_known = True
 
 
-def update_not_values(card: HandCard, value: Value):
+def update_not_values(card: HandCard, value: Value) -> None:
     if (
         (card.value != value)
         and (not card.is_value_known)
@@ -254,7 +255,7 @@ def update_not_values(card: HandCard, value: Value):
             card.is_value_known = True
 
 
-def update_hand_info(game: Game):
+def update_hand_info(game: Game) -> None:
     for color in COLORS:
         if check_color_finished(game, color):
             for hand in game.hands.values():
@@ -363,7 +364,7 @@ def give_hint(game: Game, player: Player, hint: Color | Value) -> bool:
     elif isinstance(hint, Value):
         hand.give_value_hint(hint)
     else:
-        return False
+        assert False
 
     game.hints -= 1
     if not game.deck:
@@ -450,5 +451,5 @@ def perform_action(game: Game, player: Player, action: str) -> bool:
     return ok
 
 
-def get_score(game: Game):
+def get_score(game: Game) -> int:
     return sum(game.piles.values())

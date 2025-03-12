@@ -2,7 +2,7 @@ import enum
 import itertools
 import os
 import time
-from typing import NewType
+import typing
 
 import dotenv
 import telepot  # type: ignore[import-untyped]
@@ -52,7 +52,7 @@ class ChatId(int):
     pass
 
 
-Message = NewType("Message", dict)
+Message = typing.NewType("Message", dict[str, typing.Any])  # type: ignore[explicit-any]
 
 
 class KeyboardType(enum.Enum):
@@ -91,7 +91,7 @@ def add_player(
     user_id: UserId,
     name: hanabi.Player,
     allow_repeated_players: bool = False,
-):
+) -> None:
     if chat_id not in server.games:
         server.bot.sendMessage(chat_id, "No game created for this chat")
         return
@@ -116,7 +116,9 @@ def add_player(
     user_to_message[user_id] = None
 
 
-def send_game_views(bot: telepot.Bot, chat_game: ChatGame, keyboard: bool = False):
+def send_game_views(
+    bot: telepot.Bot, chat_game: ChatGame, keyboard: bool = False
+) -> None:
     if chat_game.test_mode:
         # send only once
         send_game_view(None, chat_game.admin, bot, chat_game)
@@ -141,7 +143,7 @@ def send_game_view(
     user_id: UserId,
     bot: telepot.Bot,
     chat_game: ChatGame,
-):
+) -> None:
     assert chat_game.game is not None
     image = draw.draw_board_state(
         chat_game.game, player_viewing=name, background=chat_game.background_color
@@ -152,7 +154,7 @@ def send_game_view(
         print(ex)
 
 
-def start_game(server: BotServer, chat_id: ChatId, user_id: UserId):
+def start_game(server: BotServer, chat_id: ChatId, user_id: UserId) -> None:
     if chat_id not in server.games:
         server.bot.sendMessage(chat_id, "No game created for this chat")
         return
@@ -186,18 +188,20 @@ def edit_message(
     user_id: UserId,
     message: str,
     keyboard: InlineKeyboardMarkup | None = None,
-):
+) -> None:
     if msg := chat_game.user_to_message[user_id]:
         edited = telepot.message_identifier(msg)
         bot.editMessageText(edited, message, reply_markup=keyboard)
 
 
-def delete_message(chat_game: ChatGame, bot: telepot.Bot, user_id: UserId):
+def delete_message(chat_game: ChatGame, bot: telepot.Bot, user_id: UserId) -> None:
     edited = telepot.message_identifier(chat_game.user_to_message[user_id])
     bot.deleteMessage(edited)
 
 
-def send_keyboard(bot: telepot.Bot, chat_id: ChatId, keyboard_type: KeyboardType):
+def send_keyboard(
+    bot: telepot.Bot, chat_id: ChatId, keyboard_type: KeyboardType
+) -> None:
     chat_game = server.games[chat_id]
     assert chat_game.game is not None
     player = hanabi.get_active_player_name(chat_game.game)
@@ -278,13 +282,13 @@ def send_keyboard(bot: telepot.Bot, chat_id: ChatId, keyboard_type: KeyboardType
         )
 
 
-def restart_turn(chat_id: ChatId):
+def restart_turn(chat_id: ChatId) -> None:
     chat_game = server.games[chat_id]
     chat_game.current_action = ""
     send_keyboard(server.bot, chat_id, KeyboardType.ACTION)
 
 
-def handle_game_ending(bot: telepot.Bot, chat_game: ChatGame):
+def handle_game_ending(bot: telepot.Bot, chat_game: ChatGame) -> None:
     assert chat_game.game is not None
     send_game_views(bot, chat_game)
     chat_id = chat_game.chat_id
@@ -304,7 +308,7 @@ def handle_game_ending(bot: telepot.Bot, chat_game: ChatGame):
     chat_game.game = None
 
 
-def complete_processed_action(bot: telepot.Bot, chat_id: ChatId):
+def complete_processed_action(bot: telepot.Bot, chat_id: ChatId) -> None:
     # check game ending
     chat_game = server.games[chat_id]
     assert chat_game.game is not None
@@ -400,7 +404,7 @@ def handle_keyboard_response(msg: Message) -> bool | None:
     raise RuntimeError(f"invalid state, {chat_game.current_action=}, {data=}")
 
 
-def link_for_newbies(chat_id):
+def link_for_newbies(chat_id: ChatId) -> None:
     server.bot.sendMessage(
         chat_id,
         "Before you join a game for the first time, "
@@ -411,7 +415,7 @@ def link_for_newbies(chat_id):
     )
 
 
-def handle_message(message_object: Message):
+def handle_message(message_object: Message) -> None:
     content_type, _chat_type, chat_id = telepot.glance(message_object)
     user_id = UserId(message_object["from"]["id"])
     chat_id = ChatId(chat_id)
@@ -513,7 +517,7 @@ def handle_message(message_object: Message):
             restart_turn(chat_id)
 
 
-def start_telegram_bot(token: str = TELEGRAM_API_KEY):
+def start_telegram_bot(token: str = TELEGRAM_API_KEY) -> typing.Never:
     global server
     server = BotServer(token)
     server.bot.setMyCommands(
