@@ -80,6 +80,8 @@ jobs:
     name: test-${{ matrix.python-version }}-${{ matrix.resolution }}-${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
+      - name: set mock environment variables
+        run: cp .env-sample .env
       - uses: astral-sh/setup-uv@v5
         with:
           python-version: ${{ matrix.python-version }}
