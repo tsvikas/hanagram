@@ -1,6 +1,6 @@
 import sys
 
-from hanabi.hanabi import (
+from .hanabi import (
     COLORS,
     Game,
     GameState,

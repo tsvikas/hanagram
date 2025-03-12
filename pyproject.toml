@@ -7,8 +7,6 @@ build-backend = "hatchling.build"
 dynamic = ["version"]
 name = "hanagram"
 description = "Telegram bot to play Hanabi with your friends."
-license = "Proprietary"
-license-files = ["LICEN[CS]E.*"]
 readme = "README.md"
 requires-python = "~=3.11.0"
 authors = [
