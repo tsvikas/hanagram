@@ -224,7 +224,7 @@ def draw_board_state(
                             (start[0], start[1], start[0] + radius, start[1] + radius),
                             fill=colors_rbg[not_color],
                         )
-                        xx += 25
+                        xx += 15 * size
 
                 xx = x + 5 * size
                 yy += 15 * size
