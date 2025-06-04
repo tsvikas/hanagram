@@ -6,19 +6,24 @@ exclude: "\
 
 # pre-commit.ci config
 ci:
+  # TODO: enable pre-commit.ci repository access
   autoupdate_commit_msg: "[pre-commit.ci] chore: update pre-commit hooks"
   autofix_commit_msg: "[pre-commit.ci] style: pre-commit fixes"
   skip: []
   autoupdate_schedule: quarterly
 
 repos:
-  # Python / pre-commit package versions
+  # Sync Python and pre-commit package versions
   # pyproject.toml -> uv.lock
   - repo: https://github.com/astral-sh/uv-pre-commit
-    rev: 0.6.4
+    rev: 0.7.10
     hooks:
       - id: uv-lock
   # uv.lock -> .pre-commit-config.yaml
+  - repo: https://github.com/tsvikas/sync-with-uv
+    rev: v0.1.2
+    hooks:
+      - id: sync-with-uv
   # .pre-commit-config.yaml -> .pre-commit-config.yaml
   - repo: https://github.com/pre-commit/sync-pre-commit-deps
     rev: v0.0.3
@@ -84,20 +89,20 @@ repos:
 
   # All files
   - repo: https://github.com/editorconfig-checker/editorconfig-checker.python
-    rev: 3.2.0
+    rev: 3.2.1
     hooks:
       - id: editorconfig-checker
         exclude_types: [jupyter]
 
   # Spell checking
-  - repo: https://github.com/adhtruong/mirrors-typos
-    rev: v1.30.1
-    hooks:
-      - id: typos
   - repo: https://github.com/codespell-project/codespell
     rev: v2.4.1
     hooks:
       - id: codespell
+  - repo: https://github.com/adhtruong/mirrors-typos
+    rev: v1.33.1
+    hooks:
+      - id: typos
   - repo: local
     hooks:
       - id: disallow-caps
@@ -135,7 +140,7 @@ repos:
         additional_dependencies:
           - black==25.1.0
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.9.9
+    rev: v0.11.12
     hooks:
       - id: ruff
         alias: ruff-isort
@@ -144,11 +149,11 @@ repos:
       - id: ruff
         alias: ruff-check
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.15.0
+    rev: v1.16.0
     hooks:
       - id: mypy
         name: mypy (without imports)
-        args: [--config-file, "", --ignore-missing-imports]
+        args: [--config-file, "", --ignore-missing-imports, --disable-error-code=import-untyped]
 
   # Jupyter Notebook files
   - repo: local
@@ -160,22 +165,20 @@ repos:
         types: [jupyter]
 
   # pyproject.toml
-  - repo: https://github.com/abravalheri/validate-pyproject
-    rev: v0.23
+  - repo: https://github.com/henryiii/validate-pyproject-schema-store
+    rev: 2025.05.12
     hooks:
       - id: validate-pyproject
-        additional_dependencies:
-          - validate-pyproject-schema-store[all]
 
   # YAML files
   - repo: https://github.com/adrienverge/yamllint
-    rev: v1.35.1
+    rev: v1.37.1
     hooks:
       - id: yamllint
 
   # GitHub files
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.31.2
+    rev: 0.33.0
     hooks:
       - id: check-dependabot
       - id: check-github-actions

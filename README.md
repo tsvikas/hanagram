@@ -62,7 +62,9 @@ How to play a local game. Let's say players are Alice, Bob and Casey.
 ### Getting started
 
 - install [git][install-git], [uv][install-uv].
-- git clone this repo: `git clone tsvikas/hanagram.git`
+- git clone this repo:
+  `git clone https://github.com/tsvikas/hanagram.git`
+  or `gh repo clone tsvikas/hanagram.git`
 - run `uv run just prepare`
 
 ### Tests and code quality
@@ -71,7 +73,34 @@ How to play a local game. Let's say players are Alice, Bob and Casey.
 - use `uv run just lint` to see linting errors.
 - use `uv run just test` to run tests.
 - use `uv run just check` to run all the checks (format, lint, test, and pre-commit).
-- Run a specific tool directly, with `uv run pytest`/`ruff`/`mypy`/`black`/...
+- Run a specific tool directly, with
+  `uv run pytest`/`ruff`/`mypy`/`black`/`pre-commit`/...
+
+<!--- Badges to add after adding RTD documentation
+[![Documentation Status][rtd-badge]][rtd-link]
+
+[rtd-badge]: https://readthedocs.org/projects/hanagram/badge/?version=latest
+[rtd-link]: https://hanagram.readthedocs.io/en/latest/?badge=latest
+-->
+
+<!--- Badges to add after writing tests. Also follow the link to finish setup
+[![codecov][codecov-badge]][codecov-link]
+
+[codecov-badge]: https://codecov.io/gh/tsvikas/hanagram/graph/badge.svg
+[codecov-link]: https://codecov.io/gh/tsvikas/hanagram
+-->
+
+<!--- Badges to add after uploading to PyPI
+[![PyPI version][pypi-version-badge]][pypi-link]
+[![PyPI platforms][pypi-platforms-badge]][pypi-link]
+[![Total downloads][pepy-badge]][pepy-link]
+
+[pepy-badge]: https://img.shields.io/pepy/dt/hanagram
+[pepy-link]: https://pepy.tech/project/hanagram
+[pypi-link]: https://pypi.org/project/hanagram/
+[pypi-platforms-badge]: https://img.shields.io/pypi/pyversions/hanagram
+[pypi-version-badge]: https://img.shields.io/pypi/v/hanagram
+-->
 
 [black-badge]: https://img.shields.io/badge/code%20style-black-000000.svg
 [black-link]: https://github.com/psf/black
