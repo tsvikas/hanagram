@@ -445,14 +445,14 @@ def handle_message(message_object: Message) -> None:
             "If i'm sleeping, try to go to https://hanagram.onrender.com/ . "
             "It won't show anything, but it might wake me up.",
         )
-        if chat_id != user_id:
+        if chat_id != ChatId(user_id):
             link_for_newbies(chat_id)
 
     if text == "/link_for_newbies":
         link_for_newbies(chat_id)
 
     if text == "/new_game":
-        if user_id == chat_id:
+        if chat_id == ChatId(user_id):
             server.bot.sendMessage(chat_id, "Start the game in a group chat")
             return
         if chat_id in server.games and server.games[chat_id].game:
