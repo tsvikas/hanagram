@@ -7,6 +7,10 @@ alias cp := check-and-push
 alias fc := format-and-check
 alias f := format
 
+# start the server
+run-telegram-server:
+  uv run play-telegram
+
 # Initialize a new project
 init:
   git init
