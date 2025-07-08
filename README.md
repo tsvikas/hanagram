@@ -76,32 +76,6 @@ How to play a local game. Let's say players are Alice, Bob and Casey.
 - Run a specific tool directly, with
   `uv run pytest`/`ruff`/`mypy`/`black`/`pre-commit`/...
 
-<!--- Badges to add after adding RTD documentation
-[![Documentation Status][rtd-badge]][rtd-link]
-
-[rtd-badge]: https://readthedocs.org/projects/hanagram/badge/?version=latest
-[rtd-link]: https://hanagram.readthedocs.io/en/latest/?badge=latest
--->
-
-<!--- Badges to add after writing tests. Also follow the link to finish setup
-[![codecov][codecov-badge]][codecov-link]
-
-[codecov-badge]: https://codecov.io/gh/tsvikas/hanagram/graph/badge.svg
-[codecov-link]: https://codecov.io/gh/tsvikas/hanagram
--->
-
-<!--- Badges to add after uploading to PyPI
-[![PyPI version][pypi-version-badge]][pypi-link]
-[![PyPI platforms][pypi-platforms-badge]][pypi-link]
-[![Total downloads][pepy-badge]][pepy-link]
-
-[pepy-badge]: https://img.shields.io/pepy/dt/hanagram
-[pepy-link]: https://pepy.tech/project/hanagram
-[pypi-link]: https://pypi.org/project/hanagram/
-[pypi-platforms-badge]: https://img.shields.io/pypi/pyversions/hanagram
-[pypi-version-badge]: https://img.shields.io/pypi/v/hanagram
--->
-
 [black-badge]: https://img.shields.io/badge/code%20style-black-000000.svg
 [black-link]: https://github.com/psf/black
 [github-discussions-badge]: https://img.shields.io/static/v1?label=Discussions&message=Ask&color=blue&logo=github
