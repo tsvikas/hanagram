@@ -21,7 +21,7 @@ Telegram bot to play Hanabi with your friends.
 - Save to the `.env` file:
 
 ```bash
-cp .env.sample .env
+cp .env-sample .env
 nano .env  # set the API TOKEN
 ```
 
