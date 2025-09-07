@@ -8,8 +8,6 @@ dynamic = ["version"]
 name = "hanagram"
 description = "Telegram bot to play Hanabi with your friends."
 readme = "README.md"
-# telepot import fails for python 3.12
-requires-python = ">=3.11, <3.12"
 authors = [
   {name = "Tsvika Shapira", email = "tsvikas@gmail.com"}
 ]
@@ -22,6 +20,16 @@ classifiers = [
   # TODO: update the development status
   "Development Status :: 3 - Alpha",
 ]
+# urls.homepage = "https://hanagram.readthedocs.io"
+urls.source = "https://github.com/tsvikas/hanagram"
+urls.changelog = "https://github.com/tsvikas/hanagram/blob/main/CHANGELOG.md"
+# urls.releasenotes = "https://github.com/tsvikas/hanagram/releases"
+# urls.documentation = "https://hanagram.readthedocs.io"
+urls.issues = "https://github.com/tsvikas/hanagram/issues"
+# urls.funding = "https://github.com/sponsors/tsvikas"
+
+# telepot import fails for python 3.12
+requires-python = ">=3.11, <3.12"
 dependencies = [
     "pillow>=11.1.0",
     "python-dotenv>=1.0.1",
@@ -30,15 +38,6 @@ dependencies = [
 
 [project.optional-dependencies]
 # optional_name = ["some_package >=1.0"]
-
-[project.urls]
-# homepage = "https://hanagram.readthedocs.io"
-source = "https://github.com/tsvikas/hanagram"
-changelog = "https://github.com/tsvikas/hanagram/blob/main/CHANGELOG.md"
-# releasenotes = "https://github.com/tsvikas/hanagram/releases"
-# documentation = "https://hanagram.readthedocs.io"
-issues = "https://github.com/tsvikas/hanagram/issues"
-# funding = "https://github.com/sponsors/tsvikas"
 
 [project.scripts]
 screenshot = "hanagram.draw:create_screenshot"
@@ -86,7 +85,14 @@ test = [
   # "pytest-mock ~=3.3",
   # "pytest-regressions ~=2.0",
 ]
-# docs = []
+docs = [
+  "mkdocs ~=1.0",
+  "mkdocs-material ~=9.0",
+  "mkdocstrings-python ~=1.0",
+  "mkdocs-gen-files ~=0.5.0",
+  "mkdocs-literate-nav ~=0.6.0",
+  "mkdocs-section-index ~=0.3.0",
+]
 typing = [
   "mypy ~=1.17.0",
   # add "*-stubs" and "types-*" packages here (">=0")
@@ -100,6 +106,10 @@ build.hooks.vcs.version-file = "src/hanagram/_version.py"
 
 [tool.pytest.ini_options]
 minversion = "7.0"
+testpaths = [
+  "src/",
+  "tests/",
+]
 addopts = [
   ## testing
   "--doctest-modules",
@@ -216,6 +226,10 @@ flake8-comprehensions.allow-dict-calls-with-keyword-arguments = true
 ]
 "src/hanagram/_version.py" = [
   "ALL",
+]
+"scripts/*.py" = [
+  "T20",      # flake8-print
+  "INP001",   # implicit-namespace-package
 ]
 "!tests/test_*.py" = [
   "PT",       # flake8-pytest-style

@@ -22,7 +22,7 @@ jobs:
       - uses: psf/black@stable
         with:
           jupyter: false
-          version: "~=25.0"
+          version: ~=25.0
 
   ruff-check:
     if: ${{ always() }}
@@ -73,15 +73,15 @@ jobs:
       matrix:
         include:
           # test with different os
-          - resolution: "locked"
+          - resolution: locked
             os: ubuntu-latest
-            python-version: "3.11"
-          - resolution: "locked"
+            python-version: '3.11'
+          - resolution: locked
             os: macos-latest
-            python-version: "3.11"
-          - resolution: "locked"
+            python-version: '3.11'
+          - resolution: locked
             os: windows-latest
-            python-version: "3.11"
+            python-version: '3.11'
     name: test-${{ matrix.python-version }}-${{ matrix.resolution }}-${{ matrix.os }}
     steps:
       - uses: actions/checkout@v5
@@ -106,11 +106,11 @@ jobs:
           --no-default-groups
           --group test
           --exact
-          ${{ matrix.resolution == 'locked' && '--locked' ||
-              matrix.resolution == 'lowest' && '--upgrade --resolution lowest-direct' ||
-              matrix.resolution == 'highest' && '--upgrade --resolution highest' ||
-              matrix.resolution == 'prerelease' && '--upgrade --resolution highest --prerelease allow' ||
-              '--NON_RECOGNIZED_RESOLUTION'
+          ${{ matrix.resolution == 'locked' && '--locked'
+              || matrix.resolution == 'lowest' && '--upgrade --resolution lowest-direct'
+              || matrix.resolution == 'highest' && '--upgrade --resolution highest'
+              || matrix.resolution == 'prerelease' && '--upgrade --resolution highest --prerelease allow'
+              || '--NON_RECOGNIZED_RESOLUTION'
           }}
         continue-on-error: ${{ env.ALLOW_FAILURE == 'true' }}
       - name: Stop job with warning if install fails for specific versions
@@ -122,10 +122,15 @@ jobs:
         run: uv pip list
       - name: Run tests
         if: ${{ success() && steps.install_packages.outcome == 'success' }}
-        run: uv run --no-sync pytest --cov-branch --cov-report=xml
+        run: uv run --no-sync pytest --cov-branch --cov-report=xml --junitxml=junit.xml
       - name: Upload coverage reports to Codecov
         if: ${{ success() && steps.install_packages.outcome == 'success' }}
         uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
