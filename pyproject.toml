@@ -8,7 +8,8 @@ dynamic = ["version"]
 name = "hanagram"
 description = "Telegram bot to play Hanabi with your friends."
 readme = "README.md"
-requires-python = "~=3.11.0"
+# telepot import fails for python 3.12
+requires-python = ">=3.11, <3.12"
 authors = [
   {name = "Tsvika Shapira", email = "tsvikas@gmail.com"}
 ]
