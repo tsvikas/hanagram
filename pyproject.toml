@@ -28,7 +28,8 @@ urls.changelog = "https://github.com/tsvikas/hanagram/blob/main/CHANGELOG.md"
 urls.issues = "https://github.com/tsvikas/hanagram/issues"
 # urls.funding = "https://github.com/sponsors/tsvikas"
 
-requires-python = ">=3.11"
+# telepot import fails for python 3.12
+requires-python = ">=3.11, <3.12"
 dependencies = [
     "pillow>=11.1.0",
     "python-dotenv>=1.0.1",

@@ -16,6 +16,10 @@ Telegram bot to play Hanabi with your friends.
 
 <img src="assets/example.gif">
 
+### Note
+
+Due to telepot dropping support, this project doesn't works for python >= 3.12
+
 ## Usage
 
 - Get an API TOKEN from `@BotFather`
