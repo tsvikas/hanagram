@@ -39,7 +39,7 @@ jobs:
         run: uv run --no-sync pytest
       - name: Create failure issue
         if: failure()
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             // Check for existing test failure issues
@@ -107,7 +107,7 @@ jobs:
         run: uv run --no-sync --with pip-audit pip-audit --skip-editable
       - name: Create failure issue
         if: failure()
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             // Check for existing audit failure issues
