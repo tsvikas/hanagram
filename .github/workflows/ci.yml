@@ -12,8 +12,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  black:
-    if: ${{ always() }}
+  format-python:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -25,7 +24,6 @@ jobs:
           use_pyproject: true
 
   ruff-check:
-    if: ${{ always() }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -34,7 +32,6 @@ jobs:
       - uses: astral-sh/ruff-action@v3
 
   pre-commit:
-    if: ${{ always() }}
     env:
       COLUMNS: 120
     runs-on: ubuntu-latest
@@ -45,7 +42,6 @@ jobs:
       - uses: pre-commit/action@v3.0.1
 
   mypy:
-    if: ${{ always() }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -67,7 +63,6 @@ jobs:
         run: uv run --no-sync mypy
 
   dependencies:
-    if: ${{ always() }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -89,8 +84,6 @@ jobs:
         run: uv run --no-sync --with pip-audit pip-audit --skip-editable
 
   test:
-    if: ${{ always() }}
-    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         include:
@@ -104,6 +97,8 @@ jobs:
           - resolution: locked
             os: windows-latest
             python-version: '3.11'
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
     name: test-${{ matrix.python-version }}-${{ matrix.resolution }}-${{ matrix.os }}
     steps:
       - uses: actions/checkout@v5
@@ -115,11 +110,6 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           cache-suffix: ${{ matrix.resolution }}
-      - name: Set versions that allow failure
-        # pypy and prerelease python versions might fail to install dependencies. In this case, we do not fail the job
-        run: >-
-          echo "ALLOW_FAILURE=${{ matrix.resolution == 'prerelease' || startsWith(matrix.python-version, 'pypy') }}"
-          >> "$GITHUB_ENV"
       - name: Install packages
         id: install_packages
         run: >-
@@ -131,33 +121,24 @@ jobs:
           ${{ matrix.resolution == 'locked' && '--locked'
               || matrix.resolution == 'lowest' && '--upgrade --resolution lowest-direct'
               || matrix.resolution == 'highest' && '--upgrade --resolution highest'
-              || matrix.resolution == 'prerelease' && '--upgrade --resolution highest --prerelease allow'
               || '--NON_RECOGNIZED_RESOLUTION'
           }}
-        continue-on-error: ${{ env.ALLOW_FAILURE == 'true' }}
-      - name: Stop job with warning if install fails for specific versions
-        if: ${{ env.ALLOW_FAILURE == 'true' && steps.install_packages.outcome == 'failure' }}
-        run: >-
-          echo "::warning::Stopping job due to installation failure on Python ${{ matrix.python-version }}"
       - name: List packages
-        if: ${{ success() && steps.install_packages.outcome == 'success' }}
         run: uv pip list
       - name: Run tests
-        if: ${{ success() && steps.install_packages.outcome == 'success' }}
+        id: run_tests
         run: uv run --no-sync pytest --cov-branch --cov-report=xml --junitxml=junit.xml
-      - name: Upload coverage reports to Codecov
-        if: ${{ success() && steps.install_packages.outcome == 'success' }}
-        uses: codecov/codecov-action@v5
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() && steps.run_tests.conclusion != 'skipped' }}
+        uses: codecov/test-results-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-      - name: Upload test results to Codecov
-        if: ${{ !cancelled() }}
-        uses: codecov/test-results-action@v1
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
   pylint:
-    if: ${{ always() }}
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
@@ -190,16 +171,15 @@ jobs:
           exit $((result & 35))
 
   pass:
-    if: always()
-    needs: [
-      black,
-      ruff-check,
-      pre-commit,
-      mypy,
-      dependencies,
-      test,
-      pylint,
-    ]
+    if: ${{ always() }}
+    needs:
+      - format-python
+      - ruff-check
+      - pre-commit
+      - mypy
+      - dependencies
+      - test
+      - pylint
     runs-on: ubuntu-latest
     steps:
       - uses: re-actors/alls-green@release/v1
