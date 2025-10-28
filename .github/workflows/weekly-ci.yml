@@ -33,10 +33,10 @@ jobs:
       - name: Install packages
         run: >-
           uv sync
+          --exact
           --all-extras
           --no-default-groups
           --group test
-          --exact
           --upgrade
           --resolution highest
       - name: List packages
@@ -103,9 +103,9 @@ jobs:
       - name: Install packages
         run: >-
           uv sync
+          --exact
           --all-extras
           --all-groups
-          --exact
           --locked
       - name: List packages
         run: uv pip list
