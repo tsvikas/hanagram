@@ -136,6 +136,7 @@ filterwarnings = [
   "default::DeprecationWarning",
   "error::DeprecationWarning:hanagram",
 ]
+log_level = "INFO"
 
 
 [tool.coverage]
