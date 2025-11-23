@@ -20,13 +20,14 @@ classifiers = [
   # TODO: update the development status
   "Development Status :: 3 - Alpha",
 ]
-# urls.homepage = "https://hanagram.readthedocs.io"
-urls.source = "https://github.com/tsvikas/hanagram"
-urls.changelog = "https://github.com/tsvikas/hanagram/blob/main/CHANGELOG.md"
-# urls.releasenotes = "https://github.com/tsvikas/hanagram/releases"
-# urls.documentation = "https://hanagram.readthedocs.io"
-urls.issues = "https://github.com/tsvikas/hanagram/issues"
-# urls.funding = "https://github.com/sponsors/tsvikas"
+# urls.Homepage = "https://hanagram.readthedocs.io"
+urls.Source = "https://github.com/tsvikas/hanagram"
+urls.Changelog = "https://github.com/tsvikas/hanagram/blob/main/CHANGELOG.md"
+# urls.ReleaseNotes = "https://github.com/tsvikas/hanagram/releases"
+# urls.Documentation = "https://hanagram.readthedocs.io"
+urls.Issues = "https://github.com/tsvikas/hanagram/issues"
+# urls.Funding = "https://github.com/sponsors/tsvikas"
+# Discussions = "https://github.com/tsvikas/hanagram/discussions"
 
 # telepot import fails for python 3.12
 requires-python = ">=3.11, <3.12"
@@ -46,11 +47,6 @@ play-telegram = "hanagram.play_telegram:start_telegram_bot"
 
 [project.gui-scripts]
 # hanagram = "hanagram.gui:app.run"
-
-
-[tool.uv]
-required-version = ">=0.7.3"
-default-groups = ["dev", "test", "typing"]
 
 
 [dependency-groups]
@@ -96,6 +92,11 @@ typing = [
   "mypy ~=1.18.0",
   # add "*-stubs" and "types-*" packages here (">=0")
 ]
+
+
+[tool.uv]
+required-version = ">=0.7.3"
+default-groups = ["dev", "test", "typing"]
 
 
 [tool.hatch]

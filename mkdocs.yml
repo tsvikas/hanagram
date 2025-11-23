@@ -1,5 +1,10 @@
 site_name: hanagram
+site_url: 'https://hanagram.readthedocs.io/'
+site_author: Tsvika Shapira
 site_description: Telegram bot to play Hanabi with your friends.
+
+repo_name: 'tsvikas/hanagram'
+repo_url: 'https://github.com/tsvikas/hanagram'
 
 theme:
   name: material
