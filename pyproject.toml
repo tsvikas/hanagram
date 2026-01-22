@@ -90,6 +90,7 @@ docs = [
 ]
 typing = [
   "mypy ~=1.19.0",
+  "ty ~=0.0",
   # add "*-stubs" and "types-*" packages here (">=0")
 ]
 
@@ -144,6 +145,13 @@ log_level = "INFO"
 run.omit = [
   "src/hanagram/__main__.py",
   "src/hanagram/_version.py",
+]
+
+
+[tool.ty]
+src.include = [
+    "src",
+    "tests",
 ]
 
 
